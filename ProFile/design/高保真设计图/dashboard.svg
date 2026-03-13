@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#ffffff" />
+  <text x="20" y="40" font-family="Inter, Arial" font-size="28" font-weight="700" fill="#1e293b">OpenClaw AI项目管理系统 - 仪表盘</text>
+  
+  <!-- 顶部操作栏 -->
+  <rect x="20" y="60" width="1400" height="60" fill="#f8fafc" rx="6"/>
+  <text x="40" y="95" font-family="Inter, Arial" font-size="14" fill="#64748b">时间范围: </text>
+  <rect x="120" y="75" width="120" height="30" fill="#ffffff" rx="4" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="130" y="94" font-family="Inter, Arial" font-size="12" fill="#64748b">近30天</text>
+  <rect x="260" y="75" width="80" height="30" fill="#2563eb" rx="4"/>
+  <text x="275" y="94" font-family="Inter, Arial" font-size="12" fill="#ffffff">刷新</text>
+  <rect x="360" y="75" width="80" height="30" fill="#10b981" rx="4"/>
+  <text x="375" y="94" font-family="Inter, Arial" font-size="12" fill="#ffffff">导出</text>
+  
+  <!-- 统计卡片 -->
+  <rect x="20" y="140" width="300" height="120" fill="#dbeafe" rx="8"/>
+  <text x="35" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#1e40af">活跃项目</text>
+  <text x="35" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#1d4ed8">24</text>
+  <text x="35" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">较上月 +2</text>
+  
+  <rect x="340" y="140" width="300" height="120" fill="#d1fae5" rx="8"/>
+  <text x="355" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#065f46">待验收</text>
+  <text x="355" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#059669">8</text>
+  <text x="355" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">急待处理</text>
+  
+  <rect x="660" y="140" width="300" height="120" fill="#fef3c7" rx="8"/>
+  <text x="675" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#92400e">阻塞任务</text>
+  <text x="675" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#d97706">3</text>
+  <text x="675" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">需要关注</text>
+  
+  <rect x="980" y="140" width="300" height="120" fill="#f0f9ff" rx="8"/>
+  <text x="995" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#0369a1">平均周期</text>
+  <text x="995" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#0284c7">5.2天</text>
+  <text x="995" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">优化中</text>
+  
+  <!-- 图表区域 -->
+  <rect x="20" y="280" width="700" height="300" fill="#f8fafc" rx="8"/>
+  <text x="35" y="310" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#1e293b">项目进度趋势 (燃尽图)</text>
+  <line x1="40" y1="330" x2="680" y2="330" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="40" y="340" width="640" height="180" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <rect x="740" y="280" width="350" height="300" fill="#f8fafc" rx="8"/>
+  <text x="755" y="310" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#1e293b">风险看板</text>
+  <rect x="760" y="320" width="320" height="80" fill="#dbeafe" rx="6"/>
+  <text x="780" y="350" font-family="Inter, Arial" font-size="24" font-weight="700" fill="#1d4ed8">12</text>
+  <text x="780" y="370" font-family="Inter, Arial" font-size="12" fill="#64748b">待分配</text>
+  
+  <rect x="760" y="420" width="320" height="80" fill="#d1fae5" rx="6"/>
+  <text x="780" y="450" font-family="Inter, Arial" font-size="24" font-weight="700" fill="#059669">18</text>
+  <text x="780" y="470" font-family="Inter, Arial" font-size="12" fill="#64748b">进行中</text>
+  
+  <rect x="760" y="520" width="320" height="80" fill="#fef3c7" rx="6"/>
+  <text x="780" y="550" font-family="Inter, Arial" font-size="24" font-weight="700" fill="#d97706">3</text>
+  <text x="780" y="570" font-family="Inter, Arial" font-size="12" fill="#64748b">阻塞中</text>
+  
+  <!-- Agent工作负载 -->
+  <rect x="20" y="600" width="1170" height="200" fill="#f8fafc" rx="8"/>
+  <text x="35" y="630" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#1e293b">Agent工作负载分布</text>
+  <text x="35" y="660" font-family="Inter, Arial" font-size="14" fill="#64748b">显示所有活跃Agent的任务分配情况</text>
+  <rect x="35" y="680" width="1120" height="120" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- 底部信息 -->
+  <text x="20" y="820" font-family="Inter, Arial" font-size="12" fill="#94a3b8">数据更新时间: 2026-03-12 20:08</text>
+</svg>

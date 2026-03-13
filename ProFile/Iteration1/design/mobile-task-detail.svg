@@ -1,0 +1,61 @@
+<svg width="375" height="812" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- 背景 -->
+<rect width="375" height="812" fill="#F5F7FA"/>
+
+<!-- 顶部导航栏 -->
+<rect width="375" height="44" fill="#FFFFFF" stroke="#E5E6EB"/>
+<path d="M24 22 L14 22 L19 17 L14 22 L19 27" stroke="#1D2129" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="56" y="28" font-family="PingFang SC" font-size="17" font-weight="500" fill="#1D2129">任务详情</text>
+<path d="M338 18 L338 26 L346 22 Z" fill="#86909C"/>
+<circle cx="338" cy="16" r="1.5" fill="#86909C"/>
+<circle cx="346" cy="16" r="1.5" fill="#86909C"/>
+<circle cx="338" cy="28" r="1.5" fill="#86909C"/>
+<circle cx="346" cy="28" r="1.5" fill="#86909C"/>
+
+<!-- 任务头部 -->
+<rect x="0" y="44" width="375" height="100" fill="#FFFFFF"/>
+<text x="16" y="80" font-family="PingFang SC" font-size="20" font-weight="600" fill="#1D2129">系统设计</text>
+<rect x="16" y="92" width="56" height="24" rx="12" fill="#E8FFEA"/>
+<text x="28" y="108" font-family="PingFang SC" font-size="13" font-weight="500" fill="#00B42A">进行中</text>
+<text x="84" y="109" font-family="PingFang SC" font-size="14" fill="#86909C">· P0 · 03-20截止</text>
+
+<!-- 任务信息 -->
+<rect x="16" y="160" width="343" height="140" fill="#FFFFFF" rx="12"/>
+<text x="28" y="186" font-family="PingFang SC" font-size="16" font-weight="500" fill="#1D2129">📝 任务信息</text>
+<text x="28" y="210" font-family="PingFang SC" font-size="14" fill="#4E5969">描述：完成系统架构设计文档</text>
+<text x="28" y="234" font-family="PingFang SC" font-size="14" fill="#4E5969">负责人：设计Agent</text>
+<text x="28" y="258" font-family="PingFang SC" font-size="14" fill="#4E5969">所属项目：项目A</text>
+
+<!-- 操作按钮 -->
+<rect x="16" y="316" width="163" height="48" rx="8" fill="#165DFF"/>
+<text x="52" y="345" font-family="PingFang SC" font-size="15" font-weight="500" fill="#FFFFFF">更新状态</text>
+<rect x="196" y="316" width="163" height="48" rx="8" fill="#FFFFFF" stroke="#165DFF"/>
+<text x="220" y="345" font-family="PingFang SC" font-size="15" font-weight="500" fill="#165DFF">上传交付物</text>
+
+<!-- 执行记录 -->
+<rect x="16" y="380" width="343" height="320" fill="#FFFFFF" rx="12"/>
+<text x="28" y="406" font-family="PingFang SC" font-size="16" font-weight="500" fill="#1D2129">📋 执行记录</text>
+<rect x="28" y="430" width="2" height="60" fill="#E5E6EB"/>
+<circle cx="29" cy="430" r="6" fill="#165DFF"/>
+<text x="50" y="434" font-family="PingFang SC" font-size="13" fill="#86909C">2026-03-12 10:30</text>
+<text x="50" y="456" font-family="PingFang SC" font-size="14" fill="#1D2129">状态变更：待分配 -> 进行中</text>
+<text x="50" y="478" font-family="PingFang SC" font-size="13" fill="#86909C">操作者：管理Agent</text>
+<rect x="28" y="510" width="2" height="60" fill="#E5E6EB"/>
+<circle cx="29" cy="510" r="6" fill="#165DFF"/>
+<text x="50" y="514" font-family="PingFang SC" font-size="13" fill="#86909C">2026-03-12 10:00</text>
+<text x="50" y="536" font-family="PingFang SC" font-size="14" fill="#1D2129">任务创建</text>
+<text x="50" y="558" font-family="PingFang SC" font-size="13" fill="#86909C">操作者：产品Agent</text>
+
+<!-- 评论输入 -->
+<rect x="16" y="716" width="280" height="40" fill="#FFFFFF" rx="20" stroke="#E5E6EB"/>
+<text x="32" y="741" font-family="PingFang SC" font-size="14" fill="#C9CDD4">输入评论...</text>
+<rect x="308" y="716" width="51" height="40" rx="20" fill="#165DFF"/>
+<text x="320" y="741" font-family="PingFang SC" font-size="14" font-weight="500" fill="#FFFFFF">发送</text>
+
+<!-- 底部导航 -->
+<rect y="763" width="375" height="49" fill="#FFFFFF" stroke="#E5E6EB"/>
+<text x="36" y="790" font-family="PingFang SC" font-size="11" fill="#86909C">🏠 首页</text>
+<text x="118" y="790" font-family="PingFang SC" font-size="11" fill="#86909C">📁 项目</text>
+<text x="200" y="790" font-family="PingFang SC" font-size="11" fill="#165DFF">📋 任务</text>
+<text x="294" y="790" font-family="PingFang SC" font-size="11" fill="#86909C">👤 我的</text>
+</svg>

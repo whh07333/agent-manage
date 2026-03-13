@@ -1,0 +1,57 @@
+{
+  "default_skills": {
+    "code_development": "coding-agent",
+    "code_review": "coding-agent",
+    "testing": "coding-agent",
+    "architecture_design": "coding-agent",
+    "bug_fix": "coding-agent"
+  },
+  "coding_agent_config": {
+    "default_model": "claude-code",
+    "tech_stack": [
+      "react 18.x",
+      "typescript 5.x",
+      "node.js 20.x",
+      "express 4.x",
+      "postgresql 15.x",
+      "redis 7.x",
+      "antd 5.x",
+      "vite 5.x",
+      "sequelize 6.x",
+      "axios",
+      "recharts",
+      "dayjs"
+    ],
+    "code_style": "standard",
+    "auto_format": true,
+    "auto_lint": true,
+    "eslint_enabled": true,
+    "prettier_enabled": true,
+    "typescript_strict": true,
+    "quality_requirements": {
+      "comment_rate": 30,
+      "unit_test_coverage": 60,
+      "code_smell_check": true,
+      "security_vulnerability_check": true
+    },
+    "git_commit_spec": "conventional-commits",
+    "project_specific_rules": [
+      "使用camelCase命名变量和函数",
+      "使用PascalCase命名组件和类",
+      "使用kebab-case命名文件",
+      "API响应统一使用{code: number, msg: string, data: T}格式",
+      "错误处理必须包含用户友好的提示信息",
+      "敏感信息必须使用环境变量存储，禁止硬编码"
+    ]
+  },
+  "auto_triggers": {
+    "on_file_save": [
+      "lint",
+      "format"
+    ],
+    "on_git_commit": [
+      "unit_test",
+      "security_scan"
+    ]
+  }
+}

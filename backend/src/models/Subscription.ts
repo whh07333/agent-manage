@@ -1,14 +1,15 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../config/database";
 
 export class Subscription extends Model {
   public id!: string;
-  public agent_id!: string;
-  public event_type!: string;
-  public target_id!: string; // project_id or task_id
+  public project_id?: string;
+  public event_types!: string[];
   public callback_url!: string;
-  public filter_rules!: any;
+  public secret?: string;
   public is_active!: boolean;
+  public retry_policy?: any;
+  public last_triggered_at?: Date;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -18,47 +19,56 @@ Subscription.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: true,
     },
-    agent_id: {
+    project_id: {
       type: DataTypes.UUID,
-      allowNull: false
+      allowNull: true,
+      
     },
-    event_type: {
-      type: DataTypes.STRING,
+    event_types: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
-    target_id: {
-      type: DataTypes.UUID,
-      allowNull: true // null for all projects/tasks
+      defaultValue: [],
     },
     callback_url: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isUrl: true
-      }
     },
-    filter_rules: {
-      type: DataTypes.JSON,
-      allowNull: true
+    secret: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
-    }
+      defaultValue: true,
+    },
+    retry_policy: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: {
+        max_retries: 3,
+        retry_interval: 1000,
+        backoff_multiplier: 2,
+      },
+    },
+    last_triggered_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
-    tableName: 'subscriptions',
+    tableName: "subscriptions",
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    indexes: [
+      { fields: ["project_id", "is_active"] },
+      { fields: ["is_active"] },
+    ],
+  },
 );
 
 export default Subscription;

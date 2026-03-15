@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
-import { ProjectAgentService } from '../services/projectAgents';
+import { RoleService } from '../services/roles';
 
-const projectAgentService = new ProjectAgentService();
+const roleService = new RoleService();
 
-export const getAllProjectAgents = async (req: Request, res: Response) => {
+export const getAllRoles = async (req: Request, res: Response) => {
   try {
-    const projectAgents = await projectAgentService.getAllProjectAgents();
+    const roles = await roleService.getAllRoles();
     res.json({
       code: 0,
       msg: 'Success',
-      data: projectAgents,
+      data: roles,
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {
@@ -22,13 +22,13 @@ export const getAllProjectAgents = async (req: Request, res: Response) => {
   }
 };
 
-export const getProjectAgentById = async (req: Request, res: Response) => {
+export const getRoleById = async (req: Request, res: Response) => {
   try {
-    const projectAgent = await projectAgentService.getProjectAgentById(req.params.id as string);
-    if (!projectAgent) {
+    const role = await roleService.getRoleById(req.params.id as string);
+    if (!role) {
       return res.status(404).json({
         code: 404,
-        msg: 'Project agent not found',
+        msg: 'Role not found',
         data: null,
         trace_id: req.headers['x-request-id'] || 'default'
       });
@@ -36,7 +36,7 @@ export const getProjectAgentById = async (req: Request, res: Response) => {
     res.json({
       code: 0,
       msg: 'Success',
-      data: projectAgent,
+      data: role,
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {
@@ -49,13 +49,21 @@ export const getProjectAgentById = async (req: Request, res: Response) => {
   }
 };
 
-export const getProjectAgentsByProjectId = async (req: Request, res: Response) => {
+export const getRoleByName = async (req: Request, res: Response) => {
   try {
-    const projectAgents = await projectAgentService.getProjectAgentsByProjectId(req.params.projectId as string);
+    const role = await roleService.getRoleByName(req.params.name as string);
+    if (!role) {
+      return res.status(404).json({
+        code: 404,
+        msg: 'Role not found',
+        data: null,
+        trace_id: req.headers['x-request-id'] || 'default'
+      });
+    }
     res.json({
       code: 0,
       msg: 'Success',
-      data: projectAgents,
+      data: role,
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {
@@ -68,13 +76,13 @@ export const getProjectAgentsByProjectId = async (req: Request, res: Response) =
   }
 };
 
-export const getProjectAgentsByAgentId = async (req: Request, res: Response) => {
+export const getSystemRoles = async (req: Request, res: Response) => {
   try {
-    const projectAgents = await projectAgentService.getProjectAgentsByAgentId(req.params.agentId);
+    const roles = await roleService.getSystemRoles();
     res.json({
       code: 0,
       msg: 'Success',
-      data: projectAgents,
+      data: roles,
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {
@@ -87,13 +95,32 @@ export const getProjectAgentsByAgentId = async (req: Request, res: Response) => 
   }
 };
 
-export const createProjectAgent = async (req: Request, res: Response) => {
+export const getCustomRoles = async (req: Request, res: Response) => {
   try {
-    const projectAgent = await projectAgentService.createProjectAgent(req.body);
+    const roles = await roleService.getCustomRoles();
+    res.json({
+      code: 0,
+      msg: 'Success',
+      data: roles,
+      trace_id: req.headers['x-request-id'] || 'default'
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: req.headers['x-request-id'] || 'default'
+    });
+  }
+};
+
+export const createRole = async (req: Request, res: Response) => {
+  try {
+    const role = await roleService.createRole(req.body);
     res.status(201).json({
       code: 0,
-      msg: 'Project agent created successfully',
-      data: projectAgent,
+      msg: 'Role created successfully',
+      data: role,
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {
@@ -106,21 +133,21 @@ export const createProjectAgent = async (req: Request, res: Response) => {
   }
 };
 
-export const updateProjectAgent = async (req: Request, res: Response) => {
+export const updateRole = async (req: Request, res: Response) => {
   try {
-    const projectAgent = await projectAgentService.updateProjectAgent(req.params.id as string, req.body);
-    if (!projectAgent) {
+    const role = await roleService.updateRole(req.params.id as string, req.body);
+    if (!role) {
       return res.status(404).json({
         code: 404,
-        msg: 'Project agent not found',
+        msg: 'Role not found',
         data: null,
         trace_id: req.headers['x-request-id'] || 'default'
       });
     }
     res.json({
       code: 0,
-      msg: 'Project agent updated successfully',
-      data: projectAgent,
+      msg: 'Role updated successfully',
+      data: role,
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {
@@ -133,31 +160,12 @@ export const updateProjectAgent = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteProjectAgent = async (req: Request, res: Response) => {
+export const deleteRole = async (req: Request, res: Response) => {
   try {
-    await projectAgentService.deleteProjectAgent(req.params.id as string);
+    await roleService.deleteRole(req.params.id as string);
     res.json({
       code: 0,
-      msg: 'Project agent deleted successfully',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  } catch (error) {
-    res.status(500).json({
-      code: 500,
-      msg: error instanceof Error ? error.message : 'Internal server error',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  }
-};
-
-export const restoreProjectAgent = async (req: Request, res: Response) => {
-  try {
-    await projectAgentService.restoreProjectAgent(req.params.id as string);
-    res.json({
-      code: 0,
-      msg: 'Project agent restored successfully',
+      msg: 'Role deleted successfully',
       data: null,
       trace_id: req.headers['x-request-id'] || 'default'
     });
@@ -171,32 +179,23 @@ export const restoreProjectAgent = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteProjectAgentsByProjectId = async (req: Request, res: Response) => {
+export const checkPermission = async (req: Request, res: Response) => {
   try {
-    await projectAgentService.deleteProjectAgentsByProjectId(req.params.projectId as string);
+    const { id, permission } = req.params;
+    const role = await roleService.getRoleById(id as string);
+    if (!role) {
+      return res.status(404).json({
+        code: 404,
+        msg: 'Role not found',
+        data: null,
+        trace_id: req.headers['x-request-id'] || 'default'
+      });
+    }
+    const hasPermission = await roleService.checkPermission(role, permission as string);
     res.json({
       code: 0,
-      msg: 'Project agents deleted successfully',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  } catch (error) {
-    res.status(500).json({
-      code: 500,
-      msg: error instanceof Error ? error.message : 'Internal server error',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  }
-};
-
-export const deleteProjectAgentsByAgentId = async (req: Request, res: Response) => {
-  try {
-    await projectAgentService.deleteProjectAgentsByAgentId(req.params.agentId);
-    res.json({
-      code: 0,
-      msg: 'Project agents deleted successfully',
-      data: null,
+      msg: 'Success',
+      data: { id, hasPermission },
       trace_id: req.headers['x-request-id'] || 'default'
     });
   } catch (error) {

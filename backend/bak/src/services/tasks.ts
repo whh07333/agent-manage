@@ -21,6 +21,10 @@ export class TaskService {
         {
           model: Project,
           as: 'project'
+        },
+        {
+          model: Task,
+          as: 'predecessor'
         }
       ]
     });
@@ -32,6 +36,7 @@ export class TaskService {
       name: data.name,
       description: data.description,
       assignee_id: data.assignee_id,
+      predecessor_task_id: data.predecessor_task_id || null,
       status: data.status || 'pending',
       priority: data.priority || 'medium',
       due_date: data.due_date
@@ -56,6 +61,14 @@ export class TaskService {
     const task = await this.getTaskById(id);
     if (!task) return null;
 
+    // DEF-019 任务依赖验证 - 如果任务被设置为in_progress，必须检查前置任务是否已完成
+    if (status === 'in_progress' && task.predecessor_task_id) {
+      const predecessor = await Task.findByPk(task.predecessor_task_id);
+      if (!predecessor || predecessor.status !== 'completed') {
+        throw new Error('Cannot start this task: Predecessor task is not completed');
+      }
+    }
+
     return task.update({ status });
   }
 
@@ -69,6 +82,12 @@ export class TaskService {
   async getTasksByProject(project_id: string): Promise<Task[]> {
     return Task.findAll({
       where: { project_id },
+      include: [
+        {
+          model: Task,
+          as: 'predecessor'
+        }
+      ],
       order: [['due_date', 'ASC']]
     });
   }
@@ -80,6 +99,10 @@ export class TaskService {
         {
           model: Project,
           as: 'project'
+        },
+        {
+          model: Task,
+          as: 'predecessor'
         }
       ]
     });

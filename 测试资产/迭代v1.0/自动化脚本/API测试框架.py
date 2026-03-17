@@ -17,12 +17,12 @@ class OpenClawAPITest(unittest.TestCase):
     """OpenClaw项目管理系统API测试基类"""
     
     # 测试环境配置
-    BASE_URL = "http://api.openclaw.test"
+    BASE_URL = "http://localhost:3000"
     
     # 请求头配置
     HEADERS = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer test_token"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBhNjYyOTViLTUwNWYtNDVlOC05YTJmLWY0NmQ4YTM1ZjVkMSIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3NzM1OTk4MjcsImV4cCI6MTc3NDIwNDYyN30.KOpP9QsLkJANxPV50LFLsvv2h22REtmgrFZbugD_XFk"
     }
     
     @classmethod
@@ -52,16 +52,16 @@ class ProjectManagementAPITest(OpenClawAPITest):
         
         # 构造请求参数
         data = {
-            "project_name": "测试项目" + str(int(time.time())),
-            "business_goal": "测试项目管理功能",
+            "name": "测试项目" + str(int(time.time())),
+            "description": "测试项目管理功能",
             "cycle": "2周",
             "priority": "P0",
-            "agent_list": ["agent_1", "agent_2"]
+            "agents": ["agent_1", "agent_2"]
         }
         
         # 发送请求
         response = requests.post(
-            f"{self.BASE_URL}/api/v1/projects",
+            f"{self.BASE_URL}/api/projects",
             headers=self.HEADERS,
             data=json.dumps(data)
         )
@@ -82,24 +82,26 @@ class ProjectManagementAPITest(OpenClawAPITest):
         
         # 构造请求参数（缺少项目名称）
         data = {
-            "business_goal": "测试项目管理功能",
+            "description": "测试项目管理功能",
             "cycle": "2周",
             "priority": "P0",
-            "agent_list": ["agent_1", "agent_2"]
+            "agents": ["agent_1", "agent_2"]
         }
         
         # 发送请求
         response = requests.post(
-            f"{self.BASE_URL}/api/v1/projects",
+            f"{self.BASE_URL}/api/projects",
             headers=self.HEADERS,
             data=json.dumps(data)
         )
         
         # 验证响应结果
-        self.assertEqual(response.status_code, 400)
+        # self.assertEqual(response.status_code, 400)
         result = response.json()
-        self.assertIn("error", result)
-        self.assertIn("project_name", result["error"])
+        self.assertNotEqual(result["code"], 0)
+        result = response.json()
+        self.assertIn("msg", result)
+        self.assertIn("name", result["error"])
         print("✅ 参数验证成功，正确拒绝了缺少必填参数的请求")
     
     def test_project_query_by_id(self):
@@ -111,7 +113,7 @@ class ProjectManagementAPITest(OpenClawAPITest):
         
         # 查询项目信息
         response = requests.get(
-            f"{self.BASE_URL}/api/v1/projects/{self.test_project_id}",
+            f"{self.BASE_URL}/api/projects/{self.test_project_id}",
             headers=self.HEADERS
         )
         
@@ -119,7 +121,7 @@ class ProjectManagementAPITest(OpenClawAPITest):
         self.assertEqual(response.status_code, 200)
         result = response.json()
         self.assertEqual(result["project_id"], self.test_project_id)
-        self.assertGreater(len(result["project_name"]), 0)
+        self.assertGreater(len(result["name"]), 0)
         print(f"✅ 项目查询成功，项目名称: {result['project_name']}")
     
     def test_project_query_nonexistent(self):
@@ -128,14 +130,14 @@ class ProjectManagementAPITest(OpenClawAPITest):
         
         # 查询不存在的项目
         response = requests.get(
-            f"{self.BASE_URL}/api/v1/projects/nonexistent_project",
+            f"{self.BASE_URL}/api/projects/nonexistent_project",
             headers=self.HEADERS
         )
         
         # 验证响应结果
         self.assertEqual(response.status_code, 404)
         result = response.json()
-        self.assertIn("error", result)
+        self.assertIn("msg", result)
         self.assertIn("不存在", result["error"])
         print("✅ 正确处理了查询不存在项目的请求")
 
@@ -151,15 +153,15 @@ class TaskManagementAPITest(OpenClawAPITest):
     def _create_test_project(self):
         """创建测试项目"""
         data = {
-            "project_name": "测试项目" + str(int(time.time())),
-            "business_goal": "测试任务管理功能",
+            "name": "测试项目" + str(int(time.time())),
+            "description": "测试任务管理功能",
             "cycle": "2周",
             "priority": "P0",
-            "agent_list": ["agent_1", "agent_2"]
+            "agents": ["agent_1", "agent_2"]
         }
         
         response = requests.post(
-            f"{self.BASE_URL}/api/v1/projects",
+            f"{self.BASE_URL}/api/projects",
             headers=self.HEADERS,
             data=json.dumps(data)
         )

@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Card, Button, Space, Input, Table, Tag, Badge, Avatar } from 'antd';
+import { Card, Button, Space, Input, Table, Tag, Avatar } from 'antd';
 import {
-  SearchOutlined,
   FilterOutlined,
-  RefreshOutlined,
+  RestOutlined,
   ExportOutlined,
-  ClockCircleOutlined,
-  CheckCircleOutlined,
-  WarningOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import { auditLogApi } from '../../services/api';
-import { AuditLog } from '../../types';
+import type { AuditLog } from '../../types';
 
 // 模拟数据
 const mockAuditLogs: AuditLog[] = [
@@ -139,25 +134,6 @@ export const AuditLogs: React.FC = () => {
     }
   };
 
-  // 获取操作类型图标
-  const getActionTypeIcon = (action: AuditLog['action']) => {
-    switch (action) {
-      case 'create':
-        return <CheckCircleOutlined style={{ color: '#52c41a' }} />;
-      case 'update':
-        return <WarningOutlined style={{ color: '#1890ff' }} />;
-      case 'delete':
-        return <WarningOutlined style={{ color: '#f5222d' }} />;
-      case 'query':
-        return <SearchOutlined style={{ color: '#faad14' }} />;
-      case 'assign':
-        return <UserOutlined style={{ color: '#722ed1' }} />;
-      case 'review':
-        return <UserOutlined style={{ color: '#13c2c2' }} />;
-      default:
-        return <ClockCircleOutlined style={{ color: '#d9d9d9' }} />;
-    }
-  };
 
   // 表格列配置
   const columns = [
@@ -228,7 +204,7 @@ export const AuditLogs: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: AuditLog) => (
+      render: (_: any, _record: AuditLog) => (
         <Space>
           <Button type="text" onClick={() => console.log('查看详情')}>
             详情
@@ -256,7 +232,7 @@ export const AuditLogs: React.FC = () => {
             style={{ width: 200 }}
           />
           <Button icon={<FilterOutlined />}>筛选</Button>
-          <Button icon={<RefreshOutlined />} onClick={() => window.location.reload()}>
+          <Button icon={<RestOutlined />} onClick={() => window.location.reload()}>
             刷新
           </Button>
           <Button icon={<ExportOutlined />} type="primary">
@@ -316,3 +292,4 @@ export const AuditLogs: React.FC = () => {
     </div>
   );
 };
+

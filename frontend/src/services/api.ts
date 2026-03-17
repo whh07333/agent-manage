@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { ApiResponse } from '../types';
+import type { ApiResponse } from '../types';
+import type { Project } from '../types';
+import type { Task } from '../types';
+import type { AuditLog } from '../types';
+import type { Statistics } from '../types';
+import type { User } from '../types';
 
 // 创建axios实例
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
@@ -16,7 +21,13 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // 添加授权信息
-    const token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
+    // 如果localStorage没有token，使用环境变量中的默认token（开发环境）
+    const defaultToken = import.meta.env.VITE_DEFAULT_TOKEN;
+    if (!token && defaultToken) {
+      token = defaultToken as string;
+      localStorage.setItem('token', token);
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -52,7 +63,7 @@ const request = async <T>(config: any): Promise<ApiResponse<T>> => {
     return {
       code: error.response?.status || 500,
       msg: error.response?.data?.msg || error.message,
-      data: null,
+      data: null as unknown as T,
     };
   }
 };
@@ -82,13 +93,13 @@ export const projectApi = {
     data,
   }),
   // 删除项目
-  deleteProject: (id: string) => request<void>({
-    url: `/api/projects/${id}`,
+  deleteProject: (_id: string) => request<void>({
+    url: `/api/projects/${_id}`,
     method: 'DELETE',
   }),
   // 归档项目
-  archiveProject: (id: string) => request<void>({
-    url: `/api/projects/${id}/archive`,
+  archiveProject: (_id: string) => request<void>({
+    url: `/api/projects/${_id}/archive`,
     method: 'POST',
   }),
 };
@@ -118,8 +129,8 @@ export const taskApi = {
     data,
   }),
   // 删除任务
-  deleteTask: (id: string) => request<void>({
-    url: `/api/tasks/${id}`,
+  deleteTask: (_id: string) => request<void>({
+    url: `/api/tasks/${_id}`,
     method: 'DELETE',
   }),
   // 更新任务状态

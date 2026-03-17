@@ -2,17 +2,17 @@ import { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Button, Space } from 'antd';
 import {
   ProjectOutlined,
-  TaskOutlined,
+  CheckSquareOutlined,
   WarningOutlined,
   ClockCircleOutlined,
-  RefreshOutlined,
+  RestOutlined,
   ExportOutlined,
   FilterOutlined,
 } from '@ant-design/icons';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BarChart, Bar, Cell } from 'recharts';
 import { statisticsApi } from '../../services/api';
-import { Statistics } from '../../types';
+import type { Statistics } from '../../types';
 
 // 模拟数据
 const mockProjectTrend = [
@@ -31,6 +31,8 @@ const mockAgentWorkload = [
   { name: '产品Agent', type: 'product', tasks: 6 },
   { name: '管理Agent', type: 'management', tasks: 3 },
 ];
+
+
 
 const COLORS = ['#1890ff', '#52c41a', '#faad14', '#f5222d'];
 
@@ -79,10 +81,10 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: '24px'
       }}>
         <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>
@@ -90,7 +92,7 @@ export const Dashboard: React.FC = () => {
         </h2>
         <Space>
           <Button icon={<FilterOutlined />}>筛选时间</Button>
-          <Button icon={<RefreshOutlined />} onClick={() => window.location.reload()}>
+          <Button icon={<RestOutlined />} onClick={() => window.location.reload()}>
             刷新
           </Button>
           <Button icon={<ExportOutlined />} type="primary">
@@ -116,7 +118,7 @@ export const Dashboard: React.FC = () => {
             <Statistic
               title="待验收任务"
               value={statistics?.pendingReviewTasks || 0}
-              prefix={<TaskOutlined />}
+              prefix={<CheckSquareOutlined />}
               valueStyle={{ color: '#faad14' }}
             />
           </Card>
@@ -170,9 +172,9 @@ export const Dashboard: React.FC = () => {
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="tasks" fill="#1890ff">
-                  {statistics?.agentWorkload?.map((entry, index) => (
+                  {(statistics?.agentWorkload || mockAgentWorkload).map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  )) || []}
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -189,3 +191,4 @@ export const Dashboard: React.FC = () => {
     </div>
   );
 };
+

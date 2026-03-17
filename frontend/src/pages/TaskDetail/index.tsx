@@ -1,19 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button, Space, Tabs, Tag, Avatar, Progress, List, Input, Divider } from 'antd';
+import { Card, Button, Space, Tabs, Tag, Avatar, Progress, List, Divider } from 'antd';
 import {
   ArrowLeftOutlined,
   EditOutlined,
   DeleteOutlined,
   FileTextOutlined,
-  ClockCircleOutlined,
-  CheckCircleOutlined,
-  WarningOutlined,
   PlusOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import { taskApi, projectApi } from '../../services/api';
-import { Task, Deliverable, Comment, Project } from '../../types';
+import type { Task, Project } from '../../types';
 
 // 模拟任务数据
 const mockTask: Task = {
@@ -154,25 +150,6 @@ export const TaskDetail: React.FC = () => {
     );
   }
 
-  // 获取任务状态图标
-  const getTaskStatusIcon = (status: Task['status']) => {
-    switch (status) {
-      case 'unassigned':
-        return <ClockCircleOutlined />;
-      case 'inProgress':
-        return <WarningOutlined />;
-      case 'blocked':
-        return <WarningOutlined style={{ color: '#f5222d' }} />;
-      case 'pendingReview':
-        return <CheckCircleOutlined style={{ color: '#faad14' }} />;
-      case 'reviewed':
-        return <CheckCircleOutlined style={{ color: '#52c41a' }} />;
-      case 'cancelled':
-        return <DeleteOutlined style={{ color: '#d9d9d9' }} />;
-      default:
-        return <ClockCircleOutlined />;
-    }
-  };
 
   return (
     <div>
@@ -423,3 +400,4 @@ export const TaskDetail: React.FC = () => {
     </div>
   );
 };
+

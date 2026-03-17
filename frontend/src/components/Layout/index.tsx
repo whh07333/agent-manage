@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Layout as AntLayout, Menu, Button, Badge, Space, Avatar } from 'antd';
+import type { MenuProps } from 'antd';
 import {
   DashboardOutlined,
   ProjectOutlined,
-  TaskOutlined,
-  AnalyticsOutlined,
+  CheckSquareOutlined,
+  BarChartOutlined,
   AuditOutlined,
   SettingOutlined,
   BellOutlined,
@@ -14,17 +15,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const { Header, Sider, Content } = AntLayout;
 
-interface MenuItem {
-  key: string;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const menuItems: MenuItem[] = [
+const menuItems: MenuProps['items'] = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: '仪表盘' },
   { key: '/projects', icon: <ProjectOutlined />, label: '项目管理' },
-  { key: '/tasks', icon: <TaskOutlined />, label: '任务管理' },
-  { key: '/analytics', icon: <AnalyticsOutlined />, label: '数据统计' },
+  { key: '/tasks', icon: <CheckSquareOutlined />, label: '任务管理' },
+  { key: '/analytics', icon: <BarChartOutlined />, label: '数据统计' },
   { key: '/audit-logs', icon: <AuditOutlined />, label: '审计日志' },
   { key: '/settings', icon: <SettingOutlined />, label: '系统设置' },
 ];
@@ -48,11 +43,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         onCollapse={(value) => setCollapsed(value)}
         style={{ background: '#001529' }}
       >
-        <div style={{ 
-          height: 64, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
+        <div style={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           color: 'white',
           fontSize: '18px',
           fontWeight: 'bold'
@@ -68,11 +63,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         />
       </Sider>
       <AntLayout>
-        <Header style={{ 
-          padding: '0 24px', 
-          background: '#fff', 
-          display: 'flex', 
-          justifyContent: 'space-between', 
+        <Header style={{
+          padding: '0 24px',
+          background: '#fff',
+          display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
         }}>
@@ -96,9 +91,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </Space>
           </Space>
         </Header>
-        <Content style={{ 
-          margin: '24px 16px', 
-          padding: 24, 
+        <Content style={{
+          margin: '24px 16px',
+          padding: 24,
           background: '#fff',
           borderRadius: 8,
           minHeight: 280

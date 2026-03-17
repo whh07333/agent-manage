@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Card, List, Button, Input, Space, Pagination, Tag, Progress } from 'antd';
-import { SearchOutlined, FilterOutlined, PlusOutlined, MoreOutlined } from '@ant-design/icons';
+import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import { projectApi } from '../../services/api';
-import { Project } from '../../types';
+import type { Project } from '../../types';
 
 // 模拟数据
 const mockProjects: Project[] = [
@@ -308,3 +308,4 @@ export const ProjectList: React.FC = () => {
     </div>
   );
 };
+

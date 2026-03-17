@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button, Space, Tabs, Tag, Progress, List, Avatar, Badge } from 'antd';
+import { Card, Button, Space, Tabs, Tag, Progress, List, Avatar } from 'antd';
 import {
   ArrowLeftOutlined,
   EditOutlined,
   DeleteOutlined,
-  FileTextOutlined,
   ClockCircleOutlined,
   CheckCircleOutlined,
   WarningOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import { projectApi, taskApi } from '../../services/api';
-import { Project, Task } from '../../types';
+import type { Project, Task } from '../../types';
 
 // 模拟项目数据
 const mockProject: Project = {
@@ -421,3 +420,4 @@ export const ProjectDetail: React.FC = () => {
     </div>
   );
 };
+

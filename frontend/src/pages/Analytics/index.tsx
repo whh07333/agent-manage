@@ -2,17 +2,17 @@ import { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Button, Space } from 'antd';
 import {
   ProjectOutlined,
-  TaskOutlined,
   WarningOutlined,
   ClockCircleOutlined,
   FilterOutlined,
-  RefreshOutlined,
+  RestOutlined,
   ExportOutlined,
+  CheckCircleOutlined,
 } from '@ant-design/icons';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BarChart, Bar, Cell } from 'recharts';
 import { statisticsApi } from '../../services/api';
-import { Statistics } from '../../types';
+import type { Statistics } from '../../types';
 
 // 模拟数据
 const mockProjectTrend = [
@@ -101,7 +101,7 @@ export const Analytics: React.FC = () => {
         </h2>
         <Space>
           <Button icon={<FilterOutlined />}>筛选时间</Button>
-          <Button icon={<RefreshOutlined />} onClick={() => window.location.reload()}>
+          <Button icon={<RestOutlined />} onClick={() => window.location.reload()}>
             刷新
           </Button>
           <Button icon={<ExportOutlined />} type="primary">
@@ -182,7 +182,7 @@ export const Analytics: React.FC = () => {
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="tasks" fill="#1890ff">
-                  {statistics?.agentWorkload?.map((entry, index) => (
+                  {statistics?.agentWorkload?.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   )) || []}
                 </Bar>
@@ -201,3 +201,4 @@ export const Analytics: React.FC = () => {
     </div>
   );
 };
+

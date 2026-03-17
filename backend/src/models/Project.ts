@@ -1,33 +1,19 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/database";
-import { Task } from "./Task";
-import { ProjectAgent } from "./ProjectAgent";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/database';
 
 export class Project extends Model {
   public id!: string;
   public name!: string;
-  public description!: string;
+  public description!: string | null;
   public manager_id!: string;
   public priority!: string;
   public status!: string;
-  public due_date!: Date;
-  public is_archived!: boolean;
+  public start_date!: Date | null;
+  public end_date!: Date | null;
+  public tags!: string[] | null;
+  public config!: Record<string, any> | null;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
-
-  // 关联关系
-  static associate(models: any) {
-    // 一个项目有多个任务
-    Project.hasMany(models.Task, {
-      foreignKey: "project_id",
-      as: "tasks",
-    });
-    // 一个项目有多个项目成员
-    Project.hasMany(models.ProjectAgent, {
-      foreignKey: "project_id",
-      as: "agents",
-    });
-  }
 }
 
 Project.init(
@@ -35,57 +21,66 @@ Project.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [2, 255],
-      },
+        len: [2, 255]
+      }
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: true
     },
     manager_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: false
     },
     priority: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "medium",
+      defaultValue: 'P1',
       validate: {
-        isIn: [["low", "medium", "high"]],
-      },
+        isIn: [['P0', 'P1', 'P2', 'P3']]
+      }
     },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "active",
+      defaultValue: 'active',
       validate: {
-        isIn: [["active", "inactive", "archived"]],
-      },
+        isIn: [['active', 'inactive', 'archived']]
+      }
     },
-    due_date: {
+    start_date: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    end_date: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
+      defaultValue: []
     },
-    is_archived: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
+    config: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: {}
+    }
   },
   {
     sequelize,
-    tableName: "projects",
+    tableName: 'projects',
     timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at",
-  },
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
 );
 
 export default Project;

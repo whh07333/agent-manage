@@ -1,17 +1,26 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/database";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/database';
+import { Project } from './Project';
 
 export class Subscription extends Model {
   public id!: string;
-  public project_id?: string;
+  public project_id!: string | null;
   public event_types!: string[];
   public callback_url!: string;
-  public secret?: string;
+  public secret!: string | null;
   public is_active!: boolean;
-  public retry_policy?: any;
-  public last_triggered_at?: Date;
+  public retry_policy!: any;
+  public last_triggered_at!: Date | null;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
+
+  // 关联关系
+  static associate(models: any) {
+    Subscription.belongsTo(models.Project, {
+      foreignKey: 'project_id',
+      as: 'project',
+    });
+  }
 }
 
 Subscription.init(
@@ -19,12 +28,15 @@ Subscription.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      primaryKey: true
     },
     project_id: {
       type: DataTypes.UUID,
       allowNull: true,
-      
+      references: {
+        model: Project,
+        key: 'id',
+      },
     },
     event_types: {
       type: DataTypes.ARRAY(DataTypes.STRING),
@@ -34,6 +46,11 @@ Subscription.init(
     callback_url: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+        isUrl: true,
+        len: [1, 2048],
+      },
     },
     secret: {
       type: DataTypes.STRING,
@@ -47,11 +64,6 @@ Subscription.init(
     retry_policy: {
       type: DataTypes.JSONB,
       allowNull: true,
-      defaultValue: {
-        max_retries: 3,
-        retry_interval: 1000,
-        backoff_multiplier: 2,
-      },
     },
     last_triggered_at: {
       type: DataTypes.DATE,
@@ -60,15 +72,11 @@ Subscription.init(
   },
   {
     sequelize,
-    tableName: "subscriptions",
+    tableName: 'subscriptions',
     timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at",
-    indexes: [
-      { fields: ["project_id", "is_active"] },
-      { fields: ["is_active"] },
-    ],
-  },
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  }
 );
 
 export default Subscription;

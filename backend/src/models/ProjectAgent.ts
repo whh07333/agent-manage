@@ -1,6 +1,6 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/database";
-import { Project } from "./Project";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/database';
+import { Project } from './Project';
 
 export class ProjectAgent extends Model {
   public id!: string;
@@ -10,15 +10,6 @@ export class ProjectAgent extends Model {
   public is_active!: boolean;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
-
-  // 关联关系
-  static associate(models: any) {
-    // 一个项目成员属于一个项目
-    ProjectAgent.belongsTo(models.Project, {
-      foreignKey: "project_id",
-      as: "project",
-    });
-  }
 }
 
 ProjectAgent.init(
@@ -26,52 +17,52 @@ ProjectAgent.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      primaryKey: true
     },
     project_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: Project,
-        key: "id",
-      },
+        key: 'id'
+      }
     },
     agent_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: false
     },
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "member",
+      defaultValue: 'member'
     },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true,
-    },
+      defaultValue: true
+    }
   },
   {
     sequelize,
-    tableName: "project_agents",
+    tableName: 'project_agents',
     timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at",
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     indexes: [
       {
-        name: "idx_project_agent_project",
-        fields: ["project_id"],
+        name: 'idx_project_agent_project',
+        fields: ['project_id']
       },
       {
-        name: "idx_project_agent_agent",
-        fields: ["agent_id"],
+        name: 'idx_project_agent_agent',
+        fields: ['agent_id']
       },
       {
-        name: "idx_project_agent_project_agent",
-        fields: ["project_id", "agent_id"],
-      },
-    ],
-  },
+        name: 'idx_project_agent_project_agent',
+        fields: ['project_id', 'agent_id']
+      }
+    ]
+  }
 );
 
 export default ProjectAgent;

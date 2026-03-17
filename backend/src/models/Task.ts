@@ -8,8 +8,10 @@ export class Task extends Model {
   public name!: string;
   public description!: string;
   public assignee_id!: string;
-  public status!: string;
+  public parent_id!: string | null;
   public priority!: string;
+  public status!: string;
+  public status_remark!: string;
   public due_date!: Date;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
@@ -20,6 +22,11 @@ export class Task extends Model {
     Task.belongsTo(models.Project, {
       foreignKey: "project_id",
       as: "project",
+    });
+    // 一个任务依赖于另一个父前置任务
+    Task.belongsTo(models.Task, {
+      foreignKey: "parent_id",
+      as: "parent",
     });
   }
 }
@@ -53,7 +60,28 @@ Task.init(
     },
     assignee_id: {
       type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "users",
+        key: "id",
+      },
+    },
+    parent_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: null,
+      references: {
+        model: Task,
+        key: "id",
+      },
+    },
+    priority: {
+      type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: "medium",
+      validate: {
+        isIn: [["low", "medium", "high"]],
+      },
     },
     status: {
       type: DataTypes.STRING,
@@ -75,13 +103,9 @@ Task.init(
         ],
       },
     },
-    priority: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "medium",
-      validate: {
-        isIn: [["low", "medium", "high"]],
-      },
+    status_remark: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     due_date: {
       type: DataTypes.DATE,

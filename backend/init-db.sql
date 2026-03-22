@@ -15,20 +15,6 @@ INSERT INTO users (email, password_hash, name, role, status)
 VALUES ('admin@example.com', '$2a$10$GfDghD/1a0CMbxsTI2u7IOcBBYNy8X./k1GfNCsPUbzJ2yEdHucFe', 'Admin', 'admin', 'active');
 
 -- 创建项目表
-CREATE TABLE projects (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(255) NOT NULL,
-  description TEXT,
-  manager_id UUID NOT NULL REFERENCES users(id),
-  priority VARCHAR(50) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
-  status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'archived')),
-  due_date TIMESTAMP,
-  is_archived BOOLEAN DEFAULT false,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 创建任务表
 CREATE TABLE tasks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL,
@@ -169,3 +155,18 @@ CREATE TABLE api_keys (
 -- 创建索引
 CREATE INDEX idx_api_keys_agent_id ON api_keys(agent_id);
 CREATE INDEX idx_api_keys_status ON api_keys(status);
+CREATE TABLE projects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  manager_id UUID NOT NULL REFERENCES users(id),
+  priority VARCHAR(50) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
+  status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'archived')),
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
+  due_date TIMESTAMP,
+  is_archived BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

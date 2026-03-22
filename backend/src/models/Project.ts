@@ -8,6 +8,8 @@ export class Project extends Model {
   public managerId!: string;
   public priority!: string;
   public status!: string;
+  public startDate!: Date | null;
+  public endDate!: Date | null;
   public dueDate!: Date | null;
   public isArchived!: boolean;
   public archiveNote!: string | null;
@@ -56,6 +58,14 @@ Project.init(
       validate: {
         isIn: [['active', 'inactive', 'archived']],
       },
+    },
+    startDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    endDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     dueDate: {
       type: DataTypes.DATE,

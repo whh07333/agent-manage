@@ -69,6 +69,21 @@ export function validateCreateProject(data: any): { valid: boolean; message?: st
     }
   }
 
+  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于结束
+  if (data.startDate && data.endDate) {
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+    if (isNaN(startDate.getTime())) {
+      return { valid: false, message: 'Invalid start date format' };
+    }
+    if (isNaN(endDate.getTime())) {
+      return { valid: false, message: 'Invalid end date format' };
+    }
+    if (startDate.getTime() > endDate.getTime()) {
+      return { valid: false, message: 'Start date must be before end date' };
+    }
+  }
+
   // Escape all HTML special characters in string inputs
   const escapedData = escapeAllStrings(data);
   return { valid: true, escapedData };
@@ -112,6 +127,21 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
     const dueDate = new Date(data.dueDate);
     if (isNaN(dueDate.getTime())) {
       return { valid: false, message: 'Invalid due date format' };
+    }
+  }
+
+  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于结束
+  if (data.startDate && data.endDate) {
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+    if (isNaN(startDate.getTime())) {
+      return { valid: false, message: 'Invalid start date format' };
+    }
+    if (isNaN(endDate.getTime())) {
+      return { valid: false, message: 'Invalid end date format' };
+    }
+    if (startDate.getTime() > endDate.getTime()) {
+      return { valid: false, message: 'Start date must be before end date' };
     }
   }
 

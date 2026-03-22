@@ -1,182 +1,461 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../services/tasks';
+import { validateTaskData, escapeHtml } from '../utils/validation';
+import { logger } from '../utils/logger';
 
 const taskService = new TaskService();
 
 export const getAllTasks = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
   try {
+    logger.info('Fetching all tasks', { requestId });
     const tasks = await taskService.getAllTasks();
+    logger.info(`Successfully fetched ${tasks.length} tasks`, { requestId, count: tasks.length });
     res.json({
       code: 0,
       msg: 'Success',
       data: tasks,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
+    logger.error('Failed to fetch all tasks', error as Error, { requestId });
     res.status(500).json({
       code: 500,
       msg: error instanceof Error ? error.message : 'Internal server error',
       data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   }
 };
 
 export const getTaskById = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
   try {
-    const { id } = req.params;
+    logger.info('Fetching task by ID', { requestId, taskId: id });
     const task = await taskService.getTaskById(id);
     if (!task) {
+      logger.warn('Task not found', { requestId, taskId: id });
       return res.status(404).json({
         code: 404,
         msg: 'Task not found',
         data: null,
-        trace_id: req.headers['x-request-id'] || 'default'
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
       });
     }
+    logger.info('Task found', { requestId, taskId: id });
     res.json({
       code: 0,
       msg: 'Success',
       data: task,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
+    logger.error('Failed to fetch task', error as Error, { requestId, taskId: id });
     res.status(500).json({
       code: 500,
       msg: error instanceof Error ? error.message : 'Internal server error',
       data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  }
-};
-
-export const createTask = async (req: Request, res: Response) => {
-  try {
-    const task = await taskService.createTask(req.body);
-    res.status(201).json({
-      code: 0,
-      msg: 'Task created successfully',
-      data: task,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  } catch (error) {
-    res.status(500).json({
-      code: 500,
-      msg: error instanceof Error ? error.message : 'Internal server error',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  }
-};
-
-export const updateTask = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const task = await taskService.updateTask(id, req.body);
-    if (!task) {
-      return res.status(404).json({
-        code: 404,
-        msg: 'Task not found',
-        data: null,
-        trace_id: req.headers['x-request-id'] || 'default'
-      });
-    }
-    res.json({
-      code: 0,
-      msg: 'Task updated successfully',
-      data: task,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  } catch (error) {
-    res.status(500).json({
-      code: 500,
-      msg: error instanceof Error ? error.message : 'Internal server error',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  }
-};
-
-export const deleteTask = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    await taskService.deleteTask(id);
-    res.json({
-      code: 0,
-      msg: 'Task deleted successfully',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
-    });
-  } catch (error) {
-    res.status(500).json({
-      code: 500,
-      msg: error instanceof Error ? error.message : 'Internal server error',
-      data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   }
 };
 
 export const getTasksByProject = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { projectId } = req.params;
   try {
-    const { projectId } = req.params;
+    logger.info('Fetching tasks by project', { requestId, projectId });
     const tasks = await taskService.getTasksByProject(projectId);
+    logger.info(`Successfully fetched ${tasks.length} tasks for project ${projectId}`, { requestId, projectId, count: tasks.length });
     res.json({
       code: 0,
       msg: 'Success',
       data: tasks,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
+    logger.error('Failed to fetch tasks by project', error as Error, { requestId, projectId });
     res.status(500).json({
       code: 500,
       msg: error instanceof Error ? error.message : 'Internal server error',
       data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   }
 };
 
-export const updateTaskStatus = async (req: Request, res: Response) => {
+export const getTasksByAssignee = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { assigneeId } = req.params;
   try {
-    const task = await taskService.updateTaskStatus(
-      req.params.id as string, 
-      req.body.status
-    );
+    logger.info('Fetching tasks by assignee', { requestId, assigneeId });
+    const tasks = await taskService.getTasksByAssignee(assigneeId);
+    logger.info(`Successfully fetched ${tasks.length} tasks for assignee ${assigneeId}`, { requestId, assigneeId, count: tasks.length });
     res.json({
       code: 0,
-      msg: 'Task status updated successfully',
-      data: task,
-      trace_id: req.headers['x-request-id'] || 'default'
+      msg: 'Success',
+      data: tasks,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
+    logger.error('Failed to fetch tasks by assignee', error as Error, { requestId, assigneeId });
     res.status(500).json({
       code: 500,
       msg: error instanceof Error ? error.message : 'Internal server error',
       data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   }
 };
 
-export const assignTask = async (req: Request, res: Response) => {
+export const getTasksByStatus = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { status } = req.params;
   try {
-    const task = await taskService.assignTask(
-      req.params.id as string, 
-      req.body.assignee_id
-    );
+    logger.info('Fetching tasks by status', { requestId, status });
+    const tasks = await taskService.getTasksByStatus(status);
+    logger.info(`Successfully fetched ${tasks.length} tasks with status ${status}`, { requestId, status, count: tasks.length });
     res.json({
       code: 0,
-      msg: 'Task assigned successfully',
-      data: task,
-      trace_id: req.headers['x-request-id'] || 'default'
+      msg: 'Success',
+      data: tasks,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
+    logger.error('Failed to fetch tasks by status', error as Error, { requestId, status });
     res.status(500).json({
       code: 500,
       msg: error instanceof Error ? error.message : 'Internal server error',
       data: null,
-      trace_id: req.headers['x-request-id'] || 'default'
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const createTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  try {
+    logger.info('Creating new task', { requestId, body: req.body });
+
+    // 验证请求数据并转义HTML防止XSS
+    const validation = validateTaskData(req.body);
+    if (!validation.valid) {
+      logger.warn('Task creation validation failed', { requestId, message: validation.message });
+      return res.status(400).json({
+        code: 400,
+        msg: validation.message,
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    const task = await taskService.createTask(validation.escapedData!);
+    logger.info('Task created successfully', { requestId, taskId: task.id });
+    res.status(201).json({
+      code: 0,
+      msg: 'Task created successfully',
+      data: task,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to create task', error as Error, { requestId });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const updateTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  try {
+    logger.info('Updating task', { requestId, taskId: id, body: req.body });
+
+    // 验证请求数据并转义HTML防止XSS
+    const validation = validateTaskData(req.body);
+    if (!validation.valid) {
+      logger.warn('Task update validation failed', { requestId, message: validation.message });
+      return res.status(400).json({
+        code: 400,
+        msg: validation.message,
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    const task = await taskService.updateTask(id, validation.escapedData!);
+    if (!task) {
+      logger.warn('Task not found for update', { requestId, taskId: id });
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    logger.info('Task updated successfully', { requestId, taskId: id });
+    res.json({
+      code: 0,
+      msg: 'Task updated successfully',
+      data: task,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to update task', error as Error, { requestId, taskId: id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const deleteTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  try {
+    logger.info('Deleting task', { requestId, taskId: id });
+    const deleted = await taskService.deleteTask(id);
+    if (!deleted) {
+      logger.warn('Task not found for deletion', { requestId, taskId: id });
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    logger.info('Task deleted successfully', { requestId, taskId: id });
+    res.json({
+      code: 0,
+      msg: 'Task deleted successfully',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to delete task', error as Error, { requestId, taskId: id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const acceptTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  try {
+    logger.info('Accepting task', { requestId, taskId: id });
+    const task = await taskService.acceptTask(id);
+    if (!task) {
+      logger.warn('Task not found for acceptance', { requestId, taskId: id });
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    res.json({
+      code: 0,
+      msg: 'Task accepted successfully',
+      data: task,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to accept task', error as Error, { requestId, taskId: id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+/**
+ * 任务验收 - 验收通过或不通过
+ */
+export const acceptanceTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  const { result, comment } = req.body;
+  const acceptorId = (req as any).user.id;
+  
+  // Escape comment if provided
+  let escapedComment = comment || '';
+  if (escapedComment && typeof escapedComment === 'string') {
+    escapedComment = escapeHtml(escapedComment);
+  }
+  
+  logger.info('Processing task acceptance', { 
+    requestId, 
+    taskId: id, 
+    result, 
+    acceptorId 
+  });
+  
+  const task = await taskService.acceptanceTask(id, result, escapedComment, acceptorId);
+  
+  if (!task) {
+    logger.warn('Task not found for acceptance', { requestId, taskId: id });
+    return res.status(404).json({
+      code: 404,
+      msg: 'Task not found',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  res.json({
+    code: 0,
+    msg: `Task acceptance processed: ${result}`,
+    data: task,
+    trace_id: requestId,
+    timestamp: new Date().toISOString()
+  });
+};
+
+export const blockTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  const { reason, related_tasks } = req.body;
+  const blockerId = (req as any).user.id;
+  try {
+    // Escape reason if provided
+    let escapedReason = reason || '';
+    if (escapedReason && typeof escapedReason === 'string') {
+      escapedReason = escapeHtml(escapedReason);
+    }
+    
+    logger.info('Blocking task', { requestId, taskId: id, reason: escapedReason, blockerId });
+    const task = await taskService.blockTask(id, escapedReason, related_tasks || [], blockerId);
+    if (!task) {
+      logger.warn('Task not found for blocking', { requestId, taskId: id });
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    res.json({
+      code: 0,
+      msg: 'Task blocked successfully',
+      data: task,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to block task', error as Error, { requestId, taskId: id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const unblockTask = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  const { resolution } = req.body;
+  const resolvedBy = (req as any).user.id;
+  try {
+    // Escape resolution if provided
+    let escapedResolution = resolution || '';
+    if (escapedResolution && typeof escapedResolution === 'string') {
+      escapedResolution = escapeHtml(escapedResolution);
+    }
+    
+    logger.info('Unblocking task', { requestId, taskId: id, resolvedBy });
+    const task = await taskService.unblockTask(id, resolvedBy, escapedResolution);
+    if (!task) {
+      logger.warn('Task not found for unblocking', { requestId, taskId: id });
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    res.json({
+      code: 0,
+      msg: 'Task unblocked successfully',
+      data: task,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to unblock task', error as Error, { requestId, taskId: id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+export const getTaskStatistics = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { projectId } = req.params;
+  try {
+    logger.info('Getting task statistics', { requestId, projectId });
+    const stats = await taskService.getTaskStatistics(projectId);
+    logger.info('Task statistics retrieved successfully', { requestId, projectId });
+    res.json({
+      code: 0,
+      msg: 'Success',
+      data: stats,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to get task statistics', error as Error, { requestId, projectId });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
     });
   }
 };

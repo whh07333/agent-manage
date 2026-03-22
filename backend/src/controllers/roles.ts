@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { RoleService } from '../services/roles';
+import { escapeAllStrings } from '../utils/validation';
 
 const roleService = new RoleService();
 
@@ -118,7 +119,9 @@ export const getCustomRoles = async (req: Request, res: Response) => {
 
 export const createRole = async (req: Request, res: Response) => {
   try {
-    const { name, description, permissions, is_system } = req.body;
+    // Escape all HTML special characters in string inputs
+    const escapedData = escapeAllStrings(req.body);
+    const { name, description, permissions, is_system } = escapedData;
     const role = await roleService.createRole({ name, description, permissions, is_system });
     res.status(201).json({
       code: 0,
@@ -139,7 +142,9 @@ export const createRole = async (req: Request, res: Response) => {
 export const updateRole = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, description, permissions, is_system } = req.body;
+    // Escape all HTML special characters in string inputs
+    const escapedData = escapeAllStrings(req.body);
+    const { name, description, permissions, is_system } = escapedData;
     const role = await roleService.updateRole(id, { name, description, permissions, is_system });
     if (!role) {
       return res.status(404).json({

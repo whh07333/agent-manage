@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { DeliverableService } from '../services/deliverables';
+import { escapeAllStrings, escapeHtml } from '../utils/validation';
 
 const deliverableService = new DeliverableService();
 
@@ -70,7 +71,9 @@ export const getDeliverablesByTaskId = async (req: Request, res: Response) => {
 
 export const createDeliverable = async (req: Request, res: Response) => {
   try {
-    const deliverable = await deliverableService.createDeliverable(req.body);
+    // Escape all HTML special characters in string inputs
+    const escapedData = escapeAllStrings(req.body);
+    const deliverable = await deliverableService.createDeliverable(escapedData);
     res.status(201).json({
       code: 0,
       msg: 'Deliverable created successfully',
@@ -89,7 +92,9 @@ export const createDeliverable = async (req: Request, res: Response) => {
 
 export const updateDeliverable = async (req: Request, res: Response) => {
   try {
-    const deliverable = await deliverableService.updateDeliverable(req.params.id as string, req.body);
+    // Escape all HTML special characters in string inputs
+    const escapedData = escapeAllStrings(req.body);
+    const deliverable = await deliverableService.updateDeliverable(req.params.id as string, escapedData);
     if (!deliverable) {
       return res.status(404).json({
         code: 404,

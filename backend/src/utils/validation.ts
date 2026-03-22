@@ -1,145 +1,168 @@
 /**
- * 验证工具函数
+ * Escape HTML special characters to prevent XSS attacks
+ * Converts < > " ' & to corresponding HTML entities
  */
+export function escapeHtml(str: string): string {
+  if (!str || typeof str !== 'string') {
+    return str;
+  }
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 /**
- * 验证项目创建请求
+ * Recursively escape all string properties in an object
+ * This handles nested objects and arrays
  */
-export const validateCreateProject = (data: any): { valid: boolean; errors: string[] } => {
-  const errors: string[] = [];
-
-  // 验证必需字段
-  if (!data.name || !data.name.trim()) {
-    errors.push('Project name is required');
-  } else if (data.name.length < 2 || data.name.length > 255) {
-    errors.push('Project name must be between 2 and 255 characters');
+export function escapeAllStrings(obj: any): any {
+  if (obj === null || obj === undefined || typeof obj !== 'object') {
+    if (typeof obj === 'string') {
+      return escapeHtml(obj);
+    }
+    return obj;
   }
 
-  if (!data.manager_id || !data.manager_id.trim()) {
-    errors.push('Manager ID is required');
+  if (Array.isArray(obj)) {
+    return obj.map(item => escapeAllStrings(item));
+  }
+
+  const escaped: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    escaped[key] = escapeAllStrings(value);
+  }
+  return escaped;
+}
+
+/**
+ * Validate project creation data
+ */
+export function validateCreateProject(data: any): { valid: boolean; message?: string; escapedData?: any } {
+  // 验证名称
+  if (!data.name || typeof data.name !== 'string' || data.name.length < 2 || data.name.length > 255) {
+    return { valid: false, message: 'Project name must be between 2 and 255 characters' };
+  }
+
+  // 验证managerId - 创建时必填
+  if (!data.managerId || typeof data.managerId !== 'string') {
+    return { valid: false, message: 'managerId is required and must be a string' };
   }
 
   // 验证优先级
-  if (data.priority && !['P0', 'P1', 'P2', 'P3'].includes(data.priority)) {
-    errors.push('Priority must be one of: P0, P1, P2, P3');
+  if (data.priority !== undefined && !['low', 'medium', 'high'].includes(data.priority)) {
+    return { valid: false, message: 'Priority must be one of: low, medium, high' };
   }
 
   // 验证状态
-  if (data.status && !['active', 'inactive', 'archived'].includes(data.status)) {
-    errors.push('Status must be one of: active, inactive, archived');
+  if (data.status !== undefined && !['active', 'inactive', 'archived'].includes(data.status)) {
+    return { valid: false, message: 'Status must be one of: active, inactive, archived' };
   }
 
-  // 验证日期格式
-  if (data.start_date) {
-    const startDate = new Date(data.start_date);
-    if (isNaN(startDate.getTime())) {
-      errors.push('Start date must be a valid date');
+  // 验证截止日期
+  if (data.dueDate) {
+    const dueDate = new Date(data.dueDate);
+    if (isNaN(dueDate.getTime())) {
+      return { valid: false, message: 'Invalid due date format' };
     }
   }
 
-  if (data.end_date) {
-    const endDate = new Date(data.end_date);
-    if (isNaN(endDate.getTime())) {
-      errors.push('End date must be a valid date');
-    }
-  }
-
-  // 验证start_date和end_date逻辑
-  if (data.start_date && data.end_date) {
-    const startDate = new Date(data.start_date);
-    const endDate = new Date(data.end_date);
-    if (startDate > endDate) {
-      errors.push('Start date cannot be after end date');
-    }
-  }
-
-  // 验证tags数组
-  if (data.tags && !Array.isArray(data.tags)) {
-    errors.push('Tags must be an array');
-  }
-
-  // 验证config对象
-  if (data.config && (typeof data.config !== 'object' || Array.isArray(data.config))) {
-    errors.push('Config must be an object');
-  }
-
-  // 验证agent_ids数组
-  if (data.agent_ids && !Array.isArray(data.agent_ids)) {
-    errors.push('Agent IDs must be an array');
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors
-  };
-};
+  // Escape all HTML special characters in string inputs
+  const escapedData = escapeAllStrings(data);
+  return { valid: true, escapedData };
+}
 
 /**
- * 验证项目更新请求
+ * Validate project update data
+ * For update: managerId is NOT required - it's an existing property that doesn't need to be sent on every update
  */
-export const validateUpdateProject = (data: any): { valid: boolean; errors: string[] } => {
-  const errors: string[] = [];
+export function validateUpdateProject(data: any): { valid: boolean; message?: string; escapedData?: any } {
+  return validateProjectData(data);
+}
 
-  // 验证name长度
-  if (data.name !== undefined) {
-    if (!data.name.trim()) {
-      errors.push('Project name cannot be empty');
-    } else if (data.name.length < 2 || data.name.length > 255) {
-      errors.push('Project name must be between 2 and 255 characters');
-    }
+/**
+ * Shared validation for project create/update
+ * Only validate fields that are actually being updated
+ */
+export function validateProjectData(data: any): { valid: boolean; message?: string; escapedData?: any } {
+  // 验证名称
+  if (data.name !== undefined && (!data.name || typeof data.name !== 'string' || data.name.length < 2 || data.name.length > 255)) {
+    return { valid: false, message: 'Project name must be between 2 and 255 characters' };
+  }
+
+  // managerId - only validate if it's being updated
+  if (data.managerId !== undefined && (typeof data.managerId !== 'string' || data.managerId.length === 0)) {
+    return { valid: false, message: 'managerId must be a non-empty string' };
   }
 
   // 验证优先级
-  if (data.priority && !['P0', 'P1', 'P2', 'P3'].includes(data.priority)) {
-    errors.push('Priority must be one of: P0, P1, P2, P3');
+  if (data.priority !== undefined && !['low', 'medium', 'high'].includes(data.priority)) {
+    return { valid: false, message: 'Priority must be one of: low, medium, high' };
   }
 
   // 验证状态
-  if (data.status && !['active', 'inactive', 'archived'].includes(data.status)) {
-    errors.push('Status must be one of: active, inactive, archived');
+  if (data.status !== undefined && !['active', 'inactive', 'archived'].includes(data.status)) {
+    return { valid: false, message: 'Status must be one of: active, inactive, archived' };
   }
 
-  // 验证日期格式
-  if (data.start_date) {
-    const startDate = new Date(data.start_date);
+  // 验证截止日期
+  if (data.dueDate) {
+    const dueDate = new Date(data.dueDate);
+    if (isNaN(dueDate.getTime())) {
+      return { valid: false, message: 'Invalid due date format' };
+    }
+  }
+
+  // Escape all HTML special characters in string inputs
+  const escapedData = escapeAllStrings(data);
+  return { valid: true, escapedData };
+}
+
+/**
+ * Validate task creation/update data
+ */
+export function validateTaskData(data: any): { valid: boolean; message?: string; escapedData?: any } {
+  // 验证名称
+  if (data.name !== undefined && (!data.name || typeof data.name !== 'string' || data.name.length < 2 || data.name.length > 255)) {
+    return { valid: false, message: 'Task name must be between 2 and 255 characters' };
+  }
+
+  // 验证优先级
+  if (data.priority !== undefined && !['low', 'medium', 'high'].includes(data.priority)) {
+    return { valid: false, message: 'Priority must be one of: low, medium, high' };
+  }
+
+  // 验证状态
+  if (data.status !== undefined && !['pending', 'in_progress', 'completed', 'blocked', 'cancelled'].includes(data.status)) {
+    return { valid: false, message: 'Status must be one of: pending, in_progress, completed, blocked, cancelled' };
+  }
+
+  // 验证截止日期
+  if (data.dueDate) {
+    const dueDate = new Date(data.dueDate);
+    if (isNaN(dueDate.getTime())) {
+      return { valid: false, message: 'Invalid due date format' };
+    }
+  }
+
+  // 验证开始和结束日期 - 如果同时提供了开始和结束日期，开始必须早于结束
+  if (data.startDate && data.endDate) {
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
     if (isNaN(startDate.getTime())) {
-      errors.push('Start date must be a valid date');
+      return { valid: false, message: 'Invalid start date format' };
     }
-  }
-
-  if (data.end_date) {
-    const endDate = new Date(data.end_date);
     if (isNaN(endDate.getTime())) {
-      errors.push('End date must be a valid date');
+      return { valid: false, message: 'Invalid end date format' };
+    }
+    if (startDate.getTime() > endDate.getTime()) {
+      return { valid: false, message: 'Start date must be before end date' };
     }
   }
 
-  // 验证start_date和end_date逻辑（如果两者都存在）
-  if (data.start_date && data.end_date) {
-    const startDate = new Date(data.start_date);
-    const endDate = new Date(data.end_date);
-    if (startDate > endDate) {
-      errors.push('Start date cannot be after end date');
-    }
-  }
-
-  // 验证tags数组
-  if (data.tags !== undefined && !Array.isArray(data.tags)) {
-    errors.push('Tags must be an array');
-  }
-
-  // 验证config对象
-  if (data.config !== undefined && (typeof data.config !== 'object' || Array.isArray(data.config))) {
-    errors.push('Config must be an object');
-  }
-
-  // 验证agent_ids数组
-  if (data.agent_ids !== undefined && !Array.isArray(data.agent_ids)) {
-    errors.push('Agent IDs must be an array');
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors
-  };
-};
+  // Escape all HTML special characters in string inputs
+  const escapedData = escapeAllStrings(data);
+  return { valid: true, escapedData };
+}

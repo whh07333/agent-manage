@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/users';
 import { generateToken } from '../utils/jwt';
+import { escapeAllStrings, escapeHtml } from '../utils/validation';
 
 const userService = new UserService();
 
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    // Email is used for lookup, no need to escape HTML as it's matched exactly
     const user = await userService.login(email, password);
     
     if (!user) {
@@ -45,7 +47,13 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, name, role } = req.body;
+    let { email, password, name, role } = req.body;
+    
+    // Escape HTML special characters to prevent XSS
+    if (name && typeof name === 'string') {
+      name = escapeHtml(name);
+    }
+    
     const user = await userService.register({
       email,
       password,
@@ -99,9 +107,11 @@ export const getUserProfile = async (req: any, res: Response) => {
 
 export const updateUserProfile = async (req: any, res: Response) => {
   try {
+    // Escape all HTML special characters in string inputs
+    const escapedData = escapeAllStrings(req.body);
     const user = await userService.updateUserProfile(
       req.user.id, 
-      req.body
+      escapedData
     );
     res.json({
       code: 0,

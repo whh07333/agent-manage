@@ -5,12 +5,17 @@ import bcrypt from 'bcryptjs';
 export class User extends Model {
   public id!: string;
   public email!: string;
-  public password!: string;
+  public passwordHash!: string;
   public name!: string;
   public role!: string;
-  public is_active!: boolean;
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
+  public status!: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+
+  // 验证密码
+  public async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.passwordHash);
+  }
 }
 
 User.init(
@@ -29,11 +34,11 @@ User.init(
         len: [5, 255]
       }
     },
-    password: {
+    passwordHash: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [6, 255]
+        len: [60, 255]
       }
     },
     name: {
@@ -51,26 +56,20 @@ User.init(
         isIn: [['user', 'admin', 'manager']]
       }
     },
-    is_active: {
-      type: DataTypes.BOOLEAN,
+    status: {
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: true
+      defaultValue: 'active',
+      validate: {
+        isIn: [['active', 'inactive', 'suspended']]
+      }
     }
   },
   {
     sequelize,
     tableName: 'users',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    underscored: true,
   }
 );
-
-// Hash password before saving
-User.beforeCreate(async (user) => {
-  if (user.password) {
-    user.password = await bcrypt.hash(user.password, 10);
-  }
-});
 
 export default User;

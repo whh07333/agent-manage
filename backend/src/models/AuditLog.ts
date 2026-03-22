@@ -1,19 +1,18 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import { Project } from './Project';
-import { User } from './User';
 
 export class AuditLog extends Model {
   public id!: string;
-  public project_id!: string | null;
-  public user_id!: string;
+  public projectId!: string | null;
+  public userId!: string | null;
   public action!: string;
-  public resource_type!: string;
-  public resource_id!: string;
-  public content!: any;
-  public ip_address!: string;
-  public user_agent!: string;
-  public readonly created_at!: Date;
+  public resourceType!: string;
+  public resourceId!: string;
+  public content!: Record<string, any> | null;
+  public ipAddress!: string | null;
+  public userAgent!: string | null;
+  public readonly createdAt!: Date;
 }
 
 AuditLog.init(
@@ -21,7 +20,7 @@ AuditLog.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      primaryKey: true
     },
     project_id: {
       type: DataTypes.UUID,
@@ -33,54 +32,50 @@ AuditLog.init(
     },
     user_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: User,
+        model: Project,
         key: 'id',
       },
     },
     action: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [1, 100]
+      },
     },
     resource_type: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     resource_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
     content: {
       type: DataTypes.JSONB,
       allowNull: true,
+      defaultValue: {},
     },
     ip_address: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     user_agent: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
   {
     sequelize,
     tableName: 'audit_logs',
-    timestamps: false,
+    timestamps: true,
     createdAt: 'created_at',
     updatedAt: false,
-    indexes: [
-      {
-        name: 'idx_audit_logs_project_id',
-        fields: ['project_id', 'created_at'],
-      },
-      {
-        name: 'idx_audit_logs_user_id',
-        fields: ['user_id', 'created_at'],
-      },
-    ],
-  },
+    underscored: true,
+  }
 );
 
 export default AuditLog;

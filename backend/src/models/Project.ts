@@ -5,15 +5,17 @@ export class Project extends Model {
   public id!: string;
   public name!: string;
   public description!: string | null;
-  public manager_id!: string;
+  public managerId!: string;
   public priority!: string;
   public status!: string;
-  public start_date!: Date | null;
-  public end_date!: Date | null;
-  public tags!: string[] | null;
-  public config!: Record<string, any> | null;
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
+  public dueDate!: Date | null;
+  public isArchived!: boolean;
+  public archiveNote!: string | null;
+  public archivedAt!: Date | null;
+  public archivedBy!: string | null;
+  public deletedAt!: Date | null;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 Project.init(
@@ -21,65 +23,70 @@ Project.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [2, 255]
-      }
+        len: [2, 255],
+      },
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
     },
-    manager_id: {
+    managerId: {
       type: DataTypes.UUID,
-      allowNull: false
+      allowNull: false,
     },
     priority: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'P1',
+      defaultValue: 'medium',
       validate: {
-        isIn: [['P0', 'P1', 'P2', 'P3']]
-      }
+        isIn: [['low', 'medium', 'high']],
+      },
     },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'active',
       validate: {
-        isIn: [['active', 'inactive', 'archived']]
-      }
+        isIn: [['active', 'inactive', 'archived']],
+      },
     },
-    start_date: {
+    dueDate: {
       type: DataTypes.DATE,
-      allowNull: true
+      allowNull: true,
     },
-    end_date: {
+    isArchived: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    archiveNote: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    archivedAt: {
       type: DataTypes.DATE,
-      allowNull: true
-    },
-    tags: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
-      defaultValue: []
     },
-    config: {
-      type: DataTypes.JSONB,
+    archivedBy: {
+      type: DataTypes.UUID,
       allowNull: true,
-      defaultValue: {}
-    }
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: 'projects',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    underscored: true,
   }
 );
 

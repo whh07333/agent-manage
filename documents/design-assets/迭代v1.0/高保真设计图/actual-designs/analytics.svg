@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#ffffff" />
+  <text x="20" y="40" font-family="Inter, Arial" font-size="28" font-weight="700" fill="#1e293b">OpenClaw AI项目管理系统 - 统计分析</text>
+  
+  <!-- 操作栏 -->
+  <rect x="20" y="60" width="1400" height="60" fill="#f8fafc" rx="6"/>
+  <text x="40" y="95" font-family="Inter, Arial" font-size="14" fill="#64748b">时间范围: </text>
+  <rect x="140" y="75" width="120" height="30" fill="#ffffff" rx="4" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="150" y="94" font-family="Inter, Arial" font-size="12" fill="#64748b">近30天</text>
+  <rect x="280" y="75" width="80" height="30" fill="#2563eb" rx="4"/>
+  <text x="290" y="94" font-family="Inter, Arial" font-size="12" fill="#ffffff">刷新</text>
+  <rect x="380" y="75" width="80" height="30" fill="#10b981" rx="4"/>
+  <text x="390" y="94" font-family="Inter, Arial" font-size="12" fill="#ffffff">导出</text>
+  
+  <!-- 统计卡片 -->
+  <rect x="20" y="140" width="200" height="120" fill="#dbeafe" rx="8"/>
+  <text x="35" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#1e40af">项目总数</text>
+  <text x="35" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#1d4ed8">35</text>
+  <text x="35" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">增长: 12%</text>
+  
+  <rect x="240" y="140" width="200" height="120" fill="#d1fae5" rx="8"/>
+  <text x="255" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#065f46">完成项目</text>
+  <text x="255" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#059669">22</text>
+  <text x="255" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">完成率: 63%</text>
+  
+  <rect x="460" y="140" width="200" height="120" fill="#fef3c7" rx="8"/>
+  <text x="475" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#92400e">平均周期</text>
+  <text x="475" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#d97706">5.2天</text>
+  <text x="475" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">优化: -8%</text>
+  
+  <rect x="680" y="140" width="200" height="120" fill="#f0f9ff" rx="8"/>
+  <text x="695" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#0369a1">任务完成</text>
+  <text x="695" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#0284c7">89%</text>
+  <text x="695" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">提高: 5%</text>
+  
+  <rect x="900" y="140" width="200" height="120" fill="#fee2e2" rx="8"/>
+  <text x="915" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#991b1b">阻塞率</text>
+  <text x="915" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#dc2626">12%</text>
+  <text x="915" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">下降: -3%</text>
+  
+  <rect x="1120" y="140" width="200" height="120" fill="#f3f4f6" rx="8"/>
+  <text x="1135" y="170" font-family="Inter, Arial" font-size="14" font-weight="500" fill="#4b5563">负载</text>
+  <text x="1135" y="200" font-family="Inter, Arial" font-size="36" font-weight="700" fill="#64748b">1.8个</text>
+  <text x="1135" y="220" font-family="Inter, Arial" font-size="12" fill="#64748b">优化中</text>
+  
+  <!-- 图表区域 -->
+  <rect x="20" y="280" width="680" height="300" fill="#f8fafc" rx="8"/>
+  <text x="40" y="310" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#1e293b">项目创建趋势 (30天)</text>
+  <line x1="40" y1="330" x2="660" y2="330" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="40" y="335" width="620" height="240" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <rect x="720" y="280" width="680" height="300" fill="#f8fafc" rx="8"/>
+  <text x="740" y="310" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#1e293b">任务完成趋势 (30天)</text>
+  <line x1="740" y1="330" x2="1360" y2="330" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="740" y="335" width="620" height="240" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- 数据表格 -->
+  <rect x="20" y="600" width="1400" height="260" fill="#f8fafc" rx="8"/>
+  <text x="40" y="630" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#1e293b">Agent效率分析</text>
+  <line x1="40" y1="645" x2="1380" y2="645" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- 表格头部 -->
+  <text x="50" y="670" font-family="Inter, Arial" font-size="12" font-weight="600" fill="#1e293b">Agent名称</text>
+  <text x="200" y="670" font-family="Inter, Arial" font-size="12" font-weight="600" fill="#1e293b">任务数</text>
+  <text x="300" y="670" font-family="Inter, Arial" font-size="12" font-weight="600" fill="#1e293b">平均时间</text>
+  <text x="420" y="670" font-family="Inter, Arial" font-size="12" font-weight="600" fill="#1e293b">成功率</text>
+  <text x="540" y="670" font-family="Inter, Arial" font-size="12" font-weight="600" fill="#1e293b">负载</text>
+  
+  <!-- 数据行 -->
+  <text x="50" y="700" font-family="Inter, Arial" font-size="12" fill="#64748b">产品Agent</text>
+  <text x="200" y="700" font-family="Inter, Arial" font-size="12" fill="#64748b">12</text>
+  <text x="300" y="700" font-family="Inter, Arial" font-size="12" fill="#64748b">4.8h</text>
+  <text x="420" y="700" font-family="Inter, Arial" font-size="12" fill="#64748b">100%</text>
+  <text x="540" y="700" font-family="Inter, Arial" font-size="12" fill="#64748b">1.2个</text>
+  
+  <text x="50" y="730" font-family="Inter, Arial" font-size="12" fill="#64748b">开发Agent</text>
+  <text x="200" y="730" font-family="Inter, Arial" font-size="12" fill="#64748b">8</text>
+  <text x="300" y="730" font-family="Inter, Arial" font-size="12" fill="#64748b">2.5h</text>
+  <text x="420" y="730" font-family="Inter, Arial" font-size="12" fill="#64748b">98%</text>
+  <text x="540" y="730" font-family="Inter, Arial" font-size="12" fill="#64748b">0.8个</text>
+  
+  <text x="50" y="760" font-family="Inter, Arial" font-size="12" fill="#64748b">测试Agent</text>
+  <text x="200" y="760" font-family="Inter, Arial" font-size="12" fill="#64748b">15</text>
+  <text x="300" y="760" font-family="Inter, Arial" font-size="12" fill="#64748b">3.2h</text>
+  <text x="420" y="760" font-family="Inter, Arial" font-size="12" fill="#64748b">95%</text>
+  <text x="540" y="760" font-family="Inter, Arial" font-size="12" fill="#64748b">1.5个</text>
+  
+  <rect x="40" y="690" width="1360" height="1" fill="#e2e8f0"/>
+  <rect x="40" y="720" width="1360" height="1" fill="#e2e8f0"/>
+  <rect x="40" y="750" width="1360" height="1" fill="#e2e8f0"/>
+</svg>

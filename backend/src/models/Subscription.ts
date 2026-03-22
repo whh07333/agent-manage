@@ -1,26 +1,22 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
-import { Project } from './Project';
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../config/database";
 
 export class Subscription extends Model {
   public id!: string;
-  public project_id!: string | null;
-  public event_types!: string[];
-  public callback_url!: string;
+  public agentId!: string;
+  public agentType!: string;
+  public targetId!: string | null;
+  public eventType!: string;
+  public callbackUrl!: string;
   public secret!: string | null;
-  public is_active!: boolean;
-  public retry_policy!: any;
-  public last_triggered_at!: Date | null;
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
-
-  // 关联关系
-  static associate(models: any) {
-    Subscription.belongsTo(models.Project, {
-      foreignKey: 'project_id',
-      as: 'project',
-    });
-  }
+  public isActive!: boolean;
+  public maxRetries!: number;
+  public retryCount!: number;
+  public lastFailedAt!: Date | null;
+  public retryScheduledAt!: Date | null;
+  public expireAt!: Date | null;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 Subscription.init(
@@ -28,54 +24,69 @@ Subscription.init(
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: true,
     },
-    project_id: {
+    agentId: {
       type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: Project,
-        key: 'id',
-      },
-    },
-    event_types: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
-      defaultValue: [],
     },
-    callback_url: {
+    agentType: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        isUrl: true,
-        len: [1, 2048],
-      },
+    },
+    targetId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    eventType: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    callbackUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     secret: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    is_active: {
+    isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
     },
-    retry_policy: {
-      type: DataTypes.JSONB,
+    maxRetries: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 5,
+    },
+    retryCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    lastFailedAt: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
-    last_triggered_at: {
+    retryScheduledAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    expireAt: {
       type: DataTypes.DATE,
       allowNull: true,
     },
   },
   {
     sequelize,
-    tableName: 'subscriptions',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    tableName: "subscriptions",
+    underscored: true,
+    indexes: [
+      {
+        fields: ['expire_at'],
+      },
+    ]
   }
 );
 

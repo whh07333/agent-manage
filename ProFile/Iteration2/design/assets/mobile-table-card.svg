@@ -1,0 +1,40 @@
+<svg width="390" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone frame -->
+  <rect x="0" y="0" width="390" height="800" fill="#f0f2f5" rx="20"/>
+  <rect x="0" y="0" width="390" height="44" fill="#001529" rx="20"/>
+  
+  <!-- Title -->
+  <text x="16" y="28" fill="white" font-size="16" font-family="system-ui, -apple-system">任务列表</text>
+  
+  <!-- Card 1 -->
+  <rect x="16" y="60" width="358" height="140" fill="white" rx="8" stroke="#e8e8e8"/>
+  <text x="24" y="85" font-size="16" font-weight="600" font-family="system-ui, -apple-system">完成迭代2前端技术设计文档</text>
+  <text x="24" y="110" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">任务ID: <tspan fill="#1890ff">US002-1</tspan></text>
+  <text x="24" y="132" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">优先级: <tspan fill="#faad14">P1</tspan></text>
+  <rect x="250" y="120" width="80" height="24" fill="#52c41a" rx="12"/>
+  <text x="262" y="138" fill="white" font-size="12" font-family="system-ui, -apple-system">已完成</text>
+  
+  <!-- Card 2 -->
+  <rect x="16" y="216" width="358" height="140" fill="white" rx="8" stroke="#e8e8e8"/>
+  <text x="24" y="241" font-size="16" font-weight="600" font-family="system-ui, -apple-system">评审设计文档</text>
+  <text x="24" y="266" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">任务ID: <tspan fill="#1890ff">US002-2</tspan></text>
+  <text x="24" y="288" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">优先级: <tspan fill="#faad14">P1</tspan></text>
+  <rect x="250" y="276" width="80" height="24" fill="#1890ff" rx="12"/>
+  <text x="260" y="294" fill="white" font-size="12" font-family="system-ui, -apple-system">进行中</text>
+  
+  <!-- Card 3 -->
+  <rect x="16" y="372" width="358" height="140" fill="#fff1f0" rx="8" stroke="#ff4d4f"/>
+  <text x="24" y="397" font-size="16" font-weight="600" font-family="system-ui, -apple-system">修复移动端表格滚动问题</text>
+  <text x="24" y="422" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">任务ID: <tspan fill="#1890ff">US015-1</tspan></text>
+  <text x="24" y="444" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">优先级: <tspan fill="#faad14">P1</tspan></text>
+  <rect x="250" y="432" width="80" height="24" fill="#ff4d4f" rx="12"/>
+  <text x="262" y="450" fill="white" font-size="12" font-family="system-ui, -apple-system">阻塞</text>
+  
+  <!-- Bottom safe area -->
+  <rect x="0" y="768" width="390" height="32" fill="#f0f2f5"/>
+  
+  <!-- Note -->
+  <text x="16" y="740" font-size="11" fill="#8c8c8c" font-family="system-ui, -apple-system">
+  设计：Tina · 迭代2 · 移动端表格卡片化 · 不用横向滚动
+  </text>
+</svg>

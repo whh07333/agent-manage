@@ -1,0 +1,58 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f0f2f5"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="64" fill="#001529"/>
+  <text x="24" y="36" fill="white" font-size="20" font-family="system-ui, -apple-system">API密钥管理 / Agent: 后台高级开发工程师</text>
+  
+  <!-- Sidebar -->
+  <rect x="0" y="64" width="208" height="736" fill="#002140"/>
+  
+  <!-- Main Content -->
+  <rect x="208" y="64" width="992" height="736" fill="#f0f2f5"/>
+  
+  <!-- Content Card -->
+  <rect x="232" y="88" width="944" height="688" fill="white" rx="4" stroke="#e8e8e8"/>
+  
+  <!-- Title + Button -->
+  <text x="256" y="128" font-size="16" font-weight="600" font-family="system-ui, -apple-system">API密钥列表</text>
+  <rect x="780" y="104" width="120" height="32" fill="#1890ff" rx="4"/>
+  <text x="810" y="126" fill="white" font-size="14" font-family="system-ui, -apple-system">新建密钥</text>
+  
+  <!-- Table Header -->
+  <rect x="256" y="160" width="900" height="40" fill="#fafafa" rx="2"/>
+  <text x="266" y="185" font-size="14" font-weight="600" font-family="system-ui, -apple-system">创建时间</text>
+  <text x="386" y="185" font-size="14" font-weight="600" font-family="system-ui, -apple-system">过期时间</text>
+  <text x="526" y="185" font-size="14" font-weight="600" font-family="system-ui, -apple-system">状态</text>
+  <text x="666" y="185" font-size="14" font-weight="600" font-family="system-ui, -apple-system">操作</text>
+  
+  <!-- Row 1 - Active -->
+  <rect x="256" y="208" width="900" height="48" fill="white" stroke="#e8e8e8" stroke-width="1"/>
+  <text x="266" y="238" font-size="14" font-family="system-ui, -apple-system">2026-03-10</text>
+  <text x="386" y="238" font-size="14" font-family="system-ui, -apple-system">2026-06-08</text>
+  <rect x="526" y="220" width="60" height="24" fill="#52c41a" rx="12"/>
+  <text x="542" y="236" fill="white" font-size="12" font-family="system-ui, -apple-system">激活</text>
+  <text x="666" y="238" font-size="14" fill="#1890ff" font-family="system-ui, -apple-system">吊销</text>
+  
+  <!-- Row 2 - Expired -->
+  <rect x="256" y="256" width="900" height="48" fill="white" stroke="#e8e8e8" stroke-width="1"/>
+  <text x="266" y="286" font-size="14" font-family="system-ui, -apple-system">2026-02-10</text>
+  <text x="386" y="286" font-size="14" fill="#faad14" font-family="system-ui, -apple-system">2026-03-15</text>
+  <rect x="526" y="268" width="60" height="24" fill="#faad14" rx="12"/>
+  <text x="542" y="284" fill="white" font-size="12" font-family="system-ui, -apple-system">过期</text>
+  <text x="666" y="286" font-size="14" fill="#1890ff" font-family="system-ui, -apple-system">吊销</text>
+  
+  <!-- Row 3 - Revoked -->
+  <rect x="256" y="304" width="900" height="48" fill="#fff1f0" stroke="#e8e8e8" stroke-width="1"/>
+  <text x="266" y="334" font-size="14" font-family="system-ui, -apple-system">2026-01-05</text>
+  <text x="386" y="334" font-size="14" font-family="system-ui, -apple-system">-</text>
+  <rect x="526" y="316" width="60" height="24" fill="#ff4d4f" rx="12"/>
+  <text x="542" y="332" fill="white" font-size="12" font-family="system-ui, -apple-system">吊销</text>
+  <text x="666" y="334" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">-</text>
+  
+  <!-- Footer -->
+  <text x="256" y="780" font-size="12" fill="#8c8c8c" font-family="system-ui, -apple-system">
+  设计：Tina · 迭代2 · API密钥管理页面 · 遵循设计系统规范
+  </text>
+</svg>

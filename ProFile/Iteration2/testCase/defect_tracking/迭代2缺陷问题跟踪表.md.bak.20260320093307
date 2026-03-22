@@ -1,0 +1,405 @@
+# 迭代2 缺陷问题跟踪表
+
+**项目**: OpenClaw AI Agent项目管理系统  
+**迭代**: 迭代2  
+**版本**: v2.0  
+**创建时间**: 2026-03-19  
+**负责人**: Lisa 🔍
+
+---
+
+## 表格说明
+
+| 列名 | 说明 |
+|------|------|
+| ID | 缺陷编号 DEF-XXX |
+| 模块 | 所属模块 |
+| 标题 | 缺陷简要描述 |
+| 严重程度 | 阻塞/严重/一般/轻微 |
+| 优先级 | P0/P1/P2/P3 |
+| 状态 | 新建/已确认/修复中/已修复/已验证/已关闭/延期/不修复 |
+| 责任人 | 负责修复的开发 |
+| 发现时间 | 缺陷发现时间 |
+| 修复时间 | 缺陷修复时间 |
+| 验证时间 | 验证通过时间 |
+| 备注 | 其他说明 |
+
+---
+
+## 缺陷跟踪清单
+
+| ID | 模块 | 标题 | 严重程度 | 优先级 | 状态 | 责任人 | 发现时间 | 修复时间 | 验证时间 | 备注 |
+|----|------|------|----------|--------|------|--------|----------|----------|----------|------|
+| DEF-001 | 用户管理 | User模型定义与数据库schema不匹配 | 阻塞 | P0 | 已验证已关闭 | 后端开发 | 2026-03-19 | 2026-03-19 | 2026-03-19 | ✓ |
+| DEF-002 | 项目管理 | Project模型定义与数据库schema严重不匹配 | 阻塞 | P0 | 已验证已关闭 | 后端开发 | 2026-03-19 | 2026-03-19 | 2026-03-19 | ✓ |
+| DEF-003 | 项目管理 | ProjectAgent模型定义与数据库schema不匹配 | 阻塞 | P0 | 已验证已关闭 | 后端开发 | 2026-03-19 | 2026-03-19 | 2026-03-19 | ✓ |
+| DEF-004 | 任务管理 | Task模型外键引用错误 - 表名大小写不匹配 | 阻塞 | P0 | 已验证已关闭 | 后端开发 | 2026-03-19 | 2026-03-19 | 2026-03-19 | ✓ |
+| DEF-005 | 项目管理 | 已归档项目仍允许修改配置，违反业务规则 | 🟡 一般 | 🟡 P2 | 修复中 | 后端开发 | 2026-03-19 | - | - | 路由已ok，校验逻辑未添加 |
+| DEF-006 | 项目管理 | 取消归档接口不存在 | 🔴 严重 | 🔴 P1 | 已验证已关闭 | 后端开发 | 2026-03-19 | 2026-03-19 | 2026-03-19 | ✓ 路由已添加，功能正常 |
+| DEF-007 | 项目管理 | 取消归档控制器已实现，路由未注册 | 🟡 一般 | 🟡 P2 | 已验证已关闭 | 后端开发 | 2026-03-19 | 2026-03-19 | 2026-03-19 | ✓ |
+
+---
+
+## 缺陷统计
+
+### 按状态统计
+
+| 状态 | 数量 | 累计 |
+|------|------|------|
+| 新建 | 0 | 7 |
+| 已确认 | 0 | 7 |
+| 修复中 | 1 | 7 |
+| 已修复 | 0 | 7 |
+| 已验证 | 0 | 7 |
+| 已关闭 | 6 | 7 |
+| 延期 | 0 | 7 |
+| 不修复 | 0 | 7 |
+| **总计** | **7** | **7** |
+
+### 按严重程度统计
+
+| 严重程度 | 数量 | 占比 |
+|----------|------|------|
+| 阻塞 | 4 | 57% |
+| 严重 | 1 | 14% |
+| 一般 | 2 | 29% |
+| 轻微 | 0 | 0% |
+| **总计** | **7** | **100%** |
+
+### 按模块统计
+
+| 模块 | 数量 |
+|------|------|
+| 用户管理 | 1 |
+| 项目管理 | 6 |
+| 任务管理 | 0 |
+| **总计** | **7** |
+
+---
+
+## 缺陷详细描述
+
+---
+
+## DEF-001: User模型定义与数据库schema不匹配
+
+*(已关闭省略)*
+
+---
+
+## DEF-002: Project模型定义与数据库schema严重不匹配
+
+*(已关闭省略)*
+
+---
+
+## DEF-003: ProjectAgent模型定义与数据库schema不匹配
+
+*(已关闭省略)*
+
+---
+
+## DEF-004: Task模型外键引用错误 - 表名大小写不匹配
+
+*(已关闭省略)*
+
+---
+
+## DEF-005: 已归档项目仍允许修改配置，违反业务规则
+
+**缺陷信息**:
+- ID: DEF-005
+- 模块: 项目管理 / US002 修改项目配置
+- 标题: 已归档项目仍然允许修改配置，违反归档业务规则
+- 严重程度: 🟡 **一般**
+- 优先级: 🟡 **P2**
+- 状态: **修复中** (代码未合并/校验逻辑未添加)
+- 责任人: 后端开发
+- 发现时间: 2026-03-19 16:35 (GMT+8)
+
+**当前状态**:
+- ✅ 取消归档接口已正常工作
+- ❌ **updateProject控制器中仍未添加isArchived校验**，归档项目访问修改接口仍然返回404 (Project not found)而不是正确的"归档项目不可修改"提示
+
+**预期修复**:
+在 `updateProject` 控制器找到项目后，增加检查：
+```typescript
+if (project.isArchived) {
+  return res.status(400).json({
+    code: 400,
+    msg: 'Archived project cannot be modified, please unarchive first',
+    data: null,
+    trace_id: requestId
+  });
+}
+```
+
+---
+
+## DEF-008: Task status枚举值命名不匹配 - 驼峰vs下划线
+
+**缺陷信息**:
+- ID: DEF-008
+- 模块: 任务管理 / 创建任务
+- 标题: Task status枚举值命名不匹配，模型期望驼峰实际DB下划线
+- 严重程度: 🔴 **严重** - 创建任务时合法状态无法通过校验
+- 优先级: 🔴 **P1**
+- 状态: 新建
+- 责任人: 后端开发
+- 发现时间: 2026-03-19 18:08 (GMT+8)
+
+**根因分析**:
+- 数据库约束: `CHECK (status IN ('pending', 'in_progress', 'completed', 'blocked', 'cancelled'))` → **下划线分隔**
+- Task模型验证枚举: `['pending', 'inProgress', 'blocked', 'completed', 'cancelled']` → **驼峰命名**
+- 因此当传入 `in_progress` 校验失败，传入 `inProgress` 能通过校验但最终写入数据库违反约束失败
+
+**影响**: 无法创建任务，US008任务验收无法测试，阻塞后续测试。
+
+**修复建议**:
+修改Task模型中status枚举验证，改为和数据库一致的下划线命名：
+```typescript
+status: {
+  type: DataTypes.STRING,
+  allowNull: false,
+  defaultValue: 'pending',
+  validate: {
+    isIn: [
+      [
+        "pending",
+        "in_progress",
+        "blocked",
+        "completed",
+        "cancelled",
+      ],
+    ],
+  },
+}
+
+---
+
+## DEF-009: 创建任务controller校验逻辑错误，valid=true仍然返回400
+
+**缺陷信息**:
+- ID: DEF-009
+- 模块: 任务管理 / 创建任务
+- 标题: 创建任务controller校验逻辑错误，校验通过仍然返回400
+- 严重程度: 🔴 **严重** - 无法创建任何任务
+- 优先级: 🔴 **P1**
+- 状态: 新建
+- 责任人: 后端开发
+- 发现时间: 2026-03-19 20:19 (GMT+8)
+
+**根因分析**:
+```typescript
+// 当前错误代码:
+const validationError = validateTaskData(req.body);
+if (validationError) { 
+  // ❌ 即使验证通过 {valid: true}，validationError 是一个object，if判断为true
+  // 所以永远返回400，无法创建任何任务
+  return 400;
+}
+
+// 正确应该是:
+const validation = validateTaskData(req.body);
+if (!validation.valid) {
+  return res.status(400).json({
+    code: 400,
+    msg: validation.message,
+    data: null,
+    ...
+  });
+}
+```
+
+**影响**: 任何请求都无法通过校验创建任务，**整个任务管理模块不可用**，阻塞后续测试。
+
+**修复建议**:
+修改 `/src/controllers/tasks.ts` 中 `createTask` 和 `updateTask` 方法的校验逻辑，改为判断 `!validation.valid`。
+
+---
+
+## DEF-010: Task模型添加deliverables字段，但数据库tasks表不存在该字段
+
+**缺陷信息**:
+- ID: DEF-010
+- 模块: 任务管理 / 创建任务
+- 标题: Task模型添加deliverables字段，但数据库tasks表不存在该字段
+- 严重程度: 🔴 **严重** - 无法创建任务
+- 优先级: 🔴 **P1**
+- 状态: 新建
+- 责任人: 后端开发
+- 发现时间: 2026-03-19 21:04 (GMT+8)
+
+**根因分析**:
+- 根据US008任务验收需求，需要添加 `deliverables` 字段存储交付物
+- 模型已添加 `deliverables` JSONB字段 ✓
+- **但 `init-db.sql` 中 `tasks` 表没有这个字段**，创建任务时报错 `column "deliverables" does not exist`
+
+**影响**: 仍然无法创建任务，阻塞测试。
+
+**修复建议**:
+更新 `init-db.sql` 在 `tasks` 表添加 `deliverables JSONB` 字段：
+```sql
+ALTER TABLE tasks ADD COLUMN deliverables JSONB;
+```
+或者重新建库时包含这个字段。当前开发环境需要手动添加。
+
+---
+
+## DEF-011: Task模型外键引用表名大小写错误
+
+**缺陷信息**:
+- ID: DEF-011
+- 模块: 任务管理 / 服务启动
+- 标题: Task模型外键引用表名大小写错误，Sequelize同步失败
+- 严重程度: 🔴 **严重** - 服务启动时同步失败，创建任务出错
+- 优先级: 🔴 **P1**
+- 状态: 新建
+- 责任人: 后端开发
+- 发现时间: 2026-03-19 21:07 (GMT+8)
+
+**根因分析**:
+```typescript
+project_id: {
+  references: {
+    model: "projects",  // ✅ 正确，小写
+    key: "id",
+  },
+}
+assignee_id: {
+  references: {
+    model: "Users",  // ❌ 错误，应该是 "users" 小写
+    key: "id",
+  },
+}
+parent_id: {
+  references: {
+    model: "Tasks",  // ❌ 错误，应该是 "tasks" 小写
+    key: "id",
+  },
+}
+```
+
+PostgreSQL区分大小写，所以找不到 `Users` 表（实际是 `users`）和 `Tasks` 表（实际是 `tasks`）。
+
+**影响**: Sequelize自动同步时创建表失败，虽然表已经存在，但列还是缺失 `deliverables`？或者同步失败导致错误。
+
+**修复建议**:
+修改 `/src/models/Task.ts`:
+```typescript
+assignee_id: {
+  references: {
+    model: "users",  // 改为小写
+    key: "id",
+  },
+}
+parent_id: {
+  references: {
+    model: "tasks",  // 改为小写
+    key: "id",
+  },
+}
+```
+
+---
+
+## DEF-012: deliverables字段已添加到模型但数据库仍不存在
+
+**缺陷信息**:
+- ID: DEF-012
+- 模块: 任务管理 / 创建任务
+- 标题: deliverables字段已添加到模型，但测试数据库中不存在该字段
+- 严重程度: 🔴 严重
+- 优先级: 🔴 P1
+- 状态: 新建
+- 责任人: 后端开发 / DBA
+- 发现时间: 2026-03-19 21:37 (GMT+8)
+
+**根因分析**:
+- 模型已经正确添加 `deliverables` JSONB 字段 ✓
+- 虽然执行了 ALTER TABLE，但可能：
+  - 数据库连接错误
+  - 事务未提交
+  - 当前连接的不是测试库
+
+**影响**: 仍然无法创建任务
+
+**修复建议**:
+确认测试数据库中 `tasks` 表是否真的添加了 `deliverables` 字段，可以通过psql确认：
+```sql
+SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'tasks';
+```
+如果没有，重新执行：
+```sql
+ALTER TABLE tasks ADD COLUMN deliverables JSONB;
+```
+
+---
+
+## DEF-013: Task模型assigneeId外键引用仍然是大写 "Users"
+
+**缺陷信息**:
+- ID: DEF-013
+- 模块: 任务管理 / 服务启动
+- 标题: Task模型assigneeId外键引用仍然是大写 "Users"，同步失败
+- 严重程度: 🔴 **严重** - 服务启动时Sequelize同步失败，虽然服务能运行但是创建任务失败
+- 优先级: 🔴 **P1**
+- 状态: 新建
+- 责任人: 后端开发
+- 发现时间: 2026-03-19 22:16 (GMT+8)
+
+**根因分析**:
+从启动日志看生成的SQL：
+```sql
+CREATE TABLE IF NOT EXISTS "Tasks" (
+  ...
+  "assignee_id" UUID REFERENCES "Users" ("id"),
+                     ^^^^^^^ 这里还是大写
+  ...
+);
+```
+
+说明代码中 `assigneeId` 的 `references.model` 仍然是 `"Users"` 大写没有改成 `"users"` 小写。
+
+之前修复只改了 `assignee_id` → 变量名，没改 `references.model` 的值。
+
+**影响**:
+- Sequelize同步创建表失败，表虽然存在但是同步不完成，导致 `deliverables` 字段不会被真正添加到模型映射？或者说同步失败导致后续错误，创建任务时找不到列。
+- 服务启动虽然没有崩溃，但创建任务一直报错 `column "deliverables" does not exist`，实际上是同步失败的后遗症。
+
+**修复建议**:
+修改 `/src/models/Task.ts`:
+```typescript
+assigneeId: {
+  ...
+  references: {
+    model: "users",  // 👇 这里改为小写 "users"，不是大写 "Users"
+    key: "id",
+  },
+}
+```
+
+---
+
+## DEF-014: 任务验收接口控制器已实现，路由未注册
+
+**缺陷信息**:
+- ID: DEF-014
+- 模块: 任务管理 / US008 任务验收
+- 标题: 任务验收接口控制器已实现，路由未注册，访问返回404
+- 严重程度: 🔴 严重
+- 优先级: 🔴 P1
+- 状态: 新建
+- 责任人: 后端开发
+- 发现时间: 2026-03-20 00:55 (GMT+8)
+
+**根因分析**:
+- 控制器 `tasks.ts` 已经实现 `acceptance` 方法 ✓
+- `routes/tasks.ts` 缺少路由注册:
+  ```typescript
+  // 缺少这行:
+  router.post('/:id/acceptance', authMiddleware, acceptance);
+  ```
+
+**修复建议**:
+在 `src/routes/tasks.ts` 添加验收路由注册。

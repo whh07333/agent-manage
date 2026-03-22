@@ -1,0 +1,177 @@
+import { Request, Response } from 'express';
+import { logger } from '../utils/logger';
+import { ApiKeyService } from '../services/apiKeys';
+
+const apiKeyService = new ApiKeyService();
+
+/**
+ * List API keys for agent
+ * GET /api/apiKeys/agent/:agentId
+ */
+export const listApiKeys = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { agentId } = req.params;
+
+  try {
+    logger.info('Listing API keys', { requestId, agentId });
+    const apiKeys = await apiKeyService.listApiKeys(agentId);
+    logger.info('API keys listed', { requestId, agentId, count: apiKeys.length });
+    res.json({
+      code: 0,
+      msg: 'success',
+      data: apiKeys.map(k => ({
+        id: k.id,
+        agentId: k.agentId,
+        createdAt: k.createdAt,
+        expiresAt: k.expiresAt,
+        revokedAt: k.revokedAt,
+        status: k.status
+      })),
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to list API keys', error as Error, { requestId, agentId });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+/**
+ * Create new API key
+ * POST /api/apiKeys
+ * Body: { agentId, expires_in_days? }
+ */
+export const createApiKey = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { agentId, expires_in_days = 90 } = req.body;
+
+  try {
+    logger.info('Creating new API key', { requestId, agentId, expires_in_days });
+    const { api_key, api_key_record } = await apiKeyService.createApiKey(
+      agentId,
+      expires_in_days
+    );
+    logger.info('API key created', { requestId, id: api_key_record.id });
+
+    // Add audit log
+    await addAuditLog(req, 'create', 'api_key', api_key_record.id);
+
+    res.json({
+      code: 0,
+      msg: 'API key created successfully',
+      data: {
+        api_key, // Only returned once at creation
+        id: api_key_record.id,
+        expiresAt: api_key_record.expiresAt
+      },
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to create API key', error as Error, { requestId });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+/**
+ * Revoke API key
+ * POST /api/apiKeys/:id/revoke
+ */
+export const revokeApiKey = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+
+  try {
+    logger.info('Revoking API key', { requestId, id });
+    const result = await apiKeyService.revokeApiKey(id);
+    if (!result) {
+      return res.status(404).json({
+        code: 404,
+        msg: 'API key not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Add audit log
+    await addAuditLog(req, 'revoke', 'api_key', id);
+
+    logger.info('API key revoked', { requestId, id });
+    res.json({
+      code: 0,
+      msg: 'API key revoked successfully',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to revoke API key', error as Error, { requestId, id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+/**
+ * Rotate API key
+ * POST /api/apiKeys/:id/rotate
+ * Body: { expires_in_days? }
+ */
+export const rotateApiKey = async (req: Request, res: Response) => {
+  const requestId = req.headers['x-request-id'] as string || 'default';
+  const { id } = req.params;
+  const { expires_in_days = 90 } = req.body;
+
+  try {
+    logger.info('Rotating API key', { requestId, id, expires_in_days });
+    const { new_api_key, new_api_key_record } = await apiKeyService.rotateApiKey(
+      id,
+      expires_in_days
+    );
+
+    // Add audit log
+    await addAuditLog(req, 'rotate', 'api_key', id);
+
+    logger.info('API key rotated', { requestId, id, new_id: new_api_key_record.id });
+    res.json({
+      code: 0,
+      msg: 'API key rotated successfully. Old key will remain valid for 24 hours.',
+      data: {
+        api_key: new_api_key,
+        id: new_api_key_record.id,
+        expiresAt: new_api_key_record.expiresAt
+      },
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to rotate API key', error as Error, { requestId, id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+// Helper to add audit log
+async function addAuditLog(

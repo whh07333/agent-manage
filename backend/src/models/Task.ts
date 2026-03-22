@@ -4,28 +4,31 @@ import { Project } from "./Project";
 
 export class Task extends Model {
   public id!: string;
-  public project_id!: string;
+  public projectId!: string;
   public name!: string;
-  public description!: string;
-  public assignee_id!: string;
-  public parent_id!: string | null;
+  public description!: string | null;
+  public assigneeId!: string | null;
+  public assignee_agent_id!: string | null;
+  public parentId!: string | null;
   public priority!: string;
   public status!: string;
-  public status_remark!: string;
-  public due_date!: Date;
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
+  public statusRemark!: string | null;
+  public dueDate!: Date | null;
+  public deliverables!: any[] | null;
+  public deletedAt!: Date | null;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 
   // 关联关系
   static associate(models: any) {
     // 一个任务属于一个项目
     Task.belongsTo(models.Project, {
-      foreignKey: "project_id",
+      foreignKey: "projectId",
       as: "project",
     });
     // 一个任务依赖于另一个父前置任务
     Task.belongsTo(models.Task, {
-      foreignKey: "parent_id",
+      foreignKey: "parentId",
       as: "parent",
     });
   }
@@ -38,11 +41,11 @@ Task.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    project_id: {
+    projectId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: Project,
+        model: "projects",
         key: "id",
       },
     },
@@ -58,7 +61,7 @@ Task.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    assignee_id: {
+    assigneeId: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
@@ -66,12 +69,16 @@ Task.init(
         key: "id",
       },
     },
-    parent_id: {
+    assignee_agent_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    parentId: {
       type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
       references: {
-        model: Task,
+        model: "tasks",
         key: "id",
       },
     },
@@ -89,35 +96,32 @@ Task.init(
       defaultValue: "pending",
       validate: {
         isIn: [
-          [
-            "pending",
-            "assigned",
-            "in_progress",
-            "blocked",
-            "pending_review",
-            "approved",
-            "rejected",
-            "canceled",
-            "completed",
-          ],
+          ["pending", "in_progress", "completed", "blocked", "cancelled"],
         ],
       },
     },
-    status_remark: {
+    statusRemark: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    due_date: {
+    dueDate: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    deliverables: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: [],
     },
   },
   {
     sequelize,
     tableName: "tasks",
-    timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at",
+    underscored: true,
   },
 );
 

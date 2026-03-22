@@ -7,7 +7,7 @@ export class UserService {
     
     if (!user) return null;
     
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) return null;
     
     return user;
@@ -18,7 +18,7 @@ export class UserService {
     
     return User.create({
       email: data.email,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       name: data.name,
       role: data.role || 'user'
     });
@@ -26,13 +26,13 @@ export class UserService {
 
   async getUserById(id: string): Promise<User | null> {
     return User.findByPk(id, {
-      attributes: { exclude: ['password'] }
+      attributes: { exclude: ['passwordHash'] }
     });
   }
 
   async getUsers(): Promise<User[]> {
     return User.findAll({
-      attributes: { exclude: ['password'] }
+      attributes: { exclude: ['passwordHash'] }
     });
   }
 
@@ -41,7 +41,8 @@ export class UserService {
     if (!user) return null;
     
     if (data.password) {
-      data.password = await bcrypt.hash(data.password, 10);
+      data.passwordHash = await bcrypt.hash(data.password, 10);
+      delete data.password;
     }
     
     return user.update(data);

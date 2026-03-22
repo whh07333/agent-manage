@@ -1,0 +1,65 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f0f2f5"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="64" fill="#001529"/>
+  <text x="24" y="36" fill="white" font-size="20" font-family="system-ui, -apple-system">← 项目配置 / AgentManage</text>
+  
+  <!-- Sidebar -->
+  <rect x="0" y="64" width="208" height="736" fill="#002140"/>
+  
+  <!-- Main Content -->
+  <rect x="208" y="64" width="992" height="736" fill="#f0f2f5"/>
+  
+  <!-- Form Card -->
+  <rect x="280" y="88" width="800" height="620" fill="white" rx="4" stroke="#e8e8e8"/>
+  
+  <!-- Form Title -->
+  <text x="304" y="128" font-size="18" font-weight="600" font-family="system-ui, -apple-system">基本项目配置</text>
+  
+  <!-- Form Fields -->
+  <!-- Project Name -->
+  <text x="304" y="180" font-size="14" font-family="system-ui, -apple-system">项目名称 *</text>
+  <rect x="304" y="190" width="752" height="40" fill="white" stroke="#d9d9d9" rx="4"/>
+  <text x="314" y="215" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">AgentManage - AI 项目管理系统</text>
+  
+  <!-- Description -->
+  <text x="304" y="250" font-size="14" font-family="system-ui, -apple-system">项目描述</text>
+  <rect x="304" y="260" width="752" height="80" fill="white" stroke="#d9d9d9" rx="4"/>
+  <text x="314" y="280" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">OpenClaw AI Agent 专属项目管理系统，支持多Agent协作开发...</text>
+  
+  <!-- Date Range -->
+  <text x="304" y="370" font-size="14" font-family="system-ui, -apple-system">目标开始日期 *</text>
+  <rect x="304" y="380" width="360" height="40" fill="white" stroke="#d9d9d9" rx="4"/>
+  <text x="314" y="405" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">2026-03-01</text>
+  
+  <text x="696" y="370" font-size="14" font-family="system-ui, -apple-system">目标结束日期 *</text>
+  <rect x="696" y="380" width="360" height="40" fill="white" stroke="#d9d9d9" rx="4"/>
+  <text x="706" y="405" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">2026-04-15</text>
+  
+  <!-- Priority -->
+  <text x="304" y="440" font-size="14" font-family="system-ui, -apple-system">优先级 *</text>
+  <rect x="304" y="450" width="752" height="40" fill="white" stroke="#d9d9d9" rx="4"/>
+  <text x="314" y="475" font-size="14" fill="#1890ff" font-family="system-ui, -apple-system">P1</text>
+  <text x="1020" y="475" fill="#8c8c8c" font-family="system-ui, -apple-system">▼</text>
+  
+  <!-- Related Agents -->
+  <text x="304" y="510" font-size="14" font-family="system-ui, -apple-system">关联 Agent</text>
+  <rect x="304" y="520" width="752" height="40" fill="white" stroke="#d9d9d9" rx="4"/>
+  <rect x="314" y="528" width="60" height="24" fill="#f0f0f0" rx="12"/>
+  <text x="324" y="544" font-size="12" font-family="system-ui, -apple-system">产品经理 ×</text>
+  <rect x="384" y="528" width="70" height="24" fill="#f0f0f0" rx="12"/>
+  <text x="394" y="544" font-size="12" font-family="system-ui, -apple-system">后台开发 ×</text>
+  
+  <!-- Buttons -->
+  <rect x="560" y="580" width="100" height="36" fill="transparent" stroke="#d9d9d9" rx="4"/>
+  <text x="590" y="604" font-size="14" fill="#8c8c8c" font-family="system-ui, -apple-system">取消</text>
+  <rect x="670" y="580" width="100" height="36" fill="#1890ff" rx="4"/>
+  <text x="700" y="604" fill="white" font-size="14" font-family="system-ui, -apple-system">保存</text>
+  
+  <!-- Footer -->
+  <text x="280" y="780" font-size="12" fill="#8c8c8c" font-family="system-ui, -apple-system">
+  设计：Tina · 迭代2 · 项目配置修改页面 · 仅负责人可编辑
+  </text>
+</svg>

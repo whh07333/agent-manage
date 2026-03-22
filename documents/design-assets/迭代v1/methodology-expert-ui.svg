@@ -1,0 +1,306 @@
+<svg width="1440" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      * { font-family: -apple-system, BlinkMacSystemFont,, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .nav-bg { fill: #ffffff; stroke: #E5E6EB; stroke-width: 1; }
+      .page-bg { fill: #F5F6F8; }
+      .panel { fill: #ffffff; stroke: #E5E6EB; stroke-width: 1; rx: 12; }
+      .panel-shadow { filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.06)); }
+      .bubble-user { fill: #165DFF; rx: 16; }
+      .bubble-assistant { fill: #ffffff; stroke: #E5E6EB; stroke-width: 1; rx: 16; }
+      .bubble-streaming { fill: #ffffff; stroke: #165DFF; stroke-width: 1; rx: 16; }
+      .text-h1 { fill: #1D2129; font-size: 36px; font-weight: 600; }
+      .text-h2 { fill: #1D2129; font-size: 20px; font-weight: 600; }
+      .text-h3 { fill: #1D2129; font-size: 16px; font-weight: 600; }
+      .text-body { fill: #4E5969; font-size: 15px; line-height: 1.6; }
+      .text-body-sm { fill: #4E5969; font-size: 14px; line-height: 1.5; }
+      .text-white { fill: #ffffff; font-size: 15px; }
+      .text-secondary { fill: #86909C; font-size: 14px; }
+      .text-success { fill: #00B42A; font-size: 14px; }
+      .text-pending { fill: #86909C; font-size: 14px; }
+      .btn-primary { fill: #165DFF; rx: 6; }
+      .btn-primary-hover { fill: #0E42B3; rx: 6; }
+      .btn-text { fill: #ffffff; font-size: 14px; font-weight: 500; }
+      .btn-text-secondary { fill: #4E5969; font-size: 14px; font-weight: 500; }
+      .btn-outline { fill: #ffffff; stroke: #C9CDD4; stroke-width: 1; rx: 6; }
+      .progress-bg { fill: #F2F3F5; rx: 6; }
+      .progress-fill { fill: #165DFF; rx: 6; }
+      .sidebar-item { fill: transparent; rx: 6; }
+      .sidebar-item-active { fill: #E8F3FF; rx: 6; }
+      .divider { stroke: #F2F3F5; stroke-width: 1; }
+      .check-complete { fill: #00B42A; }
+      .check-pending { fill: #C9CDD4; }
+      .avatar { fill: #E8F3FF; rx: 20; }
+      .logo-badge { fill: #165DFF; rx: 6; }
+    </style>
+    <linearGradient id="gradient-badge" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#165DFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4D99FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1440" height="900" class="page-bg"/>
+
+  <!-- Navbar -->
+  <rect x="0" y="0" width="1440" height="64" class="nav-bg"/>
+  <!-- Logo -->
+  <rect x="24" y="16" width="32" height="32" rx="6" fill="url(#gradient-badge)"/>
+  <text x="68" y="38" class="text-h2">🎯 方法论专家</text>
+  
+  <!-- Nav Links -->
+  <text x="1080" y="38" class="text-body-sm">首页</text>
+  <text x="1140" y="38" class="text-body-sm">我的报告</text>
+  <text x="1210" y="38" class="text-body-sm">模板中心</text>
+  
+  <!-- User Menu -->
+  <circle cx="1320" cy="32" r="18" fill="#E8F3FF"/>
+  <text x="1320" y="39" text-anchor="middle" fill="#165DFF" font-size="16">B</text>
+  <text x="1350" y="38" class="text-body-sm">Bruce ▼</text>
+
+  <!-- Left Sidebar - 20% -->
+  <g transform="translate(16, 80)">
+    <rect width="256" height="792" class="panel panel-shadow"/>
+    
+    <!-- New Chat Button -->
+    <rect x="16" y="16" width="224" height="40" class="btn-primary" rx="8"/>
+    <text x="128" y="42" text-anchor="middle" class="btn-text">+ 新对话</text>
+    
+    <!-- Divider -->
+    <line x1="16" y1="72" x2="240" y2="72" class="divider"/>
+    
+    <!-- Title -->
+    <text x="16" y="102" class="text-h3">对话历史</text>
+    
+    <!-- Today Section -->
+    <text x="16" y="132" class="text-secondary"><tspan x="16" dy="0">今天</tspan></text>
+    
+    <!-- History Items -->
+    <rect x="8" y="140" width="240" height="40" class="sidebar-item-active"/>
+    <text x="16" y="165" fill="#165DFF" font-size="14px">▪ 职业选择决策</text>
+    
+    <rect x="8" y="186" width="240" height="36" class="sidebar-item"/>
+    <text x="16" y="209" class="text-body-sm">▪ 公司战略规划</text>
+    
+    <rect x="8" y="228" width="240" height="36" class="sidebar-item"/>
+    <text x="16" y="251" class="text-body-sm">▪ 新产品定价分析</text>
+    
+    <rect x="8" y="270" width="240" height="36" class="sidebar-item"/>
+    <text x="16" y="293" class="text-body-sm">▪ 竞品对比分析</text>
+    
+    <!-- Yesterday Section -->
+    <text x="16" y="340" class="text-secondary"><tspan x="16" dy="0">昨天</tspan></text>
+    
+    <rect x="8" y="350" width="240" height="36" class="sidebar-item"/>
+    <text x="16" y="373" class="text-body-sm">▪ 年度OKR设定</text>
+    
+    <rect x="8" y="392" width="240" height="36" class="sidebar-item"/>
+    <text x="16" y="415" class="text-body-sm">▪ 产品需求评审</text>
+  </g>
+
+  <!-- Center Column - 55% -->
+  <g transform="translate(288, 80)">
+    <rect width="726" height="792" class="panel panel-shadow"/>
+    
+    <!-- Chat Area -->
+    <g transform="translate(20, 20)">
+      <!-- User Message -->
+      <g transform="translate(346, 0)">
+        <rect width="320" height="48" class="bubble-user" rx="16"/>
+        <text x="300" y="28" text-anchor="end" class="text-white">我面临两个offer选择，帮我分析一下</text>
+      </g>
+      
+      <!-- Assistant Welcome -->
+      <g transform="translate(0, 60)">
+        <!-- Avatar -->
+        <circle cx="16" cy="16" r="16" fill="#165DFF"/>
+        <text x="16" y="22" text-anchor="middle" fill="white" font-size="16">🎯</text>
+        
+        <rect x="40" y="0" width="320" height="48" class="bubble-assistant" rx="16"/>
+        <text x="56" y="28" class="text-body">你更看重哪些因素呢？我来帮你系统分析</text>
+      </g>
+      
+      <!-- User Message 2 -->
+      <g transform="translate(260, 120)">
+        <rect width="360" height="48" class="bubble-user" rx="16"/>
+        <text x="340" y="28" text-anchor="end" class="text-white">主要是发展前景、薪资待遇和工作强度</text>
+      </g>
+      
+      <!-- Assistant Streaming Message -->
+      <g transform="translate(0, 180)">
+        <!-- Avatar -->
+        <circle cx="16" cy="28" r="16" fill="#165DFF"/>
+        <text x="16" y="34" text-anchor="middle" fill="white" font-size="16">🎯</text>
+        
+        <rect x="40" y="0" width="420" height="100" class="bubble-streaming" rx="16"/>
+        <text x="56" y="28" class="text-body">
+          <tspan x="56" dy="0">我正在为你收集关键信息...</tspan>
+          <tspan x="56" dy="24">需要你补充一下两个offer的具体信息</tspan>
+        </text>
+        
+        <!-- Typing indicator -->
+        <g transform="translate(56, 68)">
+          <circle cx="0" cy="0" r="3" fill="#165DFF">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="12" cy="0" r="3" fill="#165DFF">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="24" cy="0" r="3" fill="#165DFF">
+            <animate attributeName="opacity" values="0.3;0.3;1;0.3" dur="1.4s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </g>
+    </g>
+    
+    <!-- Input Area -->
+    <g transform="translate(20, 700)">
+      <rect x="0" y="0" width="646" height="48" rx="8" class="bubble-assistant"/>
+      <text x="16" y="30" class="text-secondary">请输入你的回答... 支持换行，Shift+回车换行</text>
+      
+      <!-- Action Buttons -->
+      <rect x="660" y="0" width="36" height="48" class="btn-outline" rx="6"/>
+      <text x="678" y="28" text-anchor="middle" fill="#4E5969" font-size="20">📎</text>
+      
+      <rect x="706" y="0" width="80" height="48" class="btn-primary" rx="6"/>
+      <text x="746" y="30" text-anchor="middle" class="btn-text">发送 ⏎</text>
+    </g>
+    
+    <!-- Quick Actions -->
+    <g transform="translate(20, 760)">
+      <rect x="0" y="0" width="160" height="32" class="btn-outline" rx="6"/>
+      <text x="80" y="21" text-anchor="middle" class="btn-text-secondary">信息已足够，直接分析</text>
+      
+      <rect x="176" y="0" width="120" height="32" class="btn-outline" rx="6"/>
+      <text x="236" y="21" text-anchor="middle" class="btn-text-secondary">使用SWOT分析</text>
+      
+      <rect x="312" y="0" width="120" height="32" class="btn-outline" rx="6"/>
+      <text x="372" y="21" text-anchor="middle" class="btn-text-secondary">使用决策矩阵</text>
+    </g>
+  </g>
+
+  <!-- Right Sidebar - 25% -->
+  <g transform="translate(1030, 80)">
+    <rect width="384" height="792" class="panel panel-shadow"/>
+    
+    <!-- Header -->
+    <text x="16" y="36" class="text-h3">📊 信息收集进度</text>
+    
+    <!-- Progress Section -->
+    <g transform="translate(16, 56)">
+      <text x="0" y="0" class="text-body-sm">信息完整性</text>
+      <rect x="0" y="10" width="352" height="16" class="progress-bg" rx="8"/>
+      <rect x="0" y="10" width="194" height="16" class="progress-fill" rx="8"/>
+      <text x="300" y="24" class="text-secondary">55%</text>
+    </g>
+    
+    <!-- Info Checklist -->
+    <g transform="translate(16, 110)">
+      <text x="0" y="0" class="text-body-sm"><tspan x="0" dy="0"><b>已收集信息</b></tspan></text>
+      
+      <!-- Item 1 - Complete -->
+      <g transform="translate(0, 24)">
+        <circle cx="8" cy="8" r="8" class="check-complete"/>
+        <path d="M4 8 L7 11 L12 4" stroke="white" stroke-width="2" fill="none"/>
+        <text x="28" y="14" class="text-body-sm">✅ 核心问题描述</text>
+      </g>
+      
+      <!-- Item 2 - Complete -->
+      <g transform="translate(0, 52)">
+        <circle cx="8" cy="8" r="8" class="check-complete"/>
+        <path d="M4 8 L7 11 L12 4" stroke="white" stroke-width="2" fill="none"/>
+        <text x="28" y="14" class="text-body-sm">✅ 评估维度清单</text>
+      </g>
+      
+      <!-- Item 3 - Pending -->
+      <g transform="translate(0, 80)">
+        <circle cx="8" cy="8" r="8" class="check-pending"/>
+        <text x="28" y="14" class="text-pending">⚪ 方案A详情</text>
+      </g>
+      
+      <!-- Item 4 - Pending -->
+      <g transform="translate(0, 108)">
+        <circle cx="8" cy="8" r="8" class="check-pending"/>
+        <text x="28" y="14" class="text-pending">⚪ 方案B详情</text>
+      </g>
+      
+      <!-- Item 5 - Pending -->
+      <g transform="translate(0, 136)">
+        <circle cx="8" cy="8" r="8" class="check-pending"/>
+        <text x="28" y="14" class="text-pending">⚪ 约束条件/风险因素</text>
+      </g>
+    </g>
+    
+    <!-- Divider -->
+    <line x1="16" y1="260" x2="368" y2="260" class="divider"/>
+    
+    <!-- Next Step -->
+    <g transform="translate(16, 280)">
+      <text x="0" y="0" class="text-body-sm"><b>💡 建议下一步：</b></text>
+      <rect x="0" y="16" width="352" height="80" rx="8" fill="#F2F3F5"/>
+      <text x="12" y="40" class="text-body-sm">
+        <tspan x="12" dy="0">请补充两个offer的具体信息：</tspan>
+        <tspan x="12" dy="22">• 薪资和福利范围</tspan>
+        <tspan x="12" dy="22">• 公司规模和行业地位</tspan>
+      </text>
+    </g>
+    
+    <!-- Action Button -->
+    <g transform="translate(16, 410)">
+      <rect x="0" y="0" width="352" height="44" class="btn-primary" rx="8"/>
+      <text x="176" y="28" text-anchor="middle" class="btn-text">信息已完整，生成分析报告</text>
+    </g>
+    
+    <!-- Divider -->
+    <line x1="16" y1="480" x2="368" y2="480" class="divider"/>
+    
+    <!-- Analysis Methods -->
+    <g transform="translate(16, 500)">
+      <text x="0" y="0" class="text-body-sm"><b>🔧 分析方法</b></text>
+      
+      <g transform="translate(0, 20)">
+        <rect x="0" y="0" width="168" height="36" rx="6" fill="#E8F3FF" stroke="#165DFF" stroke-width="1"/>
+        <text x="84" y="24" text-anchor="middle" fill="#165DFF" font-size="13">思维链 CoT</text>
+        
+        <rect x="180" y="0" width="168" height="36" rx="6" class="btn-outline"/>
+        <text x="264" y="24" text-anchor="middle" class="btn-text-secondary">SWOT分析</text>
+      </g>
+      
+      <g transform="translate(0, 62)">
+        <rect x="0" y="0" width="168" height="36" rx="6" class="btn-outline"/>
+        <text x="84" y="24" text-anchor="middle" class="btn-text-secondary">决策矩阵</text>
+        
+        <rect x="180" y="0" width="168" height="36" rx="6" class="btn-outline"/>
+        <text x="264" y="24" text-anchor="middle" class="btn-text-secondary">风险分析</text>
+      </g>
+      
+      <g transform="translate(0, 104)">
+        <rect x="0" y="0" width="168" height="36" rx="6" class="btn-outline"/>
+        <text x="84" y="24" text-anchor="middle" class="btn-text-secondary">成本收益分析</text>
+        
+        <rect x="180" y="0" width="168" height="36" rx="6" class="btn-outline"/>
+        <text x="264" y="24" text-anchor="middle" class="btn-text-secondary">多视角角色扮演</text>
+      </g>
+    </g>
+    
+    <!-- Divider -->
+    <line x1="16" y1="660" x2="368" y2="660" class="divider"/>
+    
+    <!-- Estimate -->
+    <g transform="translate(16, 680)">
+      <text x="0" y="0" class="text-body-sm"><b>⏱️ 预计生成时间</b></text>
+      <text x="0" y="24" class="text-secondary">根据问题复杂度，大约需要 30-60 秒</text>
+    </g>
+    
+    <!-- Tips -->
+    <g transform="translate(16, 730)">
+      <text x="0" y="0" class="text-secondary" font-size="12">
+        <tspan x="0" dy="0">💡 提示：信息越完整，分析</tspan>
+        <tspan x="0" dy="18">结果越准确可靠</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- Footer -->
+  <text x="720" y="890" text-anchor="middle" class="text-secondary" font-size="12">方法论专家 · 系统性深度思考 · 让决策更明智</text>
+</svg>

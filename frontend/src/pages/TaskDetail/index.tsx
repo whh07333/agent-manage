@@ -1,15 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button, Space, Tabs, Tag, Avatar, Progress, List, Divider } from 'antd';
+import { Card, Button, Space, Tabs, Tag, Avatar, Progress, List, Divider, Timeline } from 'antd';
 import {
   ArrowLeftOutlined,
   EditOutlined,
   DeleteOutlined,
   FileTextOutlined,
   PlusOutlined,
+  HistoryOutlined,
 } from '@ant-design/icons';
 import { taskApi, projectApi } from '../../services/api';
 import type { Task, Project } from '../../types';
+
+// 任务历史记录类型定义
+export interface TaskHistoryItem {
+  id: string;
+  action: 'create' | 'update' | 'status_change' | 'assign' | 'comment' | 'deliverable_upload' | 'accept' | 'block' | 'unblock';
+  actor: string;
+  actorType: 'agent' | 'human';
+  oldValue?: any;
+  newValue?: any;
+  comment?: string;
+  timestamp: string;
+}
 
 // 模拟任务数据
 const mockTask: Task = {
@@ -19,9 +32,9 @@ const mockTask: Task = {
   status: 'unassigned',
   priority: 'P0',
   assignee: '产品Agent',
-  projectId: '1',
-  startDate: '2026-03-12',
-  endDate: '2026-03-15',
+  project_id: '1',
+  start_date: '2026-03-12',
+  end_date: '2026-03-15',
   progress: 0,
   dependencies: [],
   deliverables: [
@@ -31,8 +44,8 @@ const mockTask: Task = {
       type: 'document',
       url: 'https://example.com/doc',
       version: '1.0',
-      uploadedBy: '产品Agent',
-      uploadedAt: '2026-03-12',
+      uploaded_by: '产品Agent',
+      uploaded_at: '2026-03-12',
       comments: '文档已完成',
     },
     {
@@ -41,8 +54,8 @@ const mockTask: Task = {
       type: 'document',
       url: 'https://example.com/prd',
       version: '1.0',
-      uploadedBy: '产品Agent',
-      uploadedAt: '2026-03-12',
+      uploaded_by: '产品Agent',
+      uploaded_at: '2026-03-12',
       comments: 'PRD文档已完成',
     },
   ],
@@ -51,22 +64,61 @@ const mockTask: Task = {
       id: '1',
       content: '需求分析已完成，等待评审',
       author: '产品Agent',
-      authorType: 'agent',
-      createdAt: '2026-03-12',
+      author_type: 'agent',
+      created_at: '2026-03-12',
       replies: [],
     },
     {
       id: '2',
       content: '需求分析文档已审阅，内容完整',
       author: '开发Agent',
-      authorType: 'agent',
-      createdAt: '2026-03-13',
+      author_type: 'agent',
+      created_at: '2026-03-13',
       replies: [],
     },
   ],
-  createdAt: '2026-03-12',
-  updatedAt: '2026-03-13',
+  created_at: '2026-03-12',
+  updated_at: '2026-03-13',
 };
+
+// 模拟历史记录数据
+const mockHistory: TaskHistoryItem[] = [
+  {
+    id: '1',
+    action: 'create',
+    actor: '产品Agent',
+    actorType: 'agent',
+    newValue: mockTask,
+    timestamp: mockTask.created_at,
+  },
+  {
+    id: '2',
+    action: 'update',
+    actor: '产品Agent',
+    actorType: 'agent',
+    oldValue: { status: 'unassigned' },
+    newValue: { status: 'inProgress' },
+    comment: '开始需求分析工作',
+    timestamp: '2026-03-12 09:30:00',
+  },
+  {
+    id: '3',
+    action: 'deliverable_upload',
+    actor: '产品Agent',
+    actorType: 'agent',
+    newValue: { deliverable: '需求分析文档' },
+    comment: '上传需求分析文档',
+    timestamp: '2026-03-12 16:45:00',
+  },
+  {
+    id: '4',
+    action: 'comment',
+    actor: '开发Agent',
+    actorType: 'agent',
+    newValue: { comment: '需求分析文档已审阅，内容完整' },
+    timestamp: '2026-03-13 10:15:00',
+  },
+];
 
 // 模拟项目数据
 const mockProject: Project = {
@@ -76,10 +128,10 @@ const mockProject: Project = {
   status: 'active',
   priority: 'P0',
   manager: '产品Agent',
-  startDate: '2026-03-12',
-  endDate: '2026-04-12',
+  start_date: '2026-03-12',
+  end_date: '2026-04-12',
   progress: 85,
-  taskCount: 24,
+  task_count: 24,
   tasks: {
     total: 24,
     unassigned: 3,
@@ -87,8 +139,40 @@ const mockProject: Project = {
     completed: 9,
     blocked: 0,
   },
-  createdAt: '2026-03-12',
-  updatedAt: '2026-03-13',
+  created_at: '2026-03-12',
+  updated_at: '2026-03-13',
+};
+
+// 获取动作描述
+const getActionDescription = (action: TaskHistoryItem['action']): string => {
+  const descriptions: Record<TaskHistoryItem['action'], string> = {
+    create: '创建任务',
+    update: '更新信息',
+    status_change: '状态变更',
+    assign: '分配任务',
+    comment: '添加评论',
+    deliverable_upload: '上传交付物',
+    accept: '验收任务',
+    block: '上报阻塞',
+    unblock: '解除阻塞',
+  };
+  return descriptions[action] || action;
+};
+
+// 获取动作颜色
+const getActionColor = (action: TaskHistoryItem['action']): string => {
+  const colors: Record<TaskHistoryItem['action'], string> = {
+    create: 'green',
+    update: 'blue',
+    status_change: 'orange',
+    assign: 'purple',
+    comment: 'default',
+    deliverable_upload: 'cyan',
+    accept: 'green',
+    block: 'red',
+    unblock: 'green',
+  };
+  return colors[action] || 'default';
 };
 
 export const TaskDetail: React.FC = () => {
@@ -96,6 +180,7 @@ export const TaskDetail: React.FC = () => {
   const navigate = useNavigate();
   const [task, setTask] = useState<Task | null>(null);
   const [project, setProject] = useState<Project | null>(null);
+  const [history] = useState<TaskHistoryItem[]>(mockHistory);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -121,6 +206,12 @@ export const TaskDetail: React.FC = () => {
           // 使用模拟数据
           setProject(mockProject);
         }
+
+        // TODO: 实际项目中从API获取历史记录
+        // const historyResponse = await taskApi.getTaskHistory(taskId!);
+        // if (historyResponse.code === 0) {
+        //   setHistory(historyResponse.data);
+        // }
       } catch (error) {
         console.error('获取数据失败:', error);
         // 使用模拟数据
@@ -150,9 +241,8 @@ export const TaskDetail: React.FC = () => {
     );
   }
 
-
   return (
-    <div>
+    <div className="container mx-auto px-4 lg:px-8 xl:px-12 max-w-screen-2xl">
       <div style={{ marginBottom: '24px' }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(`/projects/${id}`)}>
           返回项目详情
@@ -221,7 +311,7 @@ export const TaskDetail: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>截止日期</div>
-                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{task.endDate}</div>
+                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{task.end_date}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>进度</div>
@@ -290,8 +380,8 @@ export const TaskDetail: React.FC = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '16px', fontWeight: '500' }}>{deliverable.name}</span>
                           <Tag color={deliverable.type === 'document' ? 'blue' : 
-                               deliverable.type === 'code' ? 'green' : 
-                               deliverable.type === 'image' ? 'orange' : 'gray'}>
+                                   deliverable.type === 'code' ? 'green' : 
+                                   deliverable.type === 'image' ? 'orange' : 'gray'}>
                             {deliverable.type}
                           </Tag>
                         </div>
@@ -301,7 +391,7 @@ export const TaskDetail: React.FC = () => {
                           <p style={{ margin: '8px 0' }}>{deliverable.comments}</p>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ fontSize: '14px', color: '#666' }}>
-                              上传者: {deliverable.uploadedBy}
+                              上传者: {deliverable.uploaded_by}
                             </div>
                             <div style={{ fontSize: '14px', color: '#666' }}>
                               版本: {deliverable.version}
@@ -335,14 +425,14 @@ export const TaskDetail: React.FC = () => {
                   <List.Item key={comment.id}>
                     <List.Item.Meta
                       avatar={
-                        <Avatar style={{ backgroundColor: comment.authorType === 'agent' ? '#1890ff' : '#faad14' }}>
-                          {comment.authorType === 'agent' ? 'AI' : 'U'}
+                        <Avatar style={{ backgroundColor: comment.author_type === 'agent' ? '#1890ff' : '#faad14' }}>
+                          {comment.author_type === 'agent' ? 'AI' : 'U'}
                         </Avatar>
                       }
                       title={
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '16px', fontWeight: '500' }}>{comment.author}</span>
-                          <span style={{ fontSize: '14px', color: '#666' }}>{comment.createdAt}</span>
+                          <span style={{ fontSize: '14px', color: '#666' }}>{comment.created_at}</span>
                         </div>
                       }
                       description={
@@ -357,14 +447,14 @@ export const TaskDetail: React.FC = () => {
                                   <List.Item key={reply.id}>
                                     <List.Item.Meta
                                       avatar={
-                                        <Avatar style={{ backgroundColor: reply.authorType === 'agent' ? '#1890ff' : '#faad14' }}>
-                                          {reply.authorType === 'agent' ? 'AI' : 'U'}
+                                        <Avatar style={{ backgroundColor: reply.author_type === 'agent' ? '#1890ff' : '#faad14' }}>
+                                          {reply.author_type === 'agent' ? 'AI' : 'U'}
                                         </Avatar>
                                       }
                                       title={
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                           <span style={{ fontSize: '14px', fontWeight: '500' }}>{reply.author}</span>
-                                          <span style={{ fontSize: '12px', color: '#666' }}>{reply.createdAt}</span>
+                                          <span style={{ fontSize: '12px', color: '#666' }}>{reply.created_at}</span>
                                         </div>
                                       }
                                       description={
@@ -390,8 +480,43 @@ export const TaskDetail: React.FC = () => {
           label: '历史记录',
           children: (
             <Card>
-              <div style={{ textAlign: 'center', padding: '100px 0' }}>
-                历史记录功能开发中...
+              <div style={{ marginBottom: '16px' }}>
+                <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: 'bold' }}>
+                  <HistoryOutlined /> 变更历史
+                </h3>
+                {history.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '60px 0', color: '#999' }}>
+                    暂无历史记录
+                  </div>
+                ) : (
+                  <Timeline
+                    items={history.map(item => ({
+                      color: getActionColor(item.action),
+                      children: (
+                        <div key={item.id} style={{ paddingBottom: '12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                            <div>
+                              <Tag color={getActionColor(item.action)}>
+                                {getActionDescription(item.action)}
+                              </Tag>
+                              <span style={{ marginLeft: '8px', fontSize: '14px', fontWeight: '500' }}>
+                                {item.actor}
+                              </span>
+                            </div>
+                            <span style={{ fontSize: '12px', color: '#999' }}>
+                              {item.timestamp}
+                            </span>
+                          </div>
+                          {item.comment && (
+                            <div style={{ fontSize: '14px', color: '#666', marginTop: '4px', paddingLeft: '8px' }}>
+                              {item.comment}
+                            </div>
+                          )}
+                        </div>
+                      ),
+                    }))}
+                  />
+                )}
               </div>
             </Card>
           ),
@@ -400,4 +525,3 @@ export const TaskDetail: React.FC = () => {
     </div>
   );
 };
-

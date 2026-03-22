@@ -49,28 +49,28 @@ export const Analytics: React.FC = () => {
           console.error('获取统计数据失败:', response.msg);
           // 使用模拟数据
           setStatistics({
-            activeProjects: 35,
-            pendingReviewTasks: 22,
-            blockedTasks: 12,
-            averageDeliveryTime: 5.2,
-            projectTrend: mockProjectTrend,
-            agentWorkload: mockAgentWorkload,
-            taskStatusDistribution: [],
-            projectEfficiency: [],
+            active_projects: 35,
+            pending_review_tasks: 22,
+            blocked_tasks: 12,
+            average_delivery_time: 5.2,
+            project_trend: mockProjectTrend,
+            agent_workload: mockAgentWorkload,
+            task_status_distribution: [],
+            project_efficiency: [],
           });
         }
       } catch (error) {
         console.error('获取统计数据失败:', error);
         // 使用模拟数据
         setStatistics({
-          activeProjects: 35,
-          pendingReviewTasks: 22,
-          blockedTasks: 12,
-          averageDeliveryTime: 5.2,
-          projectTrend: mockProjectTrend,
-          agentWorkload: mockAgentWorkload,
-          taskStatusDistribution: [],
-          projectEfficiency: [],
+          active_projects: 35,
+          pending_review_tasks: 22,
+          blocked_tasks: 12,
+          average_delivery_time: 5.2,
+          project_trend: mockProjectTrend,
+          agent_workload: mockAgentWorkload,
+          task_status_distribution: [],
+          project_efficiency: [],
         });
       } finally {
         setLoading(false);
@@ -116,7 +116,7 @@ export const Analytics: React.FC = () => {
           <Card>
             <Statistic
               title="项目总数"
-              value={statistics?.activeProjects || 0}
+              value={statistics?.active_projects || 0}
               prefix={<ProjectOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -126,7 +126,7 @@ export const Analytics: React.FC = () => {
           <Card>
             <Statistic
               title="完成项目"
-              value={statistics?.pendingReviewTasks || 0}
+              value={statistics?.pending_review_tasks || 0}
               prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -136,7 +136,7 @@ export const Analytics: React.FC = () => {
           <Card>
             <Statistic
               title="平均时间"
-              value={statistics?.averageDeliveryTime || 0}
+              value={statistics?.average_delivery_time || 0}
               prefix={<ClockCircleOutlined />}
               suffix="天"
               valueStyle={{ color: '#faad14' }}
@@ -147,7 +147,7 @@ export const Analytics: React.FC = () => {
           <Card>
             <Statistic
               title="阻塞率"
-              value={statistics?.blockedTasks || 0}
+              value={statistics?.blocked_tasks || 0}
               prefix={<WarningOutlined />}
               suffix="%"
               valueStyle={{ color: '#f5222d' }}
@@ -161,7 +161,7 @@ export const Analytics: React.FC = () => {
         <Col xs={24} lg={12}>
           <Card title="项目创建趋势">
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={statistics?.projectTrend || mockProjectTrend}>
+              <LineChart data={statistics?.project_trend || mockProjectTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
@@ -175,14 +175,14 @@ export const Analytics: React.FC = () => {
         <Col xs={24} lg={12}>
           <Card title="任务完成趋势">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={statistics?.agentWorkload || mockAgentWorkload}>
+              <BarChart data={statistics?.agent_workload || mockAgentWorkload}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="tasks" fill="#1890ff">
-                  {statistics?.agentWorkload?.map((_entry, index) => (
+                  {statistics?.agent_workload?.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   )) || []}
                 </Bar>

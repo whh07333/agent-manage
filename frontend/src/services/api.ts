@@ -5,6 +5,9 @@ import type { Task } from '../types';
 import type { AuditLog } from '../types';
 import type { Statistics } from '../types';
 import type { User } from '../types';
+import type { ProjectStatistics, CrossProjectStats } from '../types';
+import type { DeadLetterListResponse } from '../types';
+import type { ApiKey, ApiKeyCreateResponse, ApiKeyRotateResponse } from '../types';
 
 // 创建axios实例
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
@@ -81,7 +84,7 @@ export const projectApi = {
     method: 'GET',
   }),
   // 创建项目
-  createProject: (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => request<Project>({
+  createProject: (data: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => request<Project>({
     url: '/api/projects',
     method: 'POST',
     data,
@@ -117,7 +120,7 @@ export const taskApi = {
     method: 'GET',
   }),
   // 创建任务
-  createTask: (data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => request<Task>({
+  createTask: (data: Omit<Task, 'id' | 'created_at' | 'updated_at'>) => request<Task>({
     url: '/api/tasks',
     method: 'POST',
     data,
@@ -163,6 +166,22 @@ export const statisticsApi = {
     url: '/api/statistics',
     method: 'GET',
   }),
+  // 获取项目概览统计
+  getProjectOverview: (projectId: string) => request<ProjectStatistics>({
+    url: `/api/statistics/projects/${projectId}/overview`,
+    method: 'GET',
+  }),
+  // 获取跨项目统计
+  getCrossProjectStats: (params?: {
+    start_date?: string;
+    end_date?: string;
+    project_ids?: string[];
+    agent_ids?: string[];
+  }) => request<CrossProjectStats>({
+    url: '/api/statistics/cross-project',
+    method: 'GET',
+    params,
+  }),
 };
 
 // 用户API
@@ -172,6 +191,74 @@ export const userApi = {
     url: '/api/users',
     method: 'GET',
   }),
+};
+
+// 死信队列API
+export const deadLetterApi = {
+  // 获取死信列表
+  getDeadLetters: (params?: { page?: number; page_size?: number }) =>
+    request<DeadLetterListResponse>({
+      url: '/api/subscriptions/dead-letters',
+      method: 'GET',
+      params,
+    }),
+
+  // 重发单个死信事件
+  retryDeadLetter: (id: string) =>
+    request<null>({
+      url: `/api/subscriptions/dead-letters/${id}/retry`,
+      method: 'POST',
+    }),
+
+  // 批量重发所有死信事件
+  retryAllDeadLetters: () =>
+    request<{ retried: number }>({
+      url: '/api/subscriptions/dead-letters/retry-all',
+      method: 'POST',
+    }),
+
+  // 删除死信事件
+  deleteDeadLetter: (id: string) =>
+    request<null>({
+      url: `/api/subscriptions/dead-letters/${id}`,
+      method: 'DELETE',
+    }),
+};
+
+// API密钥管理API
+export const apiKeyApi = {
+  // 获取Agent的API密钥列表
+  listApiKeys: (agentId: string) =>
+    request<ApiKey[]>({
+      url: `/api/api-keys/agent/${agentId}`,
+      method: 'GET',
+    }),
+
+  // 创建API密钥
+  createApiKey: (agentId: string, expiresInDays?: number) =>
+    request<ApiKeyCreateResponse>({
+      url: '/api/api-keys',
+      method: 'POST',
+      data: {
+        agent_id: agentId,
+        expires_in_days: expiresInDays,
+      },
+    }),
+
+  // 撤销API密钥
+  revokeApiKey: (id: string) =>
+    request<null>({
+      url: `/api/api-keys/${id}/revoke`,
+      method: 'POST',
+    }),
+
+  // 旋转API密钥
+  rotateApiKey: (id: string, expiresInDays?: number) =>
+    request<ApiKeyRotateResponse>({
+      url: `/api/api-keys/${id}/rotate`,
+      method: 'POST',
+      data: expiresInDays !== undefined ? { expires_in_days: expiresInDays } : {},
+    }),
 };
 
 export default apiClient;

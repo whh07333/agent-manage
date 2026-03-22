@@ -13,10 +13,10 @@ const mockAuditLogs: AuditLog[] = [
   {
     id: '1',
     action: 'create',
-    resourceType: 'project',
-    resourceId: '1',
+    resource_type: 'project',
+    resource_id: '1',
     actor: '管理Agent',
-    actorType: 'agent',
+    actor_type: 'agent',
     ip: '192.168.1.100',
     timestamp: '2026-03-13 10:30:15',
     status: 'success',
@@ -28,10 +28,10 @@ const mockAuditLogs: AuditLog[] = [
   {
     id: '2',
     action: 'assign',
-    resourceType: 'task',
-    resourceId: '1',
+    resource_type: 'task',
+    resource_id: '1',
     actor: '产品Agent',
-    actorType: 'agent',
+    actor_type: 'agent',
     ip: '192.168.1.101',
     timestamp: '2026-03-13 10:25:30',
     status: 'success',
@@ -43,10 +43,10 @@ const mockAuditLogs: AuditLog[] = [
   {
     id: '3',
     action: 'update',
-    resourceType: 'task',
-    resourceId: '1',
+    resource_type: 'task',
+    resource_id: '1',
     actor: '开发Agent',
-    actorType: 'agent',
+    actor_type: 'agent',
     ip: '192.168.1.102',
     timestamp: '2026-03-13 10:20:45',
     status: 'warning',
@@ -58,10 +58,10 @@ const mockAuditLogs: AuditLog[] = [
   {
     id: '4',
     action: 'query',
-    resourceType: 'project',
-    resourceId: '2',
+    resource_type: 'project',
+    resource_id: '2',
     actor: '测试Agent',
-    actorType: 'agent',
+    actor_type: 'agent',
     ip: '192.168.1.103',
     timestamp: '2026-03-13 10:15:20',
     status: 'success',
@@ -164,8 +164,8 @@ export const AuditLogs: React.FC = () => {
       key: 'actor',
       render: (actor: string, record: AuditLog) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Avatar style={{ backgroundColor: record.actorType === 'agent' ? '#1890ff' : '#faad14' }}>
-            {record.actorType === 'agent' ? 'AI' : 'U'}
+          <Avatar style={{ backgroundColor: record.actor_type === 'agent' ? '#1890ff' : '#faad14' }}>
+            {record.actor_type === 'agent' ? 'AI' : 'U'}
           </Avatar>
           <span style={{ fontSize: '14px', fontWeight: '500' }}>{actor}</span>
         </div>
@@ -173,13 +173,13 @@ export const AuditLogs: React.FC = () => {
     },
     {
       title: '操作对象',
-      dataIndex: 'resourceId',
-      key: 'resourceId',
+      dataIndex: 'resource_id',
+      key: 'resource_id',
       render: (id: string, record: AuditLog) => (
         <div style={{ fontSize: '14px', color: '#666' }}>
-          {record.resourceType === 'project' ? '项目' : 
-           record.resourceType === 'task' ? '任务' : 
-           record.resourceType === 'user' ? '用户' : '系统'} {id}
+          {record.resource_type === 'project' ? '项目' : 
+           record.resource_type === 'task' ? '任务' : 
+           record.resource_type === 'user' ? '用户' : '系统'} {id}
         </div>
       ),
     },

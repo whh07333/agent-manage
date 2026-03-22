@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, List, Button, Input, Space, Pagination, Tag, Progress } from 'antd';
+import { Card, List, Button, Input, Space, Pagination, Tag, Progress, Modal, Form, Input as AntInput, DatePicker, message } from 'antd';
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import { projectApi } from '../../services/api';
 import type { Project } from '../../types';
@@ -13,10 +13,10 @@ const mockProjects: Project[] = [
     status: 'active',
     priority: 'P0',
     manager: '产品Agent',
-    startDate: '2026-03-12',
-    endDate: '2026-04-12',
+    start_date: '2026-03-12',
+    end_date: '2026-04-12',
     progress: 85,
-    taskCount: 24,
+    task_count: 24,
     tasks: {
       total: 24,
       unassigned: 3,
@@ -24,8 +24,8 @@ const mockProjects: Project[] = [
       completed: 9,
       blocked: 0,
     },
-    createdAt: '2026-03-12',
-    updatedAt: '2026-03-13',
+    created_at: '2026-03-12',
+    updated_at: '2026-03-13',
   },
   {
     id: '2',
@@ -34,10 +34,10 @@ const mockProjects: Project[] = [
     status: 'active',
     priority: 'P1',
     manager: '开发Agent',
-    startDate: '2026-03-10',
-    endDate: '2026-04-10',
+    start_date: '2026-03-10',
+    end_date: '2026-04-10',
     progress: 42,
-    taskCount: 18,
+    task_count: 18,
     tasks: {
       total: 18,
       unassigned: 5,
@@ -45,8 +45,8 @@ const mockProjects: Project[] = [
       completed: 5,
       blocked: 0,
     },
-    createdAt: '2026-03-10',
-    updatedAt: '2026-03-13',
+    created_at: '2026-03-10',
+    updated_at: '2026-03-13',
   },
   {
     id: '3',
@@ -55,10 +55,10 @@ const mockProjects: Project[] = [
     status: 'active',
     priority: 'P2',
     manager: '测试Agent',
-    startDate: '2026-03-15',
-    endDate: '2026-04-15',
+    start_date: '2026-03-15',
+    end_date: '2026-04-15',
     progress: 25,
-    taskCount: 12,
+    task_count: 12,
     tasks: {
       total: 12,
       unassigned: 8,
@@ -66,8 +66,8 @@ const mockProjects: Project[] = [
       completed: 0,
       blocked: 0,
     },
-    createdAt: '2026-03-15',
-    updatedAt: '2026-03-13',
+    created_at: '2026-03-15',
+    updated_at: '2026-03-15',
   },
   {
     id: '4',
@@ -76,10 +76,10 @@ const mockProjects: Project[] = [
     status: 'overdue',
     priority: 'P0',
     manager: '管理Agent',
-    startDate: '2026-03-05',
-    endDate: '2026-03-12',
+    start_date: '2026-03-05',
+    end_date: '2026-03-12',
     progress: 0,
-    taskCount: 20,
+    task_count: 20,
     tasks: {
       total: 20,
       unassigned: 15,
@@ -87,8 +87,8 @@ const mockProjects: Project[] = [
       completed: 0,
       blocked: 3,
     },
-    createdAt: '2026-03-05',
-    updatedAt: '2026-03-13',
+    created_at: '2026-03-05',
+    updated_at: '2026-03-13',
   },
 ];
 
@@ -98,6 +98,8 @@ export const ProjectList: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,6 +168,52 @@ export const ProjectList: React.FC = () => {
     }
   };
 
+  // 打开创建项目模态框
+  const handleOpenCreateModal = () => {
+    setCreateModalVisible(true);
+    form.resetFields();
+  };
+
+  // 关闭创建项目模态框
+  const handleCloseCreateModal = () => {
+    setCreateModalVisible(false);
+    form.resetFields();
+  };
+
+  // 提交创建项目
+  const handleCreateProject = async () => {
+    try {
+      const values = await form.validateFields();
+      
+      // 格式转换
+      const projectData = {
+        ...values,
+        start_date: values.start_date.format('YYYY-MM-DD'),
+        end_date: values.end_date.format('YYYY-MM-DD'),
+      };
+
+      // 验证开始日期必须早于结束日期（前端也做一次校验）
+      const start = new Date(projectData.start_date);
+      const end = new Date(projectData.end_date);
+      if (start.getTime() > end.getTime()) {
+        message.error('开始日期必须早于结束日期');
+        return;
+      }
+
+      // 这里调用API创建项目
+      console.log('创建项目:', projectData);
+      
+      // 刷新列表（实际开发中应该从后端重新获取）
+      message.success('项目创建成功');
+      handleCloseCreateModal();
+      
+      // TODO: 重新获取项目列表
+    } catch (error) {
+      console.error('创建项目失败:', error);
+      message.error('创建项目失败，请检查表单');
+    }
+  };
+
   return (
     <div>
       <div style={{ 
@@ -185,7 +233,11 @@ export const ProjectList: React.FC = () => {
             style={{ width: 200 }}
           />
           <Button icon={<FilterOutlined />}>筛选</Button>
-          <Button icon={<PlusOutlined />} type="primary">
+          <Button 
+            icon={<PlusOutlined />} 
+            type="primary"
+            onClick={handleOpenCreateModal}
+          >
             创建项目
           </Button>
         </Space>
@@ -305,7 +357,119 @@ export const ProjectList: React.FC = () => {
           showTotal={(total) => `共 ${total} 个项目`}
         />
       </div>
+
+      {/* 创建项目模态框 */}
+      <Modal
+        title="创建新项目"
+        open={createModalVisible}
+        onCancel={handleCloseCreateModal}
+        footer={null}
+        width={600}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleCreateProject}
+          initialValues={{
+            priority: 'P1',
+          }}
+        >
+          <Form.Item
+            name="name"
+            label="项目名称"
+            rules={[{ required: true, message: '请输入项目名称' }]}
+          >
+            <AntInput placeholder="请输入项目名称" />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            label="项目描述"
+            rules={[{ required: true, message: '请输入项目描述' }]}
+          >
+            <AntInput.TextArea 
+              rows={4} 
+              placeholder="请输入项目描述"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="manager"
+            label="项目负责人"
+            rules={[{ required: true, message: '请输入项目负责人' }]}
+          >
+            <AntInput placeholder="请输入项目负责人" />
+          </Form.Item>
+
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <Form.Item
+              name="start_date"
+              label="开始日期"
+              rules={[{ required: true, message: '请选择开始日期' }]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker 
+                style={{ width: '100%' }} 
+                placeholder="选择开始日期"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="end_date"
+              label="结束日期"
+              rules={[{ required: true, message: '请选择结束日期' }]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker 
+                style={{ width: '100%' }} 
+                placeholder="选择结束日期"
+              />
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            name="priority"
+            label="优先级"
+            rules={[{ required: true, message: '请选择优先级' }]}
+          >
+            <Input.Group compact>
+              <Button
+                type={form.getFieldValue('priority') === 'P0' ? 'primary' : 'default'}
+                danger
+                onClick={() => form.setFieldValue('priority', 'P0')}
+              >
+                P0 - 最高
+              </Button>
+              <Button
+                type={form.getFieldValue('priority') === 'P1' ? 'primary' : 'default'}
+                onClick={() => form.setFieldValue('priority', 'P1')}
+              >
+                P1 - 高
+              </Button>
+              <Button
+                type={form.getFieldValue('priority') === 'P2' ? 'primary' : 'default'}
+                onClick={() => form.setFieldValue('priority', 'P2')}
+              >
+                P2 - 中
+              </Button>
+              <Button
+                type={form.getFieldValue('priority') === 'P3' ? 'primary' : 'default'}
+                onClick={() => form.setFieldValue('priority', 'P3')}
+              >
+                P3 - 低
+              </Button>
+            </Input.Group>
+          </Form.Item>
+
+          <Form.Item>
+            <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+              <Button onClick={handleCloseCreateModal}>取消</Button>
+              <Button type="primary" htmlType="submit">创建项目</Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
-

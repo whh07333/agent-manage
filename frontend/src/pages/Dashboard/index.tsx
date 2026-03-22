@@ -54,14 +54,14 @@ export const Dashboard: React.FC = () => {
         console.error('获取统计数据失败:', error);
         // 使用模拟数据
         setStatistics({
-          activeProjects: 24,
-          pendingReviewTasks: 8,
-          blockedTasks: 3,
-          averageDeliveryTime: 5.2,
-          projectTrend: mockProjectTrend,
-          agentWorkload: mockAgentWorkload,
-          taskStatusDistribution: [],
-          projectEfficiency: [],
+          active_projects: 24,
+          pending_review_tasks: 8,
+          blocked_tasks: 3,
+          average_delivery_time: 5.2,
+          project_trend: mockProjectTrend,
+          agent_workload: mockAgentWorkload,
+          task_status_distribution: [],
+          project_efficiency: [],
         });
       } finally {
         setLoading(false);
@@ -107,7 +107,7 @@ export const Dashboard: React.FC = () => {
           <Card>
             <Statistic
               title="活跃项目数"
-              value={statistics?.activeProjects || 0}
+              value={statistics?.active_projects || 0}
               prefix={<ProjectOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -117,7 +117,7 @@ export const Dashboard: React.FC = () => {
           <Card>
             <Statistic
               title="待验收任务"
-              value={statistics?.pendingReviewTasks || 0}
+              value={statistics?.pending_review_tasks || 0}
               prefix={<CheckSquareOutlined />}
               valueStyle={{ color: '#faad14' }}
             />
@@ -127,7 +127,7 @@ export const Dashboard: React.FC = () => {
           <Card>
             <Statistic
               title="阻塞任务数"
-              value={statistics?.blockedTasks || 0}
+              value={statistics?.blocked_tasks || 0}
               prefix={<WarningOutlined />}
               valueStyle={{ color: '#f5222d' }}
             />
@@ -137,7 +137,7 @@ export const Dashboard: React.FC = () => {
           <Card>
             <Statistic
               title="平均交付周期"
-              value={statistics?.averageDeliveryTime || 0}
+              value={statistics?.average_delivery_time || 0}
               prefix={<ClockCircleOutlined />}
               suffix="天"
               valueStyle={{ color: '#52c41a' }}
@@ -151,7 +151,7 @@ export const Dashboard: React.FC = () => {
         <Col xs={24} lg={12}>
           <Card title="项目进度趋势" style={{ height: '100%' }}>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={statistics?.projectTrend || mockProjectTrend}>
+              <LineChart data={statistics?.project_trend || mockProjectTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
@@ -165,14 +165,14 @@ export const Dashboard: React.FC = () => {
         <Col xs={24} lg={12}>
           <Card title="Agent工作负载" style={{ height: '100%' }}>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={statistics?.agentWorkload || mockAgentWorkload}>
+              <BarChart data={statistics?.agent_workload || mockAgentWorkload}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="tasks" fill="#1890ff">
-                  {(statistics?.agentWorkload || mockAgentWorkload).map((_, index) => (
+                  {(statistics?.agent_workload || mockAgentWorkload).map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Bar>

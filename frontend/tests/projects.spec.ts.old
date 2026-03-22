@@ -1,0 +1,28 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('项目列表页面测试', () => {
+  test('项目列表能正常加载', async ({ page }) => {
+    await page.goto('/projects');
+    await expect(page.getByText('项目列表')).toBeVisible({ timeout: 10000 });
+  });
+
+  test('创建项目按钮可见', async ({ page }) => {
+    await page.goto('/projects');
+    await expect(page.getByRole('button', { name: /创建项目/ })).toBeVisible();
+  });
+
+  test('点击创建项目打开模态框', async ({ page }) => {
+    await page.goto('/projects');
+    await page.getByRole('button', { name: /创建项目/ }).click();
+    await expect(page.getByText('创建新项目')).toBeVisible();
+  });
+
+  test('DEF-IT2-041验证：日期校验存在', async ({ page }) => {
+    await page.goto('/projects');
+    await page.getByRole('button', { name: /创建项目/ }).click();
+    await expect(page.getByText('创建新项目')).toBeVisible();
+    // 验证日期选择器存在
+    await expect(page.getByLabel('开始时间')).toBeVisible();
+    await expect(page.getByLabel('结束时间')).toBeVisible();
+  });
+});

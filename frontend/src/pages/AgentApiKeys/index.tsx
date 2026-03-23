@@ -1,9 +1,8 @@
-import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Table, Card, Button, Space, Modal, message, Tag, Alert, Row, Col } from 'antd';
+import { Table, Card, Button, Space, Modal, message, Tag, Alert, Row, Col, Form, Input } from 'antd';
 import { PlusOutlined, CopyOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import type { ApiKey, ApiKeyCreateResponse } from '../../types';
+import type { ApiKey, ApiKeyCreateResponse, ApiKeyRotateResponse } from '../../types';
 import { apiKeyApi } from '../../services/api';
 
 export const AgentApiKeys: React.FC = () => {
@@ -11,80 +10,77 @@ export const AgentApiKeys: React.FC = () => {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [createLoading, setCreateLoading] = useState(false);
-  const [newKeyData, setNewKeyData] = useState<ApiKeyCreateResponse | null>(null);
+  const [newKeyData, setNewKeyData] = useState<ApiKeyCreateResponse | ApiKeyRotateResponse | null>(null);
   const [showFullKey, setShowFullKey] = useState<Record<string, boolean>>({});
+  const [form] = Form.useForm();
 
-  if (!agentId) {
-    return (
-      <div className="tw-p-4 container mx-auto">
-        <Alert message="错误" description="未找到Agent ID，请从正确页面访问。" type="error" showIcon />
-      </div>
-    );
-  }
-
-  // Fetch API keys on mount
-  useEffect(() => {
-    const fetchApiKeys = async () => {
-      setLoading(true);
-      try {
-        const response = await apiKeyApi.listApiKeys(agentId!);
-        if (response.code === 0) {
-          setApiKeys(response.data || []);
-        } else {
-          message.error(response.msg || '获取API密钥失败');
-        }
-      } catch (err: any) {
-        message.error(err.message || '网络请求失败');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchApiKeys();
-  }, [agentId]);
-
-  const handleCreateKey = async (expiresInDays?: number) => {
-    if (!agentId) return;
-    setCreateLoading(true);
+  const fetchApiKeys = async () => {
+    setLoading(true);
     try {
-      const response = await apiKeyApi.createApiKey(agentId, expiresInDays);
-      if (response.code === 0 && response.data) {
-        setNewKeyData(response.data);
-        fetchApiKeys();
+      const response = await apiKeyApi.getApiKeys(agentId!);
+      if (response.code === 0) {
+        setApiKeys(response.data || []);
       } else {
-        message.error(response.msg || '创建API密钥失败');
+        message.error(response.msg || '获取API密钥失败');
       }
-    } catch (err) {
-      message.error('创建API密钥异常');
+    } catch (error) {
+      console.error('获取API密钥列表失败:', error);
+      message.error('获取API密钥失败');
     } finally {
-      setCreateLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleRevokeKey = async (id: string) => {
-    Modal.confirm({
-      title: '确认撤销API密钥',
-      content: '撤销后此密钥将立即失效，无法恢复。确认继续吗？',
-      okType: 'danger',
-      onOk: async () => {
-        try {
-          const response = await apiKeyApi.revokeApiKey(id);
-          if (response.code === 0) {
-            message.success('API密钥已撤销');
-            fetchApiKeys();
-          } else {
-            message.error(response.msg || '撤销失败');
-          }
-        } catch (err) {
-          message.error('撤销异常');
-        }
-      },
-    });
+  const handleCreate = async (values: { name: string; expiresAt: string | null }) => {
+    try {
+      const response = await apiKeyApi.createApiKey({
+        agentId: agentId!,
+        name: values.name,
+        expiresAt: values.expiresAt || null,
+      });
+      if (response.code === 0) {
+        setNewKeyData(response.data);
+        message.success('API密钥创建成功');
+        fetchApiKeys();
+        form.resetFields();
+      } else {
+        message.error(response.msg || '创建API密钥失败');
+      }
+    } catch (error) {
+      console.error('创建API密钥失败:', error);
+      message.error('创建API密钥失败');
+    }
   };
 
-  const handleCopyKey = (api_key: string) => {
-    navigator.clipboard.writeText(api_key);
-    message.success('已复制到剪贴板');
+  const handleRevoke = async (id: string) => {
+    try {
+      const response = await apiKeyApi.revokeApiKey(id);
+      if (response.code === 0) {
+        message.success('API密钥已撤销');
+        fetchApiKeys();
+      } else {
+        message.error(response.msg || '撤销API密钥失败');
+      }
+    } catch (error) {
+      console.error('撤销API密钥失败:', error);
+      message.error('撤销API密钥失败');
+    }
+  };
+
+  const handleRotate = async (id: string) => {
+    try {
+      const response = await apiKeyApi.rotateApiKey(id);
+      if (response.code === 0) {
+        setNewKeyData(response.data);
+        message.success('API密钥旋转成功');
+        fetchApiKeys();
+      } else {
+        message.error(response.msg || '旋转API密钥失败');
+      }
+    } catch (error) {
+      console.error('旋转API密钥失败:', error);
+      message.error('旋转API密钥失败');
+    }
   };
 
   const toggleShowKey = (id: string) => {
@@ -94,31 +90,22 @@ export const AgentApiKeys: React.FC = () => {
     }));
   };
 
-  const getStatusText = (status: ApiKey['status']) => {
-    const texts: Record<ApiKey['status'], { text: string; color: string }> = {
-      active: { text: '激活', color: 'green' },
-      expired: { text: '已过期', color: 'orange' },
-      revoked: { text: '已撤销', color: 'red' },
-    };
-    return texts[status];
+  const handleCopyKey = (key: string) => {
+    navigator.clipboard.writeText(key);
+    message.success('已复制到剪贴板');
   };
 
-  const fetchApiKeys = async () => {
-    if (!agentId) return;
-    setLoading(true);
-    try {
-      const response = await apiKeyApi.listApiKeys(agentId);
-      if (response.code === 0) {
-        setApiKeys(response.data || []);
-      } else {
-        message.error(response.msg || '获取API密钥失败');
-      }
-    } catch (err: any) {
-      message.error(err.message || '网络请求失败');
-    } finally {
-      setLoading(false);
-    }
+  const handleCloseCreateModal = () => {
+    setCreateModalVisible(false);
+    setNewKeyData(null);
+    form.resetFields();
   };
+
+  useEffect(() => {
+    if (agentId) {
+      fetchApiKeys();
+    }
+  }, [agentId]);
 
   const columns = [
     {
@@ -130,37 +117,66 @@ export const AgentApiKeys: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (status: ApiKey['status']) => {
-        const { text, color } = getStatusText(status);
-        return <Tag color={color}>{text}</Tag>;
+      render: (status: string) => {
+        const colorMap: Record<string, string> = {
+          active: 'green',
+          expired: 'gray',
+          revoked: 'red',
+        };
+        const labelMap: Record<string, string> = {
+          active: '活跃',
+          expired: '已过期',
+          revoked: '已撤销',
+        };
+        return <Tag color={colorMap[status]}>{labelMap[status]}</Tag>;
       },
     },
     {
       title: '创建时间',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      render: (created_at: string) => created_at,
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => date ? new Date(date).toLocaleString() : '-',
     },
     {
       title: '过期时间',
-      dataIndex: 'expires_at',
-      key: 'expires_at',
-      render: (expires_at: string | null) =>
-        expires_at ? (
-          <span>{dayjs(expires_at).format('YYYY-MM-DD HH:mm')}</span>
-        ) : (
-          <span className="text-gray-400">永不过期</span>
-        ),
+      dataIndex: 'expiresAt',
+      key: 'expiresAt',
+      render: (date: string | null) => date ? new Date(date).toLocaleString() : '永不过期',
+    },
+    {
+      title: '最后使用',
+      dataIndex: 'lastUsedAt',
+      key: 'lastUsedAt',
+      render: (date: string | null) => date ? new Date(date).toLocaleString() : '从未使用',
     },
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: ApiKey) => (
+      render: (_: unknown, record: ApiKey) => (
         <Space size="middle">
-          {record.is_active && (
-            <Button danger size="small" onClick={() => handleRevokeKey(record.id)}>
-              撤销
-            </Button>
+          <Button
+            size="small"
+            icon={showFullKey[record.id] ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+            onClick={() => toggleShowKey(record.id)}
+          >
+            {showFullKey[record.id] ? '隐藏' : '查看'}
+          </Button>
+          <Button
+            size="small"
+            icon={<CopyOutlined />}
+            onClick={() => handleCopyKey(showFullKey[record.id] ? record.maskedKey : record.maskedKey)}
+          >
+            复制
+          </Button>
+          {record.status === 'active' && (
+            <>
+              <Button size="small" danger onClick={() => handleRevoke(record.id)}>
+                撤销
+              </Button>
+              <Button size="small" type="primary" onClick={() => handleRotate(record.id)}>
+                旋转
+              </Button>
+            </>
           )}
         </Space>
       ),
@@ -168,105 +184,105 @@ export const AgentApiKeys: React.FC = () => {
   ];
 
   return (
-    <div className="container mx-auto tw-p-4 max-w-screen-2xl">
-      {/* 页面标题 */}
-      <div className="tw-flex tw-justify-between tw-items-center tw-mb-6">
-        <h2 className="tw-text-2xl tw-font-bold">API密钥管理</h2>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalVisible(true)}>
-          创建新密钥
-        </Button>
-      </div>
-
-      <Alert
-        message="API密钥安全说明"
-        description="API密钥拥有对应Agent的访问权限，请妥善保管。不要在代码中明文存储，不要分享给他人。密钥支持创建多个，可随时撤销。"
-        type="info"
-        showIcon
-        className="tw-mb-6"
-      />
-
-      <Card>
+    <div style={{ padding: '24px' }}>
+      <Card
+        title={
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>API密钥管理</span>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalVisible(true)}>
+              创建密钥
+            </Button>
+          </div>
+        }
+      >
         <Table
-          dataSource={apiKeys}
           columns={columns}
-          rowKey="id"
+          dataSource={apiKeys}
           loading={loading}
+          rowKey="id"
           pagination={{ pageSize: 10 }}
         />
       </Card>
 
-      {/* 创建新密钥模态框 */}
       <Modal
-        title="创建新的API密钥"
+        title="创建新API密钥"
         open={createModalVisible}
-        onCancel={() => setCreateModalVisible(false)}
+        onCancel={handleCloseCreateModal}
         footer={null}
-        width={600}
+        width={500}
+        destroyOnClose
       >
-        <div className="tw-space-y-4">
-          <p>选择密钥有效期：</p>
-          <Row gutter={[16, 16]}>
-            <Col span={8}>
-              <Button block onClick={() => handleCreateKey(30)} loading={createLoading}>
-                30 天
-              </Button>
+        {newKeyData && (
+          <Alert
+            message="API密钥创建成功"
+            description="请立即复制并保存您的API密钥。它不会再次完整显示。"
+            type="success"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+        )}
+        {newKeyData && (
+          <Row gutter={[8, 8]}>
+            <Col span={24}>
+              <strong>完整API密钥：</strong>
+              <div
+                style={{
+                  padding: '8px 12px',
+                  background: '#f5f5f5',
+                  borderRadius: 4,
+                  marginTop: 8,
+                  fontFamily: 'monospace',
+                  wordBreak: 'break-all',
+                }}
+              >
+                {'apiKey' in newKeyData ? newKeyData.apiKey : ''}
+              </div>
             </Col>
-            <Col span={8}>
-              <Button block onClick={() => handleCreateKey(90)} loading={createLoading}>
-                90 天
-              </Button>
-            </Col>
-            <Col span={8}>
-              <Button block onClick={() => handleCreateKey(365)} loading={createLoading}>
-                1 年
+            <Col span={24}>
+              <Button
+                type="primary"
+                icon={<CopyOutlined />}
+                onClick={() => {
+                  if ('apiKey' in newKeyData) {
+                    handleCopyKey(newKeyData.apiKey);
+                  }
+                }}
+                style={{ marginTop: 8 }}
+              >
+                复制完整API密钥
               </Button>
             </Col>
           </Row>
-          <Button block onClick={() => handleCreateKey()} loading={createLoading}>
-            永不过期
-          </Button>
-
-          {/* 新创建的密钥显示 */}
-          {newKeyData && (
-            <div className="tw-mt-4">
-              <Alert
-                message="API密钥已创建"
-                description="这是您唯一一次看到完整密钥，请立即复制并安全保存。关闭后无法再次查看。"
-                type="warning"
-                showIcon
-                className="tw-mb-4"
-              />
-              <Card className="tw-mb-4">
-                <div className="tw-flex tw-items-center tw-justify-between">
-                  <code className="tw-bg-gray-100 tw-px-2 tw-py-1 tw-rounded">
-                    {showFullKey[newKeyData.id] ? newKeyData.api_key : '•'.repeat(32)}
-                  </code>
-                  <Space>
-                    <Button
-                      icon={showFullKey[newKeyData.id] ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                      size="small"
-                      onClick={() => toggleShowKey(newKeyData.id)}
-                    />
-                    <Button icon={<CopyOutlined />} size="small" onClick={() => handleCopyKey(newKeyData.api_key)}>
-                      复制
-                    </Button>
-                  </Space>
-                </div>
-              </Card>
-              <div className="tw-text-right">
-                <Button type="primary" onClick={() => {
-                  setNewKeyData(null);
-                  setCreateModalVisible(false);
-                }}>
-                  我已复制，关闭
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
+        {!newKeyData && (
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleCreate}
+          >
+            <Form.Item
+              name="name"
+              label="密钥名称"
+              rules={[{ required: true, message: '请输入密钥名称' }]}
+            >
+              <Input placeholder="例如：生产环境使用" />
+            </Form.Item>
+            <Form.Item
+              name="expiresAt"
+              label="过期时间"
+              help="留空表示永不过期"
+            >
+              <Input type="date" />
+            </Form.Item>
+            <Form.Item>
+              <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+                <Button onClick={handleCloseCreateModal}>取消</Button>
+                <Button type="primary" htmlType="submit">创建</Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
     </div>
   );
 };
-
-export default AgentApiKeys;

@@ -59,8 +59,8 @@ export const ProjectConfig: React.FC = () => {
           const values = {
             name: projectData.name,
             description: projectData.description,
-            start_date: projectData.start_date ? dayjs(projectData.start_date) : null,
-            end_date: projectData.end_date ? dayjs(projectData.end_date) : null,
+            startDate: projectData.startDate ? dayjs(projectData.startDate) : null,
+            endDate: projectData.endDate ? dayjs(projectData.endDate) : null,
             priority: projectData.priority,
             // 关联Agent（模拟数据）
             agents: ['1', '2'],
@@ -90,7 +90,7 @@ export const ProjectConfig: React.FC = () => {
     if (!id || !project) return;
 
     // 验证结束日期晚于开始日期
-    if (values.start_date && values.end_date && values.end_date.isBefore(values.start_date)) {
+    if (values.startDate && values.endDate && values.endDate.isBefore(values.startDate)) {
       message.error('结束日期必须晚于开始日期');
       return;
     }
@@ -100,8 +100,8 @@ export const ProjectConfig: React.FC = () => {
       const updateData = {
         name: values.name,
         description: values.description || '',
-        start_date: values.start_date ? values.start_date.format('YYYY-MM-DD') : project.start_date,
-        end_date: values.end_date ? values.end_date.format('YYYY-MM-DD') : project.end_date,
+        startDate: values.startDate ? values.startDate.format('YYYY-MM-DD') : project.startDate,
+        endDate: values.endDate ? values.endDate.format('YYYY-MM-DD') : project.endDate,
         priority: values.priority,
         // 注意：实际API可能需要不同的字段格式
       };
@@ -199,7 +199,7 @@ export const ProjectConfig: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <Form.Item
               label="目标开始日期"
-              name="start_date"
+              name="startDate"
               rules={[{ required: true, message: '请选择开始日期' }]}
             >
               <DatePicker
@@ -211,7 +211,7 @@ export const ProjectConfig: React.FC = () => {
 
             <Form.Item
               label="目标结束日期"
-              name="end_date"
+              name="endDate"
               rules={[{ required: true, message: '请选择结束日期' }]}
             >
               <DatePicker

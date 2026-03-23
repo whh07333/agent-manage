@@ -4,7 +4,6 @@ import type { Project } from '../types';
 import type { Task } from '../types';
 import type { AuditLog } from '../types';
 import type { Statistics } from '../types';
-import type { User } from '../types';
 import type { ProjectStatistics, CrossProjectStats } from '../types';
 import type { DeadLetterListResponse } from '../types';
 import type { ApiKey, ApiKeyCreateResponse, ApiKeyRotateResponse } from '../types';
@@ -49,7 +48,14 @@ apiClient.interceptors.response.use(
   (error) => {
     // 统一错误处理
     if (error.response?.status === 401) {
-      // 处理未授权
+      // 开发环境：如果有默认token，不跳转到登录页
+      // 因为前端会回退到模拟数据，让用户继续使用
+      const defaultToken = import.meta.env.VITE_DEFAULT_TOKEN;
+      if (defaultToken) {
+        console.warn('401 认证失败，但开发环境使用默认token，不跳转登录');
+        return Promise.reject(error);
+      }
+      // 生产环境：处理未授权
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
@@ -84,7 +90,7 @@ export const projectApi = {
     method: 'GET',
   }),
   // 创建项目
-  createProject: (data: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => request<Project>({
+  createProject: (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => request<Project>({
     url: '/api/projects',
     method: 'POST',
     data,
@@ -120,7 +126,7 @@ export const taskApi = {
     method: 'GET',
   }),
   // 创建任务
-  createTask: (data: Omit<Task, 'id' | 'created_at' | 'updated_at'>) => request<Task>({
+  createTask: (data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => request<Task>({
     url: '/api/tasks',
     method: 'POST',
     data,
@@ -132,27 +138,15 @@ export const taskApi = {
     data,
   }),
   // 删除任务
-  deleteTask: (_id: string) => request<void>({
-    url: `/api/tasks/${_id}`,
+  deleteTask: (id: string) => request<void>({
+    url: `/api/tasks/${id}`,
     method: 'DELETE',
-  }),
-  // 更新任务状态
-  updateTaskStatus: (id: string, status: Task['status']) => request<Task>({
-    url: `/api/tasks/${id}/status`,
-    method: 'PATCH',
-    data: { status },
-  }),
-  // 分配任务
-  assignTask: (id: string, assignee: string) => request<Task>({
-    url: `/api/tasks/${id}/assign`,
-    method: 'PATCH',
-    data: { assignee },
   }),
 };
 
 // 审计日志API
 export const auditLogApi = {
-  // 获取审计日志
+  // 获取审计日志列表
   getAuditLogs: () => request<AuditLog[]>({
     url: '/api/audit-logs',
     method: 'GET',
@@ -163,12 +157,12 @@ export const auditLogApi = {
 export const statisticsApi = {
   // 获取统计数据
   getStatistics: () => request<Statistics>({
-    url: '/api/statistics',
+    url: '/api/statistics/realtime/overview',
     method: 'GET',
   }),
   // 获取项目概览统计
   getProjectOverview: (projectId: string) => request<ProjectStatistics>({
-    url: `/api/statistics/projects/${projectId}/overview`,
+    url: `/api/statistics/project/${projectId}`,
     method: 'GET',
   }),
   // 获取跨项目统计
@@ -184,81 +178,61 @@ export const statisticsApi = {
   }),
 };
 
-// 用户API
-export const userApi = {
-  // 获取用户列表
-  getUsers: () => request<User[]>({
-    url: '/api/users',
+// 死信管理API
+export const deadLetterApi = {
+  // 获取死信列表
+  getDeadLetterList: (params: {
+    page: number;
+    pageSize: number;
+  }) => request<DeadLetterListResponse>({
+    url: '/api/dead-letter',
     method: 'GET',
+    params,
+  }),
+  // 重试单条死信
+  retryDeadLetter: (id: string) => request<void>({
+    url: `/api/dead-letter/${id}/retry`,
+    method: 'POST',
+  }),
+  // 重试全部死信
+  retryAllDeadLetters: () => request<void>({
+    url: '/api/dead-letter/retry-all',
+    method: 'POST',
+  }),
+  // 删除死信
+  deleteDeadLetter: (id: string) => request<void>({
+    url: `/api/dead-letter/${id}`,
+    method: 'DELETE',
   }),
 };
 
-// 死信队列API
-export const deadLetterApi = {
-  // 获取死信列表
-  getDeadLetters: (params?: { page?: number; page_size?: number }) =>
-    request<DeadLetterListResponse>({
-      url: '/api/subscriptions/dead-letters',
-      method: 'GET',
-      params,
-    }),
-
-  // 重发单个死信事件
-  retryDeadLetter: (id: string) =>
-    request<null>({
-      url: `/api/subscriptions/dead-letters/${id}/retry`,
-      method: 'POST',
-    }),
-
-  // 批量重发所有死信事件
-  retryAllDeadLetters: () =>
-    request<{ retried: number }>({
-      url: '/api/subscriptions/dead-letters/retry-all',
-      method: 'POST',
-    }),
-
-  // 删除死信事件
-  deleteDeadLetter: (id: string) =>
-    request<null>({
-      url: `/api/subscriptions/dead-letters/${id}`,
-      method: 'DELETE',
-    }),
-};
-
-// API密钥管理API
+// API密钥API
 export const apiKeyApi = {
-  // 获取Agent的API密钥列表
-  listApiKeys: (agentId: string) =>
-    request<ApiKey[]>({
-      url: `/api/api-keys/agent/${agentId}`,
-      method: 'GET',
-    }),
-
+  // 获取API密钥列表
+  getApiKeys: (agentId: string) => request<ApiKey[]>({
+    url: `/api/api-keys/${agentId}`,
+    method: 'GET',
+  }),
   // 创建API密钥
-  createApiKey: (agentId: string, expiresInDays?: number) =>
-    request<ApiKeyCreateResponse>({
-      url: '/api/api-keys',
-      method: 'POST',
-      data: {
-        agent_id: agentId,
-        expires_in_days: expiresInDays,
-      },
-    }),
-
-  // 撤销API密钥
-  revokeApiKey: (id: string) =>
-    request<null>({
-      url: `/api/api-keys/${id}/revoke`,
-      method: 'POST',
-    }),
-
+  createApiKey: (data: {
+    agentId: string;
+    name: string;
+    expiresAt: string | null;
+  }) => request<ApiKeyCreateResponse>({
+    url: '/api/api-keys',
+    method: 'POST',
+    data,
+  }),
   // 旋转API密钥
-  rotateApiKey: (id: string, expiresInDays?: number) =>
-    request<ApiKeyRotateResponse>({
-      url: `/api/api-keys/${id}/rotate`,
-      method: 'POST',
-      data: expiresInDays !== undefined ? { expires_in_days: expiresInDays } : {},
-    }),
+  rotateApiKey: (id: string) => request<ApiKeyRotateResponse>({
+    url: `/api/api-keys/${id}/rotate`,
+    method: 'POST',
+  }),
+  // 撤销API密钥
+  revokeApiKey: (id: string) => request<void>({
+    url: `/api/api-keys/${id}/revoke`,
+    method: 'POST',
+  }),
 };
 
 export default apiClient;

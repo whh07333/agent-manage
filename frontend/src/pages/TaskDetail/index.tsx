@@ -32,9 +32,9 @@ const mockTask: Task = {
   status: 'unassigned',
   priority: 'P0',
   assignee: '产品Agent',
-  project_id: '1',
-  start_date: '2026-03-12',
-  end_date: '2026-03-15',
+  projectId: '1',
+  startDate: '2026-03-12',
+  endDate: '2026-03-15',
   progress: 0,
   dependencies: [],
   deliverables: [
@@ -44,8 +44,8 @@ const mockTask: Task = {
       type: 'document',
       url: 'https://example.com/doc',
       version: '1.0',
-      uploaded_by: '产品Agent',
-      uploaded_at: '2026-03-12',
+      uploadedBy: '产品Agent',
+      uploadedAt: '2026-03-12',
       comments: '文档已完成',
     },
     {
@@ -54,8 +54,8 @@ const mockTask: Task = {
       type: 'document',
       url: 'https://example.com/prd',
       version: '1.0',
-      uploaded_by: '产品Agent',
-      uploaded_at: '2026-03-12',
+      uploadedBy: '产品Agent',
+      uploadedAt: '2026-03-12',
       comments: 'PRD文档已完成',
     },
   ],
@@ -64,21 +64,21 @@ const mockTask: Task = {
       id: '1',
       content: '需求分析已完成，等待评审',
       author: '产品Agent',
-      author_type: 'agent',
-      created_at: '2026-03-12',
+      authorType: 'agent',
+      createdAt: '2026-03-12',
       replies: [],
     },
     {
       id: '2',
       content: '需求分析文档已审阅，内容完整',
       author: '开发Agent',
-      author_type: 'agent',
-      created_at: '2026-03-13',
+      authorType: 'agent',
+      createdAt: '2026-03-13',
       replies: [],
     },
   ],
-  created_at: '2026-03-12',
-  updated_at: '2026-03-13',
+  createdAt: '2026-03-12',
+  updatedAt: '2026-03-13',
 };
 
 // 模拟历史记录数据
@@ -89,7 +89,7 @@ const mockHistory: TaskHistoryItem[] = [
     actor: '产品Agent',
     actorType: 'agent',
     newValue: mockTask,
-    timestamp: mockTask.created_at,
+    timestamp: mockTask.createdAt,
   },
   {
     id: '2',
@@ -128,10 +128,10 @@ const mockProject: Project = {
   status: 'active',
   priority: 'P0',
   manager: '产品Agent',
-  start_date: '2026-03-12',
-  end_date: '2026-04-12',
+  startDate: '2026-03-12',
+  endDate: '2026-04-12',
   progress: 85,
-  task_count: 24,
+  taskCount: 24,
   tasks: {
     total: 24,
     unassigned: 3,
@@ -139,8 +139,8 @@ const mockProject: Project = {
     completed: 9,
     blocked: 0,
   },
-  created_at: '2026-03-12',
-  updated_at: '2026-03-13',
+  createdAt: '2026-03-12',
+  updatedAt: '2026-03-13',
 };
 
 // 获取动作描述
@@ -311,7 +311,7 @@ export const TaskDetail: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>截止日期</div>
-                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{task.end_date}</div>
+                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{task.endDate}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>进度</div>
@@ -391,7 +391,7 @@ export const TaskDetail: React.FC = () => {
                           <p style={{ margin: '8px 0' }}>{deliverable.comments}</p>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ fontSize: '14px', color: '#666' }}>
-                              上传者: {deliverable.uploaded_by}
+                              上传者: {deliverable.uploadedBy}
                             </div>
                             <div style={{ fontSize: '14px', color: '#666' }}>
                               版本: {deliverable.version}
@@ -425,14 +425,14 @@ export const TaskDetail: React.FC = () => {
                   <List.Item key={comment.id}>
                     <List.Item.Meta
                       avatar={
-                        <Avatar style={{ backgroundColor: comment.author_type === 'agent' ? '#1890ff' : '#faad14' }}>
-                          {comment.author_type === 'agent' ? 'AI' : 'U'}
+                        <Avatar style={{ backgroundColor: comment.authorType === 'agent' ? '#1890ff' : '#faad14' }}>
+                          {comment.authorType === 'agent' ? 'AI' : 'U'}
                         </Avatar>
                       }
                       title={
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '16px', fontWeight: '500' }}>{comment.author}</span>
-                          <span style={{ fontSize: '14px', color: '#666' }}>{comment.created_at}</span>
+                          <span style={{ fontSize: '14px', color: '#666' }}>{comment.createdAt}</span>
                         </div>
                       }
                       description={
@@ -447,14 +447,14 @@ export const TaskDetail: React.FC = () => {
                                   <List.Item key={reply.id}>
                                     <List.Item.Meta
                                       avatar={
-                                        <Avatar style={{ backgroundColor: reply.author_type === 'agent' ? '#1890ff' : '#faad14' }}>
-                                          {reply.author_type === 'agent' ? 'AI' : 'U'}
+                                        <Avatar style={{ backgroundColor: reply.authorType === 'agent' ? '#1890ff' : '#faad14' }}>
+                                          {reply.authorType === 'agent' ? 'AI' : 'U'}
                                         </Avatar>
                                       }
                                       title={
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                           <span style={{ fontSize: '14px', fontWeight: '500' }}>{reply.author}</span>
-                                          <span style={{ fontSize: '12px', color: '#666' }}>{reply.created_at}</span>
+                                          <span style={{ fontSize: '12px', color: '#666' }}>{reply.createdAt}</span>
                                         </div>
                                       }
                                       description={

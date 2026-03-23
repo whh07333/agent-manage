@@ -46,14 +46,14 @@ const ProjectsList: React.FC = () => {
     },
     {
       title: '负责人',
-      dataIndex: 'manager_name',
-      key: 'manager_name',
+      dataIndex: 'managerName',
+      key: 'managerName',
     },
     {
       title: '创建时间',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      render: (date: string) => new Date(date).toLocaleString(),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => date ? new Date(date).toLocaleString() : '-',
     },
     {
       title: '操作',

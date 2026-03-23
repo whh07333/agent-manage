@@ -36,160 +36,160 @@ const { Option } = Select;
 // 模拟数据（API失败时使用）
 const mockCrossProjectStats: CrossProjectStatsType = {
   summary: {
-    total_projects: 12,
-    total_tasks: 156,
-    completed_tasks: 89,
-    completion_rate: 57.1,
-    in_progress_tasks: 45,
-    blocked_tasks: 8,
-    overdue_tasks: 14,
+    totalProjects: 12,
+    totalTasks: 156,
+    completedTasks: 89,
+    completionRate: 57.1,
+    inProgressTasks: 45,
+    blockedTasks: 8,
+    overdueTasks: 14,
   },
-  agent_stats: [
+  agentStats: [
     {
-      agent_id: "agent-001",
-      agent_type: "developer",
-      agent_name: "开发Agent A",
-      total_tasks: 24,
-      completed_tasks: 18,
-      completion_rate: 75.0,
-      avg_completion_time: 12.5,
-      overdue_tasks: 1,
+      agentId: "agent-001",
+      agentType: "developer",
+      agentName: "开发Agent A",
+      totalTasks: 24,
+      completedTasks: 18,
+      completionRate: 75.0,
+      avgCompletionTime: 12.5,
+      overdueTasks: 1,
     },
     {
-      agent_id: "agent-002",
-      agent_type: "tester",
-      agent_name: "测试Agent B",
-      total_tasks: 18,
-      completed_tasks: 12,
-      completion_rate: 66.7,
-      avg_completion_time: 8.2,
-      overdue_tasks: 0,
+      agentId: "agent-002",
+      agentType: "tester",
+      agentName: "测试Agent B",
+      totalTasks: 18,
+      completedTasks: 12,
+      completionRate: 66.7,
+      avgCompletionTime: 8.2,
+      overdueTasks: 0,
     },
     {
-      agent_id: "agent-003",
-      agent_type: "product",
-      agent_name: "产品Agent C",
-      total_tasks: 15,
-      completed_tasks: 9,
-      completion_rate: 60.0,
-      avg_completion_time: 15.3,
-      overdue_tasks: 2,
+      agentId: "agent-003",
+      agentType: "product",
+      agentName: "产品Agent C",
+      totalTasks: 15,
+      completedTasks: 9,
+      completionRate: 60.0,
+      avgCompletionTime: 15.3,
+      overdueTasks: 2,
     },
     {
-      agent_id: "agent-004",
-      agent_type: "manager",
-      agent_name: "管理Agent D",
-      total_tasks: 12,
-      completed_tasks: 7,
-      completion_rate: 58.3,
-      avg_completion_time: 20.1,
-      overdue_tasks: 1,
+      agentId: "agent-004",
+      agentType: "manager",
+      agentName: "管理Agent D",
+      totalTasks: 12,
+      completedTasks: 7,
+      completionRate: 58.3,
+      avgCompletionTime: 20.1,
+      overdueTasks: 1,
     },
     {
-      agent_id: "agent-005",
-      agent_type: "developer",
-      agent_name: "开发Agent E",
-      total_tasks: 22,
-      completed_tasks: 16,
-      completion_rate: 72.7,
-      avg_completion_time: 10.8,
-      overdue_tasks: 0,
+      agentId: "agent-005",
+      agentType: "developer",
+      agentName: "开发Agent E",
+      totalTasks: 22,
+      completedTasks: 16,
+      completionRate: 72.7,
+      avgCompletionTime: 10.8,
+      overdueTasks: 0,
     },
     {
-      agent_id: "agent-006",
-      agent_type: "tester",
-      agent_name: "测试Agent F",
-      total_tasks: 19,
-      completed_tasks: 11,
-      completion_rate: 57.9,
-      avg_completion_time: 9.5,
-      overdue_tasks: 3,
+      agentId: "agent-006",
+      agentType: "tester",
+      agentName: "测试Agent F",
+      totalTasks: 19,
+      completedTasks: 11,
+      completionRate: 57.9,
+      avgCompletionTime: 9.5,
+      overdueTasks: 3,
     },
   ],
-  project_stats: [
+  projectStats: [
     {
-      project_id: "proj-001",
-      project_name: "电商平台重构",
+      projectId: "proj-001",
+      projectName: "电商平台重构",
       status: "active",
       priority: "P0",
-      total_tasks: 24,
-      completed_tasks: 9,
-      completion_rate: 37.5,
-      in_progress_tasks: 12,
-      blocked_tasks: 0,
-      overdue_tasks: 3,
-      start_date: "2026-03-01",
-      end_date: "2026-06-30",
+      totalTasks: 24,
+      completedTasks: 9,
+      completionRate: 37.5,
+      inProgressTasks: 12,
+      blockedTasks: 0,
+      overdueTasks: 3,
+      startDate: "2026-03-01",
+      endDate: "2026-06-30",
     },
     {
-      project_id: "proj-002",
-      project_name: "移动端应用开发",
+      projectId: "proj-002",
+      projectName: "移动端应用开发",
       status: "active",
       priority: "P1",
-      total_tasks: 18,
-      completed_tasks: 12,
-      completion_rate: 66.7,
-      in_progress_tasks: 4,
-      blocked_tasks: 1,
-      overdue_tasks: 1,
-      start_date: "2026-03-15",
-      end_date: "2026-05-30",
+      totalTasks: 18,
+      completedTasks: 12,
+      completionRate: 66.7,
+      inProgressTasks: 4,
+      blockedTasks: 1,
+      overdueTasks: 1,
+      startDate: "2026-03-15",
+      endDate: "2026-05-30",
     },
     {
-      project_id: "proj-003",
-      project_name: "后台管理系统",
+      projectId: "proj-003",
+      projectName: "后台管理系统",
       status: "completed",
       priority: "P2",
-      total_tasks: 15,
-      completed_tasks: 15,
-      completion_rate: 100.0,
-      in_progress_tasks: 0,
-      blocked_tasks: 0,
-      overdue_tasks: 0,
-      start_date: "2026-01-10",
-      end_date: "2026-03-10",
+      totalTasks: 15,
+      completedTasks: 15,
+      completionRate: 100.0,
+      inProgressTasks: 0,
+      blockedTasks: 0,
+      overdueTasks: 0,
+      startDate: "2026-01-10",
+      endDate: "2026-03-10",
     },
     {
-      project_id: "proj-004",
-      project_name: "数据迁移项目",
+      projectId: "proj-004",
+      projectName: "数据迁移项目",
       status: "overdue",
       priority: "P0",
-      total_tasks: 22,
-      completed_tasks: 8,
-      completion_rate: 36.4,
-      in_progress_tasks: 10,
-      blocked_tasks: 3,
-      overdue_tasks: 4,
-      start_date: "2026-02-01",
-      end_date: "2026-03-15",
+      totalTasks: 22,
+      completedTasks: 8,
+      completionRate: 36.4,
+      inProgressTasks: 10,
+      blockedTasks: 3,
+      overdueTasks: 4,
+      startDate: "2026-02-01",
+      endDate: "2026-03-15",
     },
     {
-      project_id: "proj-005",
-      project_name: "API接口优化",
+      projectId: "proj-005",
+      projectName: "API接口优化",
       status: "active",
       priority: "P1",
-      total_tasks: 14,
-      completed_tasks: 10,
-      completion_rate: 71.4,
-      in_progress_tasks: 3,
-      blocked_tasks: 0,
-      overdue_tasks: 1,
-      start_date: "2026-03-10",
-      end_date: "2026-04-20",
+      totalTasks: 14,
+      completedTasks: 10,
+      completionRate: 71.4,
+      inProgressTasks: 3,
+      blockedTasks: 0,
+      overdueTasks: 1,
+      startDate: "2026-03-10",
+      endDate: "2026-04-20",
     },
     {
-      project_id: "proj-006",
-      project_name: "UI组件库升级",
+      projectId: "proj-006",
+      projectName: "UI组件库升级",
       status: "archived",
       priority: "P3",
-      total_tasks: 8,
-      completed_tasks: 8,
-      completion_rate: 100.0,
-      in_progress_tasks: 0,
-      blocked_tasks: 0,
-      overdue_tasks: 0,
-      start_date: "2026-01-05",
-      end_date: "2026-02-28",
+      totalTasks: 8,
+      completedTasks: 8,
+      completionRate: 100.0,
+      inProgressTasks: 0,
+      blockedTasks: 0,
+      overdueTasks: 0,
+      startDate: "2026-01-05",
+      endDate: "2026-02-28",
     },
   ],
 };
@@ -230,7 +230,6 @@ export const CrossProjectStats: React.FC = () => {
   useEffect(() => {
     fetchCrossProjectStats();
   }, []);
-
   const fetchCrossProjectStats = async (params?: {
     start_date?: string;
     end_date?: string;
@@ -248,8 +247,6 @@ export const CrossProjectStats: React.FC = () => {
         setStats(mockCrossProjectStats);
       }
     } catch (error) {
-      console.error("获取跨项目统计异常:", error);
-      // 使用模拟数据
       setStats(mockCrossProjectStats);
     } finally {
       setLoading(false);
@@ -260,14 +257,14 @@ export const CrossProjectStats: React.FC = () => {
     const { dateRange, projects, agents } = values;
     const params: any = {};
     if (dateRange && dateRange[0] && dateRange[1]) {
-      params.start_date = dateRange[0].format("YYYY-MM-DD");
-      params.end_date = dateRange[1].format("YYYY-MM-DD");
+      params.startDate = dateRange[0].format("YYYY-MM-DD");
+      params.endDate = dateRange[1].format("YYYY-MM-DD");
     }
     if (projects && projects.length > 0) {
-      params.project_ids = projects;
+      params.projectIds = projects;
     }
     if (agents && agents.length > 0) {
-      params.agent_ids = agents;
+      params.agentIds = agents;
     }
     fetchCrossProjectStats(params);
   };
@@ -331,12 +328,12 @@ export const CrossProjectStats: React.FC = () => {
         "",
         "",
         "",
-        stats.summary.total_tasks,
-        stats.summary.completed_tasks,
-        stats.summary.completion_rate,
-        stats.summary.in_progress_tasks,
-        stats.summary.blocked_tasks,
-        stats.summary.overdue_tasks,
+        stats.summary.totalTasks,
+        stats.summary.completedTasks,
+        stats.summary.completionRate,
+        stats.summary.inProgressTasks,
+        stats.summary.blockedTasks,
+        stats.summary.overdueTasks,
         "",
         "",
         "",
@@ -346,23 +343,23 @@ export const CrossProjectStats: React.FC = () => {
     );
 
     // 添加Agent统计数据
-    stats.agent_stats.forEach((agent) => {
+    stats.agentStats.forEach((agent) => {
       rows.push(
         [
           "Agent",
-          agent.agent_id,
-          agent.agent_name,
+          agent.agentId,
+          agent.agentName,
           "",
           "",
-          agent.total_tasks,
-          agent.completed_tasks,
-          agent.completion_rate,
+          agent.totalTasks,
+          agent.completedTasks,
+          agent.completionRate,
           "",
           "",
-          agent.overdue_tasks,
+          agent.overdueTasks,
           "",
           "",
-          agent.avg_completion_time,
+          agent.avgCompletionTime,
         ]
           .map(sanitize)
           .join(","),
@@ -370,22 +367,22 @@ export const CrossProjectStats: React.FC = () => {
     });
 
     // 添加项目统计数据
-    stats.project_stats.forEach((project) => {
+    stats.projectStats.forEach((project) => {
       rows.push(
         [
           "Project",
-          project.project_id,
-          project.project_name,
+          project.projectId,
+          project.projectName,
           project.status,
           project.priority,
-          project.total_tasks,
-          project.completed_tasks,
-          project.completion_rate,
-          project.in_progress_tasks,
-          project.blocked_tasks,
-          project.overdue_tasks,
-          project.start_date,
-          project.end_date,
+          project.totalTasks,
+          project.completedTasks,
+          project.completionRate,
+          project.inProgressTasks,
+          project.blockedTasks,
+          project.overdueTasks,
+          project.startDate,
+          project.endDate,
           "",
         ]
           .map(sanitize)
@@ -414,35 +411,35 @@ export const CrossProjectStats: React.FC = () => {
   const agentColumns = [
     {
       title: "Agent名称",
-      dataIndex: "agent_name",
-      key: "agent_name",
+      dataIndex: "agentName",
+      key: "agentName",
       render: (text: string, record: AgentStat) => (
         <div>
           <div className="font-medium">{text}</div>
-          <div className="text-gray-500 text-xs">{record.agent_id}</div>
+          <div className="text-gray-500 text-xs">{record.agentId}</div>
         </div>
       ),
     },
     {
       title: "总任务数",
-      dataIndex: "total_tasks",
-      key: "total_tasks",
-      sorter: (a: AgentStat, b: AgentStat) => a.total_tasks - b.total_tasks,
+      dataIndex: "totalTasks",
+      key: "totalTasks",
+      sorter: (a: AgentStat, b: AgentStat) => a.totalTasks - b.totalTasks,
     },
     {
       title: "完成任务",
-      dataIndex: "completed_tasks",
-      key: "completed_tasks",
+      dataIndex: "completedTasks",
+      key: "completedTasks",
       sorter: (a: AgentStat, b: AgentStat) =>
-        a.completed_tasks - b.completed_tasks,
+        a.completedTasks - b.completedTasks,
       render: (text: number) => <span className="text-green-600">{text}</span>,
     },
     {
       title: "完成率",
-      dataIndex: "completion_rate",
-      key: "completion_rate",
+      dataIndex: "completionRate",
+      key: "completionRate",
       sorter: (a: AgentStat, b: AgentStat) =>
-        a.completion_rate - b.completion_rate,
+        a.completionRate - b.completionRate,
       render: (rate: number) => (
         <div className="flex items-center">
           <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
@@ -457,17 +454,17 @@ export const CrossProjectStats: React.FC = () => {
     },
     {
       title: "平均完成时间",
-      dataIndex: "avg_completion_time",
-      key: "avg_completion_time",
+      dataIndex: "avgCompletionTime",
+      key: "avgCompletionTime",
       sorter: (a: AgentStat, b: AgentStat) =>
-        a.avg_completion_time - b.avg_completion_time,
+        a.avgCompletionTime - b.avgCompletionTime,
       render: (time: number) => `${time.toFixed(1)} 小时`,
     },
     {
       title: "逾期任务",
-      dataIndex: "overdue_tasks",
-      key: "overdue_tasks",
-      sorter: (a: AgentStat, b: AgentStat) => a.overdue_tasks - b.overdue_tasks,
+      dataIndex: "overdueTasks",
+      key: "overdueTasks",
+      sorter: (a: AgentStat, b: AgentStat) => a.overdueTasks - b.overdueTasks,
       render: (count: number) => (
         <Tag color={count > 0 ? "red" : "green"}>{count}</Tag>
       ),
@@ -478,12 +475,12 @@ export const CrossProjectStats: React.FC = () => {
   const projectColumns = [
     {
       title: "项目名称",
-      dataIndex: "project_name",
-      key: "project_name",
+      dataIndex: "projectName",
+      key: "projectName",
       render: (text: string, record: ProjectStat) => (
         <div>
           <div className="font-medium">{text}</div>
-          <div className="text-gray-500 text-xs">{record.project_id}</div>
+          <div className="text-gray-500 text-xs">{record.projectId}</div>
         </div>
       ),
     },
@@ -521,24 +518,24 @@ export const CrossProjectStats: React.FC = () => {
     },
     {
       title: "总任务数",
-      dataIndex: "total_tasks",
-      key: "total_tasks",
-      sorter: (a: ProjectStat, b: ProjectStat) => a.total_tasks - b.total_tasks,
+      dataIndex: "totalTasks",
+      key: "totalTasks",
+      sorter: (a: ProjectStat, b: ProjectStat) => a.totalTasks - b.totalTasks,
     },
     {
       title: "完成任务",
-      dataIndex: "completed_tasks",
-      key: "completed_tasks",
+      dataIndex: "completedTasks",
+      key: "completedTasks",
       sorter: (a: ProjectStat, b: ProjectStat) =>
-        a.completed_tasks - b.completed_tasks,
+        a.completedTasks - b.completedTasks,
       render: (text: number) => <span className="text-green-600">{text}</span>,
     },
     {
       title: "完成率",
-      dataIndex: "completion_rate",
-      key: "completion_rate",
+      dataIndex: "completionRate",
+      key: "completionRate",
       sorter: (a: ProjectStat, b: ProjectStat) =>
-        a.completion_rate - b.completion_rate,
+        a.completionRate - b.completionRate,
       render: (rate: number) => (
         <div className="flex items-center">
           <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
@@ -553,20 +550,20 @@ export const CrossProjectStats: React.FC = () => {
     },
     {
       title: "进行中",
-      dataIndex: "in_progress_tasks",
-      key: "in_progress_tasks",
+      dataIndex: "inProgressTasks",
+      key: "inProgressTasks",
     },
     {
       title: "阻塞",
-      dataIndex: "blocked_tasks",
-      key: "blocked_tasks",
+      dataIndex: "blockedTasks",
+      key: "blockedTasks",
       render: (count: number) =>
         count > 0 ? <Tag color="orange">{count}</Tag> : count,
     },
     {
       title: "逾期",
-      dataIndex: "overdue_tasks",
-      key: "overdue_tasks",
+      dataIndex: "overdueTasks",
+      key: "overdueTasks",
       render: (count: number) =>
         count > 0 ? <Tag color="red">{count}</Tag> : count,
     },
@@ -574,19 +571,19 @@ export const CrossProjectStats: React.FC = () => {
 
   // 准备图表数据
   const agentChartData =
-    stats?.agent_stats.map((agent) => ({
-      name: agent.agent_name,
-      总任务数: agent.total_tasks,
-      完成任务: agent.completed_tasks,
-      逾期任务: agent.overdue_tasks,
+    stats?.agentStats.map((agent) => ({
+      name: agent.agentName,
+      总任务数: agent.totalTasks,
+      完成任务: agent.completedTasks,
+      逾期任务: agent.overdueTasks,
     })) || [];
 
   const projectChartData =
-    stats?.project_stats.map((project) => ({
-      name: project.project_name,
-      完成率: project.completion_rate,
-      总任务数: project.total_tasks,
-      进行中任务: project.in_progress_tasks,
+    stats?.projectStats.map((project) => ({
+      name: project.projectName,
+      完成率: project.completionRate,
+      总任务数: project.totalTasks,
+      进行中任务: project.inProgressTasks,
     })) || [];
 
   if (loading && !stats) {
@@ -696,7 +693,7 @@ export const CrossProjectStats: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <StatsCard
             title="总项目数"
-            value={stats?.summary.total_projects || 0}
+            value={stats?.summary.totalProjects || 0}
             suffix=" 个"
             loading={loading}
           />
@@ -704,7 +701,7 @@ export const CrossProjectStats: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <StatsCard
             title="总任务数"
-            value={stats?.summary.total_tasks || 0}
+            value={stats?.summary.totalTasks || 0}
             suffix=" 个"
             loading={loading}
           />
@@ -712,15 +709,15 @@ export const CrossProjectStats: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <StatsCard
             title="完成任务"
-            value={stats?.summary.completed_tasks || 0}
-            suffix={` (${stats?.summary.completion_rate?.toFixed(1) || 0}%)`}
+            value={stats?.summary.completedTasks || 0}
+            suffix={` (${stats?.summary.completionRate?.toFixed(1) || 0}%)`}
             loading={loading}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <StatsCard
             title="进行中任务"
-            value={stats?.summary.in_progress_tasks || 0}
+            value={stats?.summary.inProgressTasks || 0}
             suffix=" 个"
             loading={loading}
           />
@@ -766,9 +763,9 @@ export const CrossProjectStats: React.FC = () => {
           className="mb-4"
         />
         <Table
-          dataSource={stats?.agent_stats}
+          dataSource={stats?.agentStats}
           columns={agentColumns}
-          rowKey="agent_id"
+          rowKey="agentId"
           pagination={{ pageSize: 5 }}
           loading={loading}
           scroll={{ x: "max-content" }}
@@ -785,9 +782,9 @@ export const CrossProjectStats: React.FC = () => {
           className="mb-4"
         />
         <Table
-          dataSource={stats?.project_stats}
+          dataSource={stats?.projectStats}
           columns={projectColumns}
-          rowKey="project_id"
+          rowKey="projectId"
           pagination={{ pageSize: 5 }}
           loading={loading}
           scroll={{ x: "max-content" }}

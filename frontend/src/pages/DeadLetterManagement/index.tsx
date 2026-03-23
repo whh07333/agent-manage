@@ -52,9 +52,9 @@ export const DeadLetterManagement: React.FC = () => {
   const fetchDeadLetters = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await deadLetterApi.getDeadLetters({
+      const response = await deadLetterApi.getDeadLetterList({
         page: currentPage,
-        page_size: pageSize,
+        pageSize: pageSize,
       });
       if (response.code === 0) {
         setDeadLetters(response.data.items);
@@ -105,7 +105,8 @@ export const DeadLetterManagement: React.FC = () => {
         try {
           const response = await deadLetterApi.retryAllDeadLetters();
           if (response.code === 0) {
-            message.success(`已成功重发 ${response.data.retried} 条死信事件`);
+            message.success(`已成功重试所有死信事件`);
+
             setSelectedRowKeys([]);
             fetchDeadLetters();
           } else {
@@ -178,8 +179,8 @@ export const DeadLetterManagement: React.FC = () => {
     },
     {
       title: '订阅ID',
-      dataIndex: 'subscription_id',
-      key: 'subscription_id',
+      dataIndex: 'subscriptionId',
+      key: 'subscriptionId',
       width: 100,
       render: (text: string) => (
         <Tooltip title={text}>
@@ -189,8 +190,8 @@ export const DeadLetterManagement: React.FC = () => {
     },
     {
       title: '事件类型',
-      dataIndex: 'event_type',
-      key: 'event_type',
+      dataIndex: 'eventType',
+      key: 'eventType',
       width: 120,
       render: (text: string) => (
         <Tag color="blue" className="tw-truncate">
@@ -200,8 +201,8 @@ export const DeadLetterManagement: React.FC = () => {
     },
     {
       title: '重试次数',
-      dataIndex: 'retry_count',
-      key: 'retry_count',
+      dataIndex: 'retryCount',
+      key: 'retryCount',
       width: 100,
       render: (count: number) => (
         <Badge
@@ -215,8 +216,8 @@ export const DeadLetterManagement: React.FC = () => {
     },
     {
       title: '最后错误',
-      dataIndex: 'last_error',
-      key: 'last_error',
+      dataIndex: 'lastError',
+      key: 'lastError',
       ellipsis: true,
       render: (error: string | null) => (
         <Tooltip title={error}>
@@ -228,8 +229,8 @@ export const DeadLetterManagement: React.FC = () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 150,
       render: (date: string) => (
         <div className="tw-flex tw-flex-col">
@@ -242,8 +243,8 @@ export const DeadLetterManagement: React.FC = () => {
     },
     {
       title: '过期时间',
-      dataIndex: 'expire_at',
-      key: 'expire_at',
+      dataIndex: 'expireAt',
+      key: 'expireAt',
       width: 150,
       render: (date: string) => {
         const daysLeft = dayjs(date).diff(dayjs(), 'day');
@@ -311,7 +312,7 @@ export const DeadLetterManagement: React.FC = () => {
                       <div>
                         <h4 className="tw-font-bold">事件载荷</h4>
                         <pre className="tw-bg-gray-100 tw-p-4 tw-rounded tw-overflow-auto">
-                          {JSON.stringify(record.event_payload, null, 2)}
+                          {JSON.stringify(record.eventPayload, null, 2)}
                         </pre>
                       </div>
                     </div>
@@ -333,8 +334,8 @@ export const DeadLetterManagement: React.FC = () => {
       size="small"
       title={
         <div className="tw-flex tw-justify-between tw-items-center">
-          <span className="tw-font-medium">{item.event_type}</span>
-          <Tag color="blue">{item.retry_count}次重试</Tag>
+          <span className="tw-font-medium">{item.eventType}</span>
+          <Tag color="blue">{item.retryCount}次重试</Tag>
         </div>
       }
       extra={
@@ -360,14 +361,14 @@ export const DeadLetterManagement: React.FC = () => {
                           <strong>ID:</strong> {item.id}
                         </p>
                         <p>
-                          <strong>订阅ID:</strong> {item.subscription_id}
+                          <strong>订阅ID:</strong> {item.subscriptionId}
                         </p>
                         <p>
-                          <strong>最后错误:</strong> {item.last_error || '无'}
+                          <strong>最后错误:</strong> {item.lastError || '无'}
                         </p>
                         <p>
                           <strong>创建时间:</strong>{' '}
-                          {dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss')}
+                          {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
                         </p>
                       </div>
                     ),
@@ -391,28 +392,28 @@ export const DeadLetterManagement: React.FC = () => {
       <div className="tw-space-y-2">
         <div className="tw-flex tw-justify-between">
           <span className="tw-text-gray-600">订阅ID:</span>
-          <span className="tw-font-mono">{item.subscription_id.substring(0, 8)}...</span>
+          <span className="tw-font-mono">{item.subscriptionId.substring(0, 8)}...</span>
         </div>
         <div className="tw-flex tw-justify-between">
           <span className="tw-text-gray-600">最后错误:</span>
           <span className="tw-text-red-600 tw-truncate tw-max-w-[150px]">
-            {item.last_error || '无'}
+            {item.lastError || '无'}
           </span>
         </div>
         <div className="tw-flex tw-justify-between">
           <span className="tw-text-gray-600">创建时间:</span>
-          <span>{dayjs(item.created_at).fromNow()}</span>
+          <span>{dayjs(item.createdAt).fromNow()}</span>
         </div>
         <div className="tw-flex tw-justify-between">
           <span className="tw-text-gray-600">过期时间:</span>
-          <span>{dayjs(item.expire_at).format('MM-DD HH:mm')}</span>
+          <span>{dayjs(item.expireAt).format('MM-DD HH:mm')}</span>
         </div>
       </div>
     </Card>
   );
 
   // 筛选事件类型选项
-  const eventTypes = Array.from(new Set(deadLetters.map((item) => item.event_type)));
+  const eventTypes = Array.from(new Set(deadLetters.map((item) => item.eventType)));
 
   return (
     <div className="tw-p-4">

@@ -21,10 +21,10 @@ const mockProject: Project = {
   status: 'active',
   priority: 'P0',
   manager: '产品Agent',
-  start_date: '2026-03-12',
-  end_date: '2026-04-12',
+  startDate: '2026-03-12',
+  endDate: '2026-04-12',
   progress: 85,
-  task_count: 24,
+  taskCount: 24,
   tasks: {
     total: 24,
     unassigned: 3,
@@ -32,8 +32,8 @@ const mockProject: Project = {
     completed: 9,
     blocked: 0,
   },
-  created_at: '2026-03-12',
-  updated_at: '2026-03-13',
+  createdAt: '2026-03-12',
+  updatedAt: '2026-03-13',
 };
 
 // 模拟任务数据
@@ -45,15 +45,15 @@ const mockTasks: Task[] = [
     status: 'unassigned',
     priority: 'P0',
     assignee: '产品Agent',
-    project_id: '1',
-    start_date: '2026-03-12',
-    end_date: '2026-03-15',
+    projectId: '1',
+    startDate: '2026-03-12',
+    endDate: '2026-03-15',
     progress: 0,
     dependencies: [],
     deliverables: [],
     comments: [],
-    created_at: '2026-03-12',
-    updated_at: '2026-03-13',
+    createdAt: '2026-03-12',
+    updatedAt: '2026-03-13',
   },
   {
     id: '2',
@@ -62,15 +62,15 @@ const mockTasks: Task[] = [
     status: 'inProgress',
     priority: 'P0',
     assignee: '开发Agent',
-    project_id: '1',
-    start_date: '2026-03-13',
-    end_date: '2026-03-20',
+    projectId: '1',
+    startDate: '2026-03-13',
+    endDate: '2026-03-20',
     progress: 60,
     dependencies: [],
     deliverables: [],
     comments: [],
-    created_at: '2026-03-13',
-    updated_at: '2026-03-13',
+    createdAt: '2026-03-13',
+    updatedAt: '2026-03-13',
   },
   {
     id: '3',
@@ -79,15 +79,15 @@ const mockTasks: Task[] = [
     status: 'blocked',
     priority: 'P0',
     assignee: '开发Agent',
-    project_id: '1',
-    start_date: '2026-03-15',
-    end_date: '2026-03-25',
+    projectId: '1',
+    startDate: '2026-03-15',
+    endDate: '2026-03-25',
     progress: 30,
     dependencies: [],
     deliverables: [],
     comments: [],
-    created_at: '2026-03-15',
-    updated_at: '2026-03-13',
+    createdAt: '2026-03-15',
+    updatedAt: '2026-03-13',
   },
   {
     id: '4',
@@ -96,15 +96,15 @@ const mockTasks: Task[] = [
     status: 'inProgress',
     priority: 'P1',
     assignee: '前端Agent',
-    project_id: '1',
-    start_date: '2026-03-20',
-    end_date: '2026-03-30',
+    projectId: '1',
+    startDate: '2026-03-20',
+    endDate: '2026-03-30',
     progress: 45,
     dependencies: [],
     deliverables: [],
     comments: [],
-    created_at: '2026-03-20',
-    updated_at: '2026-03-13',
+    createdAt: '2026-03-20',
+    updatedAt: '2026-03-13',
   },
   {
     id: '5',
@@ -113,15 +113,15 @@ const mockTasks: Task[] = [
     status: 'pendingReview',
     priority: 'P1',
     assignee: '测试Agent',
-    project_id: '1',
-    start_date: '2026-03-25',
-    end_date: '2026-04-05',
+    projectId: '1',
+    startDate: '2026-03-25',
+    endDate: '2026-04-05',
     progress: 80,
     dependencies: [],
     deliverables: [],
     comments: [],
-    created_at: '2026-03-25',
-    updated_at: '2026-03-13',
+    createdAt: '2026-03-25',
+    updatedAt: '2026-03-13',
   },
 ];
 
@@ -258,7 +258,7 @@ export const ProjectDetail: React.FC = () => {
               <div>
                 <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>周期</div>
                 <div style={{ fontSize: '16px', fontWeight: '500' }}>
-                  {project.start_date} 至 {project.end_date}
+                  {project.startDate} 至 {project.endDate}
                 </div>
               </div>
               <div>
@@ -328,8 +328,8 @@ export const ProjectDetail: React.FC = () => {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '16px', fontWeight: '500' }}>{task.name}</span>
                       <Tag color={task.priority === 'P0' ? 'red' : 
-                           task.priority === 'P1' ? 'orange' : 
-                           task.priority === 'P2' ? 'blue' : 'green'}>
+                               task.priority === 'P1' ? 'orange' : 
+                               task.priority === 'P2' ? 'blue' : 'green'}>
                         {task.priority}
                       </Tag>
                     </div>
@@ -342,7 +342,7 @@ export const ProjectDetail: React.FC = () => {
                           负责人: {task.assignee}
                         </div>
                         <div style={{ fontSize: '14px', color: '#666' }}>
-                          截止日期: {task.end_date}
+                          截止日期: {task.endDate}
                         </div>
                       </div>
                     </div>
@@ -420,4 +420,3 @@ export const ProjectDetail: React.FC = () => {
     </div>
   );
 };
-

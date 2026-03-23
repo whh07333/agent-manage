@@ -188,8 +188,8 @@ export const ProjectList: React.FC = () => {
       // 格式转换
       const projectData = {
         ...values,
-        startDate: values.startDate.format('YYYY-MM-DD'),
-        endDate: values.endDate.format('YYYY-MM-DD'),
+        startDate: String(values.startDate),
+        endDate: String(values.endDate),
       };
 
       // 验证开始日期必须早于结束日期（前端也做一次校验）

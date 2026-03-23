@@ -12,7 +12,7 @@ const mockProjects: Project[] = [
     description: '基于微服务架构的电商平台重构项目',
     status: 'active',
     priority: 'P0',
-    manager: '产品Agent',
+    managerId: '产品Agent',
     startDate: '2026-03-12',
     endDate: '2026-04-12',
     progress: 85,
@@ -33,7 +33,7 @@ const mockProjects: Project[] = [
     description: 'AI分析工具开发项目',
     status: 'active',
     priority: 'P1',
-    manager: '开发Agent',
+    managerId: '开发Agent',
     startDate: '2026-03-10',
     endDate: '2026-04-10',
     progress: 42,
@@ -54,7 +54,7 @@ const mockProjects: Project[] = [
     description: '用户画像系统开发项目',
     status: 'active',
     priority: 'P2',
-    manager: '测试Agent',
+    managerId: '测试Agent',
     startDate: '2026-03-15',
     endDate: '2026-04-15',
     progress: 25,
@@ -75,7 +75,7 @@ const mockProjects: Project[] = [
     description: '数据可视化工具开发项目',
     status: 'overdue',
     priority: 'P0',
-    manager: '管理Agent',
+    managerId: '管理Agent',
     startDate: '2026-03-05',
     endDate: '2026-03-12',
     progress: 0,
@@ -99,7 +99,11 @@ export const ProjectList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [form] = Form.useForm();
+  const [form] = Form.useForm({
+    initialValues: {
+      managerId: '00000000-0000-0000-0000-000000000001',
+    },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -295,7 +299,7 @@ export const ProjectList: React.FC = () => {
                     <div style={{ margin: '16px 0' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <span style={{ fontSize: '14px', color: '#666' }}>负责人</span>
-                        <span style={{ fontSize: '14px', fontWeight: '500' }}>{project.manager}</span>
+                        <span style={{ fontSize: '14px', fontWeight: '500' }}>{project.managerId}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <span style={{ fontSize: '14px', color: '#666' }}>优先级</span>
@@ -397,7 +401,7 @@ export const ProjectList: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="manager"
+            name="managerId"
             label="项目负责人"
             rules={[{ required: true, message: '请输入项目负责人' }]}
           >

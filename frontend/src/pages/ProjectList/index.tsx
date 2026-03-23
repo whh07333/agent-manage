@@ -111,12 +111,12 @@ export const ProjectList: React.FC = () => {
         } else {
           console.error('获取项目列表失败:', response.msg);
           // 使用模拟数据
-          setProjects(mockProjects);
+          setProjects([]);
         }
       } catch (error) {
         console.error('获取项目列表失败:', error);
         // 使用模拟数据
-        setProjects(mockProjects);
+        setProjects([]);
       } finally {
         setLoading(false);
       }
@@ -201,13 +201,15 @@ export const ProjectList: React.FC = () => {
       }
 
       // 这里调用API创建项目
-      console.log('创建项目:', projectData);
-      
-      // 刷新列表（实际开发中应该从后端重新获取）
-      message.success('项目创建成功');
-      handleCloseCreateModal();
-      
-      // TODO: 重新获取项目列表
+      const response = await projectApi.createProject(projectData);
+      if (response.code === 0) {
+        message.success('项目创建成功');
+        handleCloseCreateModal();
+        // 重新获取项目列表
+        fetchData();
+      } else {
+        message.error(`创建项目失败: ${response.msg}`);
+      }
     } catch (error) {
       console.error('创建项目失败:', error);
       message.error('创建项目失败，请检查表单');

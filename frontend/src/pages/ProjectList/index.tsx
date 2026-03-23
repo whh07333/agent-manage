@@ -13,8 +13,8 @@ const mockProjects: Project[] = [
     status: 'active',
     priority: 'P0',
     manager: '产品Agent',
-    start_date: '2026-03-12',
-    end_date: '2026-04-12',
+    startDate: '2026-03-12',
+    endDate: '2026-04-12',
     progress: 85,
     task_count: 24,
     tasks: {
@@ -34,8 +34,8 @@ const mockProjects: Project[] = [
     status: 'active',
     priority: 'P1',
     manager: '开发Agent',
-    start_date: '2026-03-10',
-    end_date: '2026-04-10',
+    startDate: '2026-03-10',
+    endDate: '2026-04-10',
     progress: 42,
     task_count: 18,
     tasks: {
@@ -55,8 +55,8 @@ const mockProjects: Project[] = [
     status: 'active',
     priority: 'P2',
     manager: '测试Agent',
-    start_date: '2026-03-15',
-    end_date: '2026-04-15',
+    startDate: '2026-03-15',
+    endDate: '2026-04-15',
     progress: 25,
     task_count: 12,
     tasks: {
@@ -76,8 +76,8 @@ const mockProjects: Project[] = [
     status: 'overdue',
     priority: 'P0',
     manager: '管理Agent',
-    start_date: '2026-03-05',
-    end_date: '2026-03-12',
+    startDate: '2026-03-05',
+    endDate: '2026-03-12',
     progress: 0,
     task_count: 20,
     tasks: {
@@ -188,13 +188,13 @@ export const ProjectList: React.FC = () => {
       // 格式转换
       const projectData = {
         ...values,
-        start_date: values.start_date.format('YYYY-MM-DD'),
-        end_date: values.end_date.format('YYYY-MM-DD'),
+        startDate: values.startDate.format('YYYY-MM-DD'),
+        endDate: values.endDate.format('YYYY-MM-DD'),
       };
 
       // 验证开始日期必须早于结束日期（前端也做一次校验）
-      const start = new Date(projectData.start_date);
-      const end = new Date(projectData.end_date);
+      const start = new Date(projectData.startDate);
+      const end = new Date(projectData.endDate);
       if (start.getTime() > end.getTime()) {
         message.error('开始日期必须早于结束日期');
         return;
@@ -406,7 +406,7 @@ export const ProjectList: React.FC = () => {
 
           <div style={{ display: 'flex', gap: '16px' }}>
             <Form.Item
-              name="start_date"
+              name="startDate"
               label="开始日期"
               rules={[{ required: true, message: '请选择开始日期' }]}
               style={{ flex: 1 }}
@@ -418,7 +418,7 @@ export const ProjectList: React.FC = () => {
             </Form.Item>
 
             <Form.Item
-              name="end_date"
+              name="endDate"
               label="结束日期"
               rules={[{ required: true, message: '请选择结束日期' }]}
               style={{ flex: 1 }}

@@ -4,93 +4,6 @@ import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import { projectApi } from '../../services/api';
 import type { Project } from '../../types';
 
-// 模拟数据
-const mockProjects: Project[] = [
-  {
-    id: '1',
-    name: '项目A - 电商平台重构',
-    description: '基于微服务架构的电商平台重构项目',
-    status: 'active',
-    priority: 'P0',
-    managerId: '产品Agent',
-    startDate: '2026-03-12',
-    endDate: '2026-04-12',
-    progress: 85,
-    task_count: 24,
-    tasks: {
-      total: 24,
-      unassigned: 3,
-      inProgress: 12,
-      completed: 9,
-      blocked: 0,
-    },
-    created_at: '2026-03-12',
-    updated_at: '2026-03-13',
-  },
-  {
-    id: '2',
-    name: '项目B - AI分析工具',
-    description: 'AI分析工具开发项目',
-    status: 'active',
-    priority: 'P1',
-    managerId: '开发Agent',
-    startDate: '2026-03-10',
-    endDate: '2026-04-10',
-    progress: 42,
-    task_count: 18,
-    tasks: {
-      total: 18,
-      unassigned: 5,
-      inProgress: 8,
-      completed: 5,
-      blocked: 0,
-    },
-    created_at: '2026-03-10',
-    updated_at: '2026-03-13',
-  },
-  {
-    id: '3',
-    name: '项目C - 用户画像系统',
-    description: '用户画像系统开发项目',
-    status: 'active',
-    priority: 'P2',
-    managerId: '测试Agent',
-    startDate: '2026-03-15',
-    endDate: '2026-04-15',
-    progress: 25,
-    task_count: 12,
-    tasks: {
-      total: 12,
-      unassigned: 8,
-      inProgress: 4,
-      completed: 0,
-      blocked: 0,
-    },
-    created_at: '2026-03-15',
-    updated_at: '2026-03-15',
-  },
-  {
-    id: '4',
-    name: '项目D - 数据可视化',
-    description: '数据可视化工具开发项目',
-    status: 'overdue',
-    priority: 'P0',
-    managerId: '管理Agent',
-    startDate: '2026-03-05',
-    endDate: '2026-03-12',
-    progress: 0,
-    task_count: 20,
-    tasks: {
-      total: 20,
-      unassigned: 15,
-      inProgress: 5,
-      completed: 0,
-      blocked: 3,
-    },
-    created_at: '2026-03-05',
-    updated_at: '2026-03-13',
-  },
-];
 
 export const ProjectList: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -99,33 +12,29 @@ export const ProjectList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [form] = Form.useForm({
-    initialValues: {
-      managerId: '00000000-0000-0000-0000-000000000001',
-    },
-  });
+  const [form] = Form.useForm();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await projectApi.getProjects();
-        if (response.code === 0) {
-          setProjects(response.data);
-        } else {
-          console.error('获取项目列表失败:', response.msg);
-          // 使用模拟数据
-          setProjects([]);
-        }
-      } catch (error) {
-        console.error('获取项目列表失败:', error);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await projectApi.getProjects();
+      if (response.code === 0) {
+        setProjects(response.data);
+      } else {
+        console.error('获取项目列表失败:', response.msg);
         // 使用模拟数据
         setProjects([]);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('获取项目列表失败:', error);
+      // 使用模拟数据
+      setProjects([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -176,6 +85,10 @@ export const ProjectList: React.FC = () => {
   const handleOpenCreateModal = () => {
     setCreateModalVisible(true);
     form.resetFields();
+    // 设置默认负责人ID
+    form.setFieldsValue({
+      managerId: '00000000-0000-0000-0000-000000000001'
+    });
   };
 
   // 关闭创建项目模态框

@@ -18,6 +18,10 @@ export const ProjectList: React.FC = () => {
     try {
       setLoading(true);
       const response = await projectApi.getProjects();
+      console.log("fetchData API响应:", response);
+      console.log("response.code:", response?.code);
+      console.log("response.data:", response?.data);
+
       if (response.code === 0) {
         setProjects(response.data);
       } else {

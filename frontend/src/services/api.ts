@@ -25,7 +25,7 @@ apiClient.interceptors.request.use(
     // 添加授权信息
     let token = localStorage.getItem('token');
     // 如果localStorage没有token，使用环境变量中的默认token（开发环境）
-    const defaultToken = import.meta.env.VITE_DEFAULT_TOKEN;
+    const defaultToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQzNjU1ODIsImV4cCI6MTc3NDk3MDM4Mn0.0nQtGwSmuow9mmEQgukL2pAJ_8Og_bYKkxYsMtCFHwY';
     if (!token && defaultToken) {
       token = defaultToken as string;
       localStorage.setItem('token', token);
@@ -50,7 +50,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       // 开发环境：如果有默认token，不跳转到登录页
       // 因为前端会回退到模拟数据，让用户继续使用
-      const defaultToken = import.meta.env.VITE_DEFAULT_TOKEN;
+      const defaultToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQzNjU1ODIsImV4cCI6MTc3NDk3MDM4Mn0.0nQtGwSmuow9mmEQgukL2pAJ_8Og_bYKkxYsMtCFHwY';
       if (defaultToken) {
         console.warn('401 认证失败，但开发环境使用默认token，不跳转登录');
         return Promise.reject(error);

@@ -43,7 +43,7 @@ apiClient.interceptors.request.use(
 // 响应拦截器
 apiClient.interceptors.response.use(
   (response) => {
-    return response;
+    return response.data;
   },
   (error) => {
     // 统一错误处理

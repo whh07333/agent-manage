@@ -86,4 +86,77 @@ export const projectApi = {
   }),
 };
 
+// 统计数据API
+export const statisticsApi = {
+  getStatistics: () => request<any>({
+    url: '/api/statistics',
+    method: 'GET',
+  }),
+};
+
+// 任务管理API
+export const taskApi = {
+  getTasks: () => request<any[]>({
+    url: '/api/tasks',
+    method: 'GET',
+  }),
+  
+  getTaskById: (id: string) => request<any>({
+    url: `/api/tasks/${id}`,
+    method: 'GET',
+  }),
+  
+  createTask: (taskData: any) => request<any>({
+    url: '/api/tasks',
+    method: 'POST',
+    data: taskData,
+  }),
+  
+  updateTask: (id: string, taskData: any) => request<any>({
+    url: `/api/tasks/${id}`,
+    method: 'PUT',
+    data: taskData,
+  }),
+  
+  deleteTask: (id: string) => request<any>({
+    url: `/api/tasks/${id}`,
+    method: 'DELETE',
+  }),
+};
+
+// 审计日志API
+export const auditLogApi = {
+  getAuditLogs: () => request<any[]>({
+    url: '/api/audit-logs',
+    method: 'GET',
+  }),
+};
+
+// 死信管理API
+export const deadLetterApi = {
+  getDeadLetters: () => request<any[]>({
+    url: '/api/dead-letters',
+    method: 'GET',
+  }),
+};
+
+// Agent API Key管理API
+export const apiKeyApi = {
+  getApiKeys: () => request<any[]>({
+    url: '/api/agent-keys',
+    method: 'GET',
+  }),
+  
+  createApiKey: (keyData: any) => request<any>({
+    url: '/api/agent-keys',
+    method: 'POST',
+    data: keyData,
+  }),
+  
+  deleteApiKey: (id: string) => request<any>({
+    url: `/api/agent-keys/${id}`,
+    method: 'DELETE',
+  }),
+};
+
 export default apiClient;

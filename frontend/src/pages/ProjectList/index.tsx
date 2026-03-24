@@ -232,7 +232,7 @@ export const ProjectList: React.FC = () => {
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ textAlign: 'center' }}>
                           <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                            {project.tasks.unassigned}
+                            {project.tasks?.unassigned ?? 0}
                           </div>
                           <div style={{ fontSize: '12px', color: '#666' }}>待分配</div>
                         </div>

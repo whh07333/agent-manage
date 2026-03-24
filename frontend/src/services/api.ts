@@ -4,8 +4,8 @@ import type { ApiResponse } from '../types';
 // API 基础配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-// 开发环境默认 token
-const defaultToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQzNjU1ODIsImV4cCI6MTc3NDk3MDM4Mn0.0nQtGwSmuow9mmEQgukL2pAJ_8Og_bYKkxYsMtCFHwY';
+// 开发环境默认 token - 从环境变量读取
+const DEFAULT_TOKEN = import.meta.env.VITE_DEFAULT_TOKEN || '';
 
 // 创建 axios 实例
 const apiClient = axios.create({
@@ -16,35 +16,9 @@ const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
-    // 添加授权信息
-    let token = localStorage.getItem('token');
-    // 开发环境：如果localStorage没有token，使用环境变量中的默认token
-    const defaultToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQzNjU1ODIsImV4cCI6MTc3NDk3MDM4Mn0.0nQtGwSmuow9mmEQgukL2pAJ_8Og_bYKkxYsMtCFHwY';
-    
-    // 检查 token 是否有效，如果无效使用默认 token
-    if (!token && defaultToken) {
-      token = defaultToken as string;
-      localStorage.setItem('token', token);
-      console.log('设置默认token:', token.substring(0, 20) + '...');
-    } else if (token && defaultToken) {
-      // 如果有 token，检查是否过期（简单检查）
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const now = Date.now() / 1000;
-        if (payload.exp && payload.exp < now) {
-          console.log('Token 已过期，使用默认 token');
-          token = defaultToken;
-          localStorage.setItem('token', token);
-        }
-      } catch (e) {
-        console.log('Token 检查失败，使用默认 token');
-        token = defaultToken;
-        localStorage.setItem('token', token);
-      }
-    }
-    
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 直接使用环境变量中的默认 token，不需要从 localStorage 读取
+    if (DEFAULT_TOKEN) {
+      config.headers.Authorization = `Bearer ${DEFAULT_TOKEN}`;
     }
     return config;
   },
@@ -59,18 +33,6 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    // 统一错误处理
-    if (error.response?.status === 401) {
-      console.log('401 认证失败，设置默认 token 并重试');
-      const defaultToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQzNjU1ODIsImV4cCI6MTc3NDk3MDM4Mn0.0nQtGwSmuow9mmEQgukL2pAJ_8Og_bYKkxYsMtCFHwY';
-      
-      // 设置默认 token
-      localStorage.setItem('token', defaultToken);
-      
-      // 返回 Promise.reject 让请求失败，用户需要刷新页面
-      // 生产环境：处理未授权
-      return Promise.reject(new Error('Token expired, please refresh page'));
-    }
     return Promise.reject(error);
   }
 );

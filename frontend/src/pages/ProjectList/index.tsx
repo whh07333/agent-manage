@@ -107,6 +107,10 @@ export const ProjectList: React.FC = () => {
         ...values,
         startDate: values.startDate.format("YYYY-MM-DD"),
         endDate: values.endDate.format("YYYY-MM-DD"),
+        // 优先级转换：P0->low, P1->medium, P2->high, P3->low（默认）
+        priority: values.priority === 'P0' ? 'low' :
+                 values.priority === 'P1' ? 'medium' :
+                 values.priority === 'P2' ? 'high' : 'low',
       };
 
       // 验证开始日期必须早于结束日期（前端也做一次校验）

@@ -43,7 +43,7 @@ apiClient.interceptors.request.use(
 // 响应拦截器
 apiClient.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response;
   },
   (error) => {
     // 统一错误处理
@@ -67,7 +67,7 @@ apiClient.interceptors.response.use(
 const request = async <T>(config: any): Promise<ApiResponse<T>> => {
   try {
     const response = await apiClient(config);
-    return response.data;
+    return response;
   } catch (error: any) {
     return {
       code: error.response?.status || 500,

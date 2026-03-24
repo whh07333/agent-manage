@@ -67,7 +67,7 @@ apiClient.interceptors.response.use(
 const request = async <T>(config: any): Promise<ApiResponse<T>> => {
   try {
     const response = await apiClient(config);
-    return response;
+    return response.data;
   } catch (error: any) {
     return {
       code: error.response?.status || 500,

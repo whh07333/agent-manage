@@ -127,6 +127,7 @@ const mockProject: Project = {
   description: '基于微服务架构的电商平台重构项目',
   status: 'active',
   priority: 'P0',
+  managerId: '00000000-0000-0000-0000-000000000001',
   manager: '产品Agent',
   startDate: '2026-03-12',
   endDate: '2026-04-12',

@@ -20,7 +20,7 @@ const mockProject: Project = {
   description: '基于微服务架构的电商平台重构项目',
   status: 'active',
   priority: 'P0',
-  manager: '产品Agent',
+  managerId: '产品Agent',
   startDate: '2026-03-12',
   endDate: '2026-04-12',
   progress: 85,
@@ -237,7 +237,7 @@ export const ProjectDetail: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>负责人</div>
-                <div style={{ fontSize: '16px', fontWeight: '500' }}>{project.manager}</div>
+                <div style={{ fontSize: '16px', fontWeight: '500' }}>{project.managerId}</div>
               </div>
               <div>
                 <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>优先级</div>

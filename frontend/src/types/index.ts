@@ -4,9 +4,10 @@ export interface Project {
   id: string;
   name: string;
   description: string;
-  status: "active" | "completed" | "completed" | "archived" | "overdue";
+  status: "active" | "completed" | "archived" | "overdue";
   priority: "P0" | "P1" | "P2" | "P3";
-  manager: string;
+  managerId: string;
+  manager?: string;
   startDate: string;
   endDate: string;
   progress: number;

@@ -118,14 +118,14 @@ export const ProjectList: React.FC = () => {
       }
 
       // 这里调用API创建项目
-      const response = await projectApi.createProject(projectData);
-      if (response.code === 0) {
+      const createdProject = await projectApi.createProject(projectData);
+      if (createdProject) {
         message.success('项目创建成功');
         handleCloseCreateModal();
         // 重新获取项目列表
         fetchData();
       } else {
-        message.error(`创建项目失败: ${response.msg}`);
+        message.error('创建项目失败');
       }
     } catch (error) {
       console.error('创建项目失败:', error);
@@ -238,13 +238,13 @@ export const ProjectList: React.FC = () => {
                         </div>
                         <div style={{ textAlign: 'center' }}>
                           <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                            {project.tasks.inProgress}
+                            {project.tasks?.inProgress ?? 0}
                           </div>
                           <div style={{ fontSize: '12px', color: '#666' }}>进行中</div>
                         </div>
                         <div style={{ textAlign: 'center' }}>
                           <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                            {project.tasks.completed}
+                            {project.tasks?.completed ?? 0}
                           </div>
                           <div style={{ fontSize: '12px', color: '#666' }}>已完成</div>
                         </div>

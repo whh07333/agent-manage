@@ -4,8 +4,8 @@ import type { ApiResponse } from '../types';
 // API 基础配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-// 开发环境默认 token - 从环境变量读取
-const DEFAULT_TOKEN = import.meta.env.VITE_DEFAULT_TOKEN || '';
+// 🔑 开发环境默认 token - 直接硬编码，不依赖环境变量
+const DEFAULT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQzNjg0NzksImV4cCI6MTc3NDk3MzI3OX0.csZTqW8J3EIAuIRLXRAC_XUU1t8d-zuo8YO7HApJP3g';
 
 // 创建 axios 实例
 const apiClient = axios.create({
@@ -16,10 +16,8 @@ const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
-    // 直接使用环境变量中的默认 token，不需要从 localStorage 读取
-    if (DEFAULT_TOKEN) {
-      config.headers.Authorization = `Bearer ${DEFAULT_TOKEN}`;
-    }
+    // 🔑 直接使用硬编码的 token
+    config.headers.Authorization = `Bearer ${DEFAULT_TOKEN}`;
     return config;
   },
   (error) => {
@@ -32,7 +30,7 @@ apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  ( error) => {
     return Promise.reject(error);
   }
 );

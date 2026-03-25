@@ -7,6 +7,7 @@ import { TaskList } from '../pages/TaskList';
 import { TaskDetail } from '../pages/TaskDetail';
 import { Analytics } from '../pages/Analytics';
 import { AuditLogs } from '../pages/AuditLogs';
+import { RealtimeMonitoring } from '../pages/RealtimeMonitoring';
 import NotFound from '../pages/NotFound';
 
 const router = createBrowserRouter([
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: '/audit',
         element: <AuditLogs />,
+      },
+      {
+        path: '/monitoring',
+        element: <RealtimeMonitoring />,
       },
       {
         path: '*',

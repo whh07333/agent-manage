@@ -76,7 +76,13 @@ export const projectApi = {
     method: 'PUT',
     data: projectData,
   }),
-  
+
+  // 归档项目
+  archiveProject: (id: string) => request<Project>({
+    url: `/api/projects/${id}/archive`,
+    method: 'POST',
+  }),
+
   // 删除项目
   deleteProject: (id: string) => request<any>({
     url: `/api/projects/${id}`,

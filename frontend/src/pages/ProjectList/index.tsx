@@ -17,6 +17,8 @@ export const ProjectList: React.FC = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [archiveModalVisible, setArchiveModalVisible] = useState(false);
+  const [archivingProject, setArchivingProject] = useState<Project | null>(null);
   const [form] = Form.useForm();
 
   const fetchData = async () => {
@@ -211,6 +213,38 @@ export const ProjectList: React.FC = () => {
     }
   };
 
+  // 打开归档确认模态框
+  const handleOpenArchiveModal = (project: Project) => {
+    setArchivingProject(project);
+    setArchiveModalVisible(true);
+  };
+
+  // 关闭归档确认模态框
+  const handleCloseArchiveModal = () => {
+    setArchiveModalVisible(false);
+    setArchivingProject(null);
+  };
+
+  // 提交归档项目
+  const handleArchiveProject = async () => {
+    if (!archivingProject) return;
+
+    try {
+      const response = await projectApi.archiveProject(archivingProject.id);
+      if (response?.code === 0) {
+        message.success('项目归档成功');
+        handleCloseArchiveModal();
+        // 重新获取项目列表
+        fetchData();
+      } else {
+        message.error('归档项目失败: ' + (response?.msg || '未知错误'));
+      }
+    } catch (error) {
+      console.error('归档项目失败:', error);
+      message.error('归档项目失败，请稍后重试');
+    }
+  };
+
   return (
     <div>
       <div style={{ 
@@ -265,7 +299,7 @@ export const ProjectList: React.FC = () => {
                 <Button type="text" onClick={() => handleOpenEditModal(project)}>
                   编辑
                 </Button>,
-                <Button type="text" onClick={() => console.log('归档')}>
+                <Button type="text" onClick={() => handleOpenArchiveModal(project)}>
                   归档
                 </Button>,
                 <Button type="text" danger onClick={() => console.log('删除')}>
@@ -577,6 +611,21 @@ export const ProjectList: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* 归档确认模态框 */}
+      <Modal
+        title="确认归档项目"
+        open={archiveModalVisible}
+        onCancel={handleCloseArchiveModal}
+        onOk={handleArchiveProject}
+        okText="确认归档"
+        cancelText="取消"
+        okButtonProps={{ danger: true }}
+      >
+        <p>确定要归档项目 "{archivingProject?.name}" 吗？</p>
+        <p style={{ color: '#666' }}>归档后项目状态将变为"已归档"，项目将不再显示在活跃项目列表中。</p>
+      </Modal>
+
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { Card, List, Button, Input, Space, Pagination, Tag, Progress, Modal, For
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import { projectApi } from '../../services/api';
 import type { Project } from '../../types';
+import dayjs from 'dayjs';
 
 
 export const ProjectList: React.FC = () => {
@@ -14,6 +15,8 @@ export const ProjectList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [form] = Form.useForm();
 
   const fetchData = async () => {
@@ -103,6 +106,29 @@ export const ProjectList: React.FC = () => {
     form.resetFields();
   };
 
+  // 打开编辑项目模态框
+  const handleOpenEditModal = (project: Project) => {
+    console.log('编辑按钮点击，项目ID:', project.id, '项目名称:', project.name);
+    setEditingProject(project);
+    setEditModalVisible(true);
+    // 预填表单数据，注意日期格式转换
+    form.setFieldsValue({
+      name: project.name,
+      description: project.description,
+      managerId: project.managerId,
+      startDate: dayjs(project.startDate),
+      endDate: dayjs(project.endDate),
+      priority: project.priority,
+    });
+  };
+
+  // 关闭编辑项目模态框
+  const handleCloseEditModal = () => {
+    setEditModalVisible(false);
+    setEditingProject(null);
+    form.resetFields();
+  };
+
   // 提交创建项目
   const handleCreateProject = async () => {
     try {
@@ -140,6 +166,48 @@ export const ProjectList: React.FC = () => {
     } catch (error) {
       console.error('创建项目失败:', error);
       message.error('创建项目失败，请检查表单');
+    }
+  };
+
+  // 提交编辑项目
+  const handleUpdateProject = async () => {
+    if (!editingProject) return;
+
+    try {
+      const values = await form.validateFields();
+
+      // 格式转换
+      const projectData = {
+        ...values,
+        startDate: values.startDate.format("YYYY-MM-DD"),
+        endDate: values.endDate.format("YYYY-MM-DD"),
+        // 优先级转换：P0->low, P1->medium, P2->high, P3->low（默认）
+        priority: values.priority === 'P0' ? 'low' :
+                 values.priority === 'P1' ? 'medium' :
+                 values.priority === 'P2' ? 'high' : 'low',
+      };
+
+      // 验证开始日期必须早于结束日期（前端也做一次校验）
+      const start = new Date(projectData.startDate);
+      const end = new Date(projectData.endDate);
+      if (start.getTime() > end.getTime()) {
+        message.error('开始日期必须早于结束日期');
+        return;
+      }
+
+      // 调用API更新项目
+      const updatedProject = await projectApi.updateProject(editingProject.id, projectData);
+      if (updatedProject) {
+        message.success('项目更新成功');
+        handleCloseEditModal();
+        // 重新获取项目列表
+        fetchData();
+      } else {
+        message.error('更新项目失败');
+      }
+    } catch (error) {
+      console.error('更新项目失败:', error);
+      message.error('更新项目失败，请检查表单');
     }
   };
 
@@ -194,7 +262,7 @@ export const ProjectList: React.FC = () => {
                 <Button type="text" onClick={() => navigate(`/projects/${project.id}`)}>
                   详情
                 </Button>,
-                <Button type="text" onClick={() => console.log('编辑')}>
+                <Button type="text" onClick={() => handleOpenEditModal(project)}>
                   编辑
                 </Button>,
                 <Button type="text" onClick={() => console.log('归档')}>
@@ -395,6 +463,116 @@ export const ProjectList: React.FC = () => {
             <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
               <Button onClick={handleCloseCreateModal}>取消</Button>
               <Button type="primary" htmlType="submit">创建项目</Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 编辑项目模态框 */}
+      <Modal
+        title="编辑项目"
+        open={editModalVisible}
+        onCancel={handleCloseEditModal}
+        footer={null}
+        width={600}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleUpdateProject}
+        >
+          <Form.Item
+            name="name"
+            label="项目名称"
+            rules={[{ required: true, message: '请输入项目名称' }]}
+          >
+            <AntInput placeholder="请输入项目名称" />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            label="项目描述"
+            rules={[{ required: true, message: '请输入项目描述' }]}
+          >
+            <AntInput.TextArea
+              rows={4}
+              placeholder="请输入项目描述"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="managerId"
+            label="项目负责人"
+            rules={[{ required: true, message: '请输入项目负责人' }]}
+          >
+            <AntInput placeholder="请输入项目负责人" />
+          </Form.Item>
+
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <Form.Item
+              name="startDate"
+              label="开始日期"
+              rules={[{ required: true, message: '请选择开始日期' }]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker
+                style={{ width: '100%' }}
+                placeholder="选择开始日期"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="endDate"
+              label="结束日期"
+              rules={[{ required: true, message: '请选择结束日期' }]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker
+                style={{ width: '100%' }}
+                placeholder="选择结束日期"
+              />
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            name="priority"
+            label="优先级"
+            rules={[{ required: true, message: '请选择优先级' }]}
+          >
+            <Input.Group compact>
+              <Button
+                type={form.getFieldValue('priority') === 'P0' ? 'primary' : 'default'}
+                danger
+                onClick={() => form.setFieldValue('priority', 'P0')}
+              >
+                P0 - 最高
+              </Button>
+              <Button
+                type={form.getFieldValue('priority') === 'P1' ? 'primary' : 'default'}
+                onClick={() => form.setFieldValue('priority', 'P1')}
+              >
+                P1 - 高
+              </Button>
+              <Button
+                type={form.getFieldValue('priority') === 'P2' ? 'primary' : 'default'}
+                onClick={() => form.setFieldValue('priority', 'P2')}
+              >
+                P2 - 中
+              </Button>
+              <Button
+                type={form.getFieldValue('priority') === 'P3' ? 'primary' : 'default'}
+                onClick={() => form.setFieldValue('priority', 'P3')}
+              >
+                P3 - 低
+              </Button>
+            </Input.Group>
+          </Form.Item>
+
+          <Form.Item>
+            <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+              <Button onClick={handleCloseEditModal}>取消</Button>
+              <Button type="primary" htmlType="submit">保存</Button>
             </Space>
           </Form.Item>
         </Form>

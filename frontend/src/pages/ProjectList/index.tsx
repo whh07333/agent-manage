@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Card, List, Button, Input, Space, Pagination, Tag, Progress, Modal, Form, Input as AntInput, DatePicker, message } from 'antd';
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
@@ -7,6 +8,7 @@ import type { Project } from '../../types';
 
 export const ProjectList: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -189,7 +191,7 @@ export const ProjectList: React.FC = () => {
               hoverable
               style={{ height: '100%' }}
               actions={[
-                <Button type="text" onClick={() => console.log('查看详情')}>
+                <Button type="text" onClick={() => navigate(`/projects/${project.id}`)}>
                   详情
                 </Button>,
                 <Button type="text" onClick={() => console.log('编辑')}>

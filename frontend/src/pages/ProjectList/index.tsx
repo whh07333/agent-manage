@@ -310,7 +310,15 @@ export const ProjectList: React.FC = () => {
               <Card.Meta
                 title={
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{project.name}</span>
+                    <span
+                      style={{ fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', textDecoration: 'underline' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/projects/${project.id}`);
+                      }}
+                    >
+                      {project.name}
+                    </span>
                     <Tag color={getStatusColor(project.status)}>
                       {project.status === 'active' ? '进行中' : 
                        project.status === 'overdue' ? '逾期' : 

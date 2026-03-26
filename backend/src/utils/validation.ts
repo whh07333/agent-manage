@@ -41,45 +41,53 @@ export function escapeAllStrings(obj: any): any {
  * Validate project creation data
  */
 export function validateCreateProject(data: any): { valid: boolean; message?: string; escapedData?: any } {
-  // 验证名称
-  if (!data.name || typeof data.name !== 'string' || data.name.length < 2 || data.name.length > 255) {
+  // 验证名称（同时支持驼峰和下划线命名）
+  const name = data.name || data.name || undefined;
+  if (!name || typeof name !== 'string' || name.length < 2 || name.length > 255) {
     return { valid: false, message: 'Project name must be between 2 and 255 characters' };
   }
 
-  // 验证描述（新增）
-  if (data.description !== undefined && data.description !== null) {
-    if (typeof data.description !== 'string' || data.description.length > 1000) {
+  // 验证描述（同时支持驼峰和下划线命名）
+  const description = data.description !== undefined ? data.description : (data.description !== undefined ? data.description : undefined);
+  if (description !== undefined && description !== null) {
+    if (typeof description !== 'string' || description.length > 1000) {
       return { valid: false, message: 'Project description must not exceed 1000 characters' };
     }
   }
 
   // 验证managerId - 创建时必填
-  if (!data.managerId || typeof data.managerId !== 'string') {
+  const managerId = data.managerId || data.managerId;
+  if (!managerId || typeof managerId !== 'string') {
     return { valid: false, message: 'managerId is required and must be a string' };
   }
 
   // 验证优先级
-  if (data.priority !== undefined && !['low', 'medium', 'high'].includes(data.priority)) {
+  const priority = data.priority || data.priority;
+  if (priority !== undefined && !['low', 'medium', 'high'].includes(priority)) {
     return { valid: false, message: 'Priority must be one of: low, medium, high' };
   }
 
   // 验证状态
-  if (data.status !== undefined && !['active', 'inactive', 'archived'].includes(data.status)) {
+  const status = data.status || data.status;
+  if (status !== undefined && !['active', 'inactive', 'archived'].includes(status)) {
     return { valid: false, message: 'Status must be one of: active, inactive, archived' };
   }
 
-  // 验证截止日期
-  if (data.dueDate) {
-    const dueDate = new Date(data.dueDate);
+  // 验证截止日期（同时支持驼峰和下划线命名）
+  const dueDateStr = data.dueDate || data.due_date;
+  if (dueDateStr) {
+    const dueDate = new Date(dueDateStr);
     if (isNaN(dueDate.getTime())) {
       return { valid: false, message: 'Invalid due date format' };
     }
   }
 
-  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于或等于结束
-  if (data.startDate && data.endDate) {
-    const startDate = new Date(data.startDate);
-    const endDate = new Date(data.endDate);
+  // 验证开始日期和结束日期（同时支持驼峰和下划线命名）
+  const startDateStr = data.startDate || data.start_date;
+  const endDateStr = data.endDate || data.end_date;
+  if (startDateStr && endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
     if (isNaN(startDate.getTime())) {
       return { valid: false, message: 'Invalid start date format' };
     }
@@ -92,14 +100,15 @@ export function validateCreateProject(data: any): { valid: boolean; message?: st
   }
 
   // 验证config字段JSON格式（新增）
-  if (data.config !== undefined && data.config !== null) {
-    if (typeof data.config === 'string') {
+  const config = data.config || data.config;
+  if (config !== undefined && config !== null) {
+    if (typeof config === 'string') {
       try {
-        JSON.parse(data.config);
+        JSON.parse(config);
       } catch (e) {
         return { valid: false, message: 'Config field must be valid JSON format' };
       }
-    } else if (typeof data.config !== 'object') {
+    } else if (typeof config !== 'object') {
       return { valid: false, message: 'Config field must be an object or valid JSON string' };
     }
   }
@@ -122,45 +131,53 @@ export function validateUpdateProject(data: any): { valid: boolean; message?: st
  * Only validate fields that are actually being updated
  */
 export function validateProjectData(data: any): { valid: boolean; message?: string; escapedData?: any } {
-  // 验证名称
-  if (data.name !== undefined && (!data.name || typeof data.name !== 'string' || data.name.length < 2 || data.name.length > 255)) {
+  // 验证名称（同时支持驼峰和下划线命名）
+  const name = data.name || data.name;
+  if (name !== undefined && (!name || typeof name !== 'string' || name.length < 2 || name.length > 255)) {
     return { valid: false, message: 'Project name must be between 2 and 255 characters' };
   }
 
-  // 验证描述（新增）
-  if (data.description !== undefined && data.description !== null) {
-    if (typeof data.description !== 'string' || data.description.length > 1000) {
+  // 验证描述（同时支持驼峰和下划线命名）
+  const description = data.description !== undefined ? data.description : (data.description !== undefined ? data.description : undefined);
+  if (description !== undefined && description !== null) {
+    if (typeof description !== 'string' || description.length > 1000) {
       return { valid: false, message: 'Project description must not exceed 1000 characters' };
     }
   }
 
   // managerId - only validate if it's being updated
-  if (data.managerId !== undefined && (typeof data.managerId !== 'string' || data.managerId.length === 0)) {
+  const managerId = data.managerId || data.managerId;
+  if (managerId !== undefined && (typeof managerId !== 'string' || managerId.length === 0)) {
     return { valid: false, message: 'managerId must be a non-empty string' };
   }
 
   // 验证优先级
-  if (data.priority !== undefined && !['low', 'medium', 'high'].includes(data.priority)) {
+  const priority = data.priority || data.priority;
+  if (priority !== undefined && !['low', 'medium', 'high'].includes(priority)) {
     return { valid: false, message: 'Priority must be one of: low, medium, high' };
   }
 
   // 验证状态
-  if (data.status !== undefined && !['active', 'inactive', 'archived'].includes(data.status)) {
+  const status = data.status || data.status;
+  if (status !== undefined && !['active', 'inactive', 'archived'].includes(status)) {
     return { valid: false, message: 'Status must be one of: active, inactive, archived' };
   }
 
-  // 验证截止日期
-  if (data.dueDate) {
-    const dueDate = new Date(data.dueDate);
+  // 验证截止日期（同时支持驼峰和下划线命名）
+  const dueDateStr = data.dueDate || data.due_date;
+  if (dueDateStr) {
+    const dueDate = new Date(dueDateStr);
     if (isNaN(dueDate.getTime())) {
       return { valid: false, message: 'Invalid due date format' };
     }
   }
 
-  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于或等于结束
-  if (data.startDate && data.endDate) {
-    const startDate = new Date(data.startDate);
-    const endDate = new Date(data.endDate);
+  // 验证开始日期和结束日期（同时支持驼峰和下划线命名）
+  const startDateStr = data.startDate || data.start_date;
+  const endDateStr = data.endDate || data.end_date;
+  if (startDateStr && endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
     if (isNaN(startDate.getTime())) {
       return { valid: false, message: 'Invalid start date format' };
     }
@@ -173,14 +190,15 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
   }
 
   // 验证config字段JSON格式（新增）
-  if (data.config !== undefined && data.config !== null) {
-    if (typeof data.config === 'string') {
+  const config = data.config || data.config;
+  if (config !== undefined && config !== null) {
+    if (typeof config === 'string') {
       try {
-        JSON.parse(data.config);
+        JSON.parse(config);
       } catch (e) {
         return { valid: false, message: 'Config field must be valid JSON format' };
       }
-    } else if (typeof data.config !== 'object') {
+    } else if (typeof config !== 'object') {
       return { valid: false, message: 'Config field must be an object or valid JSON string' };
     }
   }
@@ -209,18 +227,21 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
     return { valid: false, message: 'Status must be one of: pending, in_progress, completed, blocked, cancelled' };
   }
 
-  // 验证截止日期
-  if (data.dueDate) {
-    const dueDate = new Date(data.dueDate);
+  // 验证截止日期（同时支持驼峰和下划线命名）
+  const dueDateStr = data.dueDate || data.due_date;
+  if (dueDateStr) {
+    const dueDate = new Date(dueDateStr);
     if (isNaN(dueDate.getTime())) {
       return { valid: false, message: 'Invalid due date format' };
     }
   }
 
   // 验证开始和结束日期 - 如果同时提供了开始和结束日期，开始必须早于或等于结束
-  if (data.startDate && data.endDate) {
-    const startDate = new Date(data.startDate);
-    const endDate = new Date(data.endDate);
+  const startDateStr = data.startDate || data.start_date;
+  const endDateStr = data.endDate || data.end_date;
+  if (startDateStr && endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
     if (isNaN(startDate.getTime())) {
       return { valid: false, message: 'Invalid start date format' };
     }

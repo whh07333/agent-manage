@@ -13,14 +13,14 @@ const instance = axios.create({
 // 请求拦截器
 instance.interceptors.request.use(
   (config) => {
-    // 在请求发送之前做些什么
-    let token: string | null = localStorage.getItem('token');
-    // 如果localStorage没有token，使用环境变量中的默认token（开发环境）
-    const defaultToken: string | undefined = import.meta.env.VITE_DEFAULT_TOKEN;
-    if (!token && defaultToken) {
-      token = defaultToken;
-      localStorage.setItem('token', token);
+    // 🔑 优先使用环境变量中的token（最稳定）
+    let token: string | undefined = import.meta.env.VITE_DEFAULT_TOKEN;
+    
+    // 如果环境变量没有token，尝试从localStorage获取（兼容性）
+    if (!token) {
+      token = localStorage.getItem('token');
     }
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

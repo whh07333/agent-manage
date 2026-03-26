@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios';
-import type { ApiResponse } from '../types';
+import axios from 'axios';
+import type { ApiResponse, Project } from '../types';
 
 // API 基础配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
@@ -16,11 +16,10 @@ const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
-    // 🔑 优先使用 localStorage 中的 token，如果不存在则使用环境变量中的默认 token
-    let token: string | null = localStorage.getItem('token');
-    if (!token && DEFAULT_TOKEN) {
-      token = DEFAULT_TOKEN;
-      localStorage.setItem('token', token);
+    // 🔑 优先使用环境变量中的默认 token，如果环境变量为空则使用 localStorage 中的 token
+    let token: string | null = DEFAULT_TOKEN;
+    if (!token) {
+      token = localStorage.getItem('token');
     }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

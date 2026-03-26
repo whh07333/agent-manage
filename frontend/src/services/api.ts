@@ -4,8 +4,8 @@ import type { ApiResponse } from '../types';
 // API 基础配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-// 🔑 开发环境默认 token - 直接硬编码，不依赖环境变量
-const DEFAULT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQ0OTI2NTAsImV4cCI6MTc3NTA5NzQ1MH0.GCkxoJajZ9hAWwF2LxDeLSQDOH-4YvRtKFfjstZrV9I';
+// 🔑 开发环境默认 token - 从环境变量读取，如果环境变量为空则使用 localStorage 中的 token
+const DEFAULT_TOKEN = import.meta.env.VITE_DEFAULT_TOKEN || '';
 
 // 创建 axios 实例
 const apiClient = axios.create({
@@ -16,8 +16,15 @@ const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
-    // 🔑 直接使用硬编码的 token
-    config.headers.Authorization = `Bearer ${DEFAULT_TOKEN}`;
+    // 🔑 优先使用 localStorage 中的 token，如果不存在则使用环境变量中的默认 token
+    let token: string | null = localStorage.getItem('token');
+    if (!token && DEFAULT_TOKEN) {
+      token = DEFAULT_TOKEN;
+      localStorage.setItem('token', token);
+    }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -30,7 +37,7 @@ apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  ( error) => {
+  (error) => {
     return Promise.reject(error);
   }
 );

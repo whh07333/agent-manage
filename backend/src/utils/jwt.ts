@@ -10,7 +10,9 @@ interface JwtPayload {
 }
 
 export const generateToken = (payload: JwtPayload): string => {
-  return jwt.sign(payload, process.env.JWT_SECRET || 'default_secret_key');
+  return jwt.sign(payload, process.env.JWT_SECRET || 'default_secret_key', {
+    expiresIn: '7d'  // 添加7天过期时间
+  });
 };
 
 export const verifyToken = (token: string): JwtPayload => {

@@ -166,7 +166,7 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
   // 验证截止日期（同时支持驼峰和下划线命名）
   const dueDateStr = data.dueDate || data.due_date;
   if (dueDateStr) {
-    const dueDate = new Date(dueDateStrStr);
+    const dueDate = new Date(dueDateStr);
     if (isNaN(dueDate.getTime())) {
       return { valid: false, message: 'Invalid due date format' };
     }
@@ -254,6 +254,5 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
   }
 
   // Escape all HTML special characters in string inputs
-  const escapedData = escapeAllStrings(data);
-  return { valid: true, escapedData };
+  const escapedData = return { valid: true, escapedData: true };
 }

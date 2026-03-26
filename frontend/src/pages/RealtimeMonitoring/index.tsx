@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Typography, Space, Progress, Table } from 'antd';
+import { useState, useEffect, useRef } from 'react';
+import { Card, Row, Col, Statistic, Typography, Space, Progress, Table, message } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined, CheckCircleOutlined, CloseCircleOutlined, WarningOutlined, DashboardOutlined } from '@ant-design/icons';
+import { statisticsApi } from '../../services/api';
 
 const { Title, Text } = Typography;
 
@@ -38,83 +39,69 @@ interface RealtimeStats {
 export const RealtimeMonitoring: React.FC = () => {
   const [stats, setStats] = useState<RealtimeStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isPageVisibleRef = useRef(true);
+
+  const fetchRealTimeData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await statisticsApi.getRealTimeStatistics();
+
+      if (response.code === 200 && response.data) {
+        setStats(response.data);
+      } else {
+        setError(response.msg || '获取实时数据失败');
+        message.error(response.msg || '获取实时数据失败');
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || '网络请求异常';
+      setError(errorMessage);
+      message.error(errorMessage);
+      console.error('获取实时监控数据失败:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // 模拟数据 - 后续对接真实API
-        const mockStats: RealtimeStats = {
-          apiCalls: {
-            total: 12480,
-            success: 12020,
-            error: 460,
-            errorRate: 3.7,
-            avgResponseTime: 245,
-          },
-          eventPushes: {
-            total: 8920,
-            success: 8760,
-            failure: 160,
-            successRate: 98.2,
-            pending: 42,
-          },
-          systemHealth: {
-            cpuUsage: 65.5,
-            memoryUsage: 78.2,
-            diskUsage: 45.8,
-            uptime: '15天 8小时 32分',
-          },
-          recentErrors: [
-            {
-              id: '1',
-              time: '2026-03-25 14:23:12',
-              endpoint: '/api/projects/create',
-              error: '数据库连接超时',
-              statusCode: 500,
-            },
-            {
-              id: '2',
-              time: '2026-03-25 14:15:45',
-              endpoint: '/api/tasks/update',
-              error: '权限验证失败',
-              statusCode: 403,
-            },
-            {
-              id: '3',
-              time: '2026-03-25 13:58:33',
-              endpoint: '/api/events/push',
-              error: '消息队列已满',
-              statusCode: 503,
-            },
-            {
-              id: '4',
-              time: '2026-03-25 13:42:19',
-              endpoint: '/api/agents/status',
-              error: '服务不可用',
-              statusCode: 502,
-            },
-            {
-              id: '5',
-              time: '2026-03-25 13:25:07',
-              endpoint: '/api/audit/logs',
-              error: '查询超时',
-              statusCode: 504,
-            },
-          ],
-        };
-        setStats(mockStats);
-      } catch (error) {
-        console.error('获取实时监控数据失败:', error);
-      } finally {
-        setLoading(false);
+    // 页面可见性变化处理
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // 页面变为可见，恢复定时器
+        isPageVisibleRef.current = true;
+        if (!refreshTimerRef.current) {
+          refreshTimerRef.current = setInterval(fetchRealTimeData, 30000);
+        }
+      } else {
+        // 页面变为隐藏，暂停定时器
+        isPageVisibleRef.current = false;
+        if (refreshTimerRef.current) {
+          clearInterval(refreshTimerRef.current);
+          refreshTimerRef.current = null;
+        }
       }
     };
 
-    fetchData();
-    // 模拟实时更新，每30秒刷新一次
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
+    // 初始获取数据
+    fetchRealTimeData();
+
+    // 设置定时器
+    refreshTimerRef.current = setInterval(fetchRealTimeData, 30000);
+
+    // 监听页面可见性变化
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 清理函数
+    return () => {
+      if (refreshTimerRef.current) {
+        clearInterval(refreshTimerRef.current);
+        refreshTimerRef.current = null;
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const errorColumns = [

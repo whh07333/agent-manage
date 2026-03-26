@@ -405,6 +405,7 @@ export const ProjectList: React.FC = () => {
         footer={null}
         width={600}
         destroyOnClose
+        data-testid="create-project-modal"
       >
         <Form
           form={form}
@@ -503,8 +504,8 @@ export const ProjectList: React.FC = () => {
 
           <Form.Item>
             <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
-              <Button onClick={handleCloseCreateModal}>取消</Button>
-              <Button type="primary" htmlType="submit">创建项目</Button>
+              <Button onClick={handleCloseCreateModal} data-testid="cancel-button">取消</Button>
+              <Button type="primary" htmlType="submit" data-testid="create-project-save-button">创建项目</Button>
             </Space>
           </Form.Item>
         </Form>
@@ -518,6 +519,7 @@ export const ProjectList: React.FC = () => {
         footer={null}
         width={600}
         destroyOnClose
+        data-testid="edit-project-modal"
       >
         <Form
           form={form}
@@ -613,8 +615,8 @@ export const ProjectList: React.FC = () => {
 
           <Form.Item>
             <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
-              <Button onClick={handleCloseEditModal}>取消</Button>
-              <Button type="primary" htmlType="submit">保存</Button>
+              <Button onClick={handleCloseEditModal} data-testid="cancel-button">取消</Button>
+              <Button type="primary" htmlType="submit" data-testid="edit-project-save-button">保存</Button>
             </Space>
           </Form.Item>
         </Form>
@@ -628,7 +630,9 @@ export const ProjectList: React.FC = () => {
         onOk={handleArchiveProject}
         okText="确认归档"
         cancelText="取消"
-        okButtonProps={{ danger: true }}
+        okButtonProps={{ danger: true, 'data-testid': 'archive-confirm-button' }}
+        cancelButtonProps={{ 'data-testid': 'cancel-button' }}
+        data-testid="archive-confirm-modal"
       >
         <p>确定要归档项目 "{archivingProject?.name}" 吗？</p>
         <p style={{ color: '#666' }}>归档后项目状态将变为"已归档"，项目将不再显示在活跃项目列表中。</p>

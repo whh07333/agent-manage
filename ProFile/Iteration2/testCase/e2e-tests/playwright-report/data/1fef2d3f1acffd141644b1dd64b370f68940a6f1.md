@@ -1,0 +1,98 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: OpenClaw 管理系统
+      - menu [ref=e7]:
+        - menuitem "dashboard 首页" [ref=e8] [cursor=pointer]:
+          - img "dashboard" [ref=e9]:
+            - img [ref=e10]
+          - generic [ref=e12]: 首页
+        - menuitem "project 项目管理" [ref=e13] [cursor=pointer]:
+          - img "project" [ref=e14]:
+            - img [ref=e15]
+          - generic [ref=e17]: 项目管理
+        - menuitem "check-square 任务管理" [ref=e18] [cursor=pointer]:
+          - img "check-square" [ref=e19]:
+            - img [ref=e20]
+          - generic [ref=e23]: 任务管理
+        - menuitem "bar-chart 统计看板" [ref=e24] [cursor=pointer]:
+          - img "bar-chart" [ref=e25]:
+            - img [ref=e26]
+          - generic [ref=e28]: 统计看板
+        - menuitem "file-text 审计日志" [ref=e29] [cursor=pointer]:
+          - img "file-text" [ref=e30]:
+            - img [ref=e31]
+          - generic [ref=e33]: 审计日志
+        - menuitem "setting 系统设置" [ref=e34] [cursor=pointer]:
+          - img "setting" [ref=e35]:
+            - img [ref=e36]
+          - generic [ref=e38]: 系统设置
+    - img "left" [ref=e40] [cursor=pointer]:
+      - img [ref=e41]
+  - generic [ref=e43]:
+    - banner [ref=e44]:
+      - generic [ref=e45]:
+        - heading "统计看板" [level=4] [ref=e46]
+        - generic [ref=e49] [cursor=pointer]:
+          - img "user" [ref=e52]:
+            - img [ref=e53]
+          - generic [ref=e55]: 管理员
+    - main [ref=e56]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - heading "数据分析" [level=2] [ref=e60]
+          - generic [ref=e61]:
+            - generic [ref=e63]:
+              - textbox "Start date" [ref=e65]
+              - generic "to" [ref=e67]:
+                - img "swap-right" [ref=e68]:
+                  - img [ref=e69]
+              - textbox "End date" [ref=e72]
+              - generic:
+                - img "calendar":
+                  - img
+            - button "filter 筛选" [ref=e74] [cursor=pointer]:
+              - img "filter" [ref=e76]:
+                - img [ref=e77]
+              - generic [ref=e79]: 筛选
+            - button "download 导出" [ref=e81] [cursor=pointer]:
+              - img "download" [ref=e83]:
+                - img [ref=e84]
+              - generic [ref=e86]: 导出
+        - generic [ref=e87]:
+          - generic [ref=e89]:
+            - generic [ref=e92]: 项目趋势
+            - generic [ref=e96]:
+              - list [ref=e98]:
+                - listitem [ref=e99]:
+                  - img "value legend icon" [ref=e100]
+                  - text: value
+              - application [ref=e102]
+          - generic [ref=e109]:
+            - generic [ref=e112]: Agent 负载
+            - generic [ref=e116]:
+              - list [ref=e118]:
+                - listitem [ref=e119]:
+                  - img "tasks legend icon" [ref=e120]
+                  - text: tasks
+              - application [ref=e122]
+        - generic [ref=e128]:
+          - generic [ref=e131]: 项目效率排行
+          - table [ref=e139]:
+            - rowgroup [ref=e140]:
+              - row "项目名称 负责人 任务数 完成率" [ref=e141]:
+                - columnheader "项目名称" [ref=e142]
+                - columnheader "负责人" [ref=e143]
+                - columnheader "任务数" [ref=e144]
+                - columnheader "完成率" [ref=e145]
+            - rowgroup [ref=e146]:
+              - row "No data No data" [ref=e147]:
+                - cell "No data No data" [ref=e148]:
+                  - generic [ref=e149]:
+                    - img "No data" [ref=e151]
+                    - generic [ref=e157]: No data
+    - contentinfo [ref=e158]: OpenClaw AI Agent项目管理系统 ©2026 - 前端高级开发工程师 Wendy
+```

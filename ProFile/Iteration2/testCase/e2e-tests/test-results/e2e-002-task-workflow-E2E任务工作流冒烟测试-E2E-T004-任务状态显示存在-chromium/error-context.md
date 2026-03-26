@@ -1,0 +1,118 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: OpenClaw 管理系统
+      - menu [ref=e7]:
+        - menuitem "dashboard 首页" [ref=e8] [cursor=pointer]:
+          - img "dashboard" [ref=e9]:
+            - img [ref=e10]
+          - generic [ref=e12]: 首页
+        - menuitem "project 项目管理" [ref=e13] [cursor=pointer]:
+          - img "project" [ref=e14]:
+            - img [ref=e15]
+          - generic [ref=e17]: 项目管理
+        - menuitem "check-square 任务管理" [ref=e18] [cursor=pointer]:
+          - img "check-square" [ref=e19]:
+            - img [ref=e20]
+          - generic [ref=e23]: 任务管理
+        - menuitem "bar-chart 统计看板" [ref=e24] [cursor=pointer]:
+          - img "bar-chart" [ref=e25]:
+            - img [ref=e26]
+          - generic [ref=e28]: 统计看板
+        - menuitem "file-text 审计日志" [ref=e29] [cursor=pointer]:
+          - img "file-text" [ref=e30]:
+            - img [ref=e31]
+          - generic [ref=e33]: 审计日志
+        - menuitem "setting 系统设置" [ref=e34] [cursor=pointer]:
+          - img "setting" [ref=e35]:
+            - img [ref=e36]
+          - generic [ref=e38]: 系统设置
+    - img "left" [ref=e40] [cursor=pointer]:
+      - img [ref=e41]
+  - generic [ref=e43]:
+    - banner [ref=e44]:
+      - generic [ref=e45]:
+        - heading "任务管理" [level=4] [ref=e46]
+        - generic [ref=e49] [cursor=pointer]:
+          - img "user" [ref=e52]:
+            - img [ref=e53]
+          - generic [ref=e55]: 管理员
+    - main [ref=e56]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - heading "任务管理" [level=2] [ref=e60]
+          - button "plus 创建任务" [ref=e63] [cursor=pointer]:
+            - img "plus" [ref=e65]:
+              - img [ref=e66]
+            - generic [ref=e69]: 创建任务
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - generic [ref=e74]:
+              - img "search" [ref=e76]:
+                - img [ref=e77]
+              - searchbox "搜索任务名称、描述或负责人" [ref=e79]
+            - button "search" [ref=e81] [cursor=pointer]:
+              - img "search" [ref=e83]:
+                - img [ref=e84]
+          - generic [ref=e86]:
+            - generic [ref=e87]: "状态:"
+            - generic [ref=e88] [cursor=pointer]:
+              - generic [ref=e89]:
+                - generic: 全部状态
+                - combobox [ref=e90]
+              - img "down" [ref=e92]:
+                - img [ref=e93]
+          - generic [ref=e95]:
+            - generic [ref=e96]: "优先级:"
+            - generic [ref=e97] [cursor=pointer]:
+              - generic [ref=e98]:
+                - generic: 全部优先级
+                - combobox [ref=e99]
+              - img "down" [ref=e101]:
+                - img [ref=e102]
+          - button "filter 更多筛选" [ref=e104] [cursor=pointer]:
+            - img "filter" [ref=e106]:
+              - img [ref=e107]
+            - generic [ref=e109]: 更多筛选
+        - generic [ref=e111]:
+          - table [ref=e118]:
+            - rowgroup [ref=e128]:
+              - row "任务名称 状态 优先级 负责人 项目 进度 截止日期 操作" [ref=e129]:
+                - columnheader "任务名称" [ref=e130]
+                - columnheader "状态" [ref=e131]
+                - columnheader "优先级" [ref=e132]
+                - columnheader "负责人" [ref=e133]
+                - columnheader "项目" [ref=e134]
+                - columnheader "进度" [ref=e135]
+                - columnheader "截止日期" [ref=e136]
+                - columnheader "操作" [ref=e137]
+            - rowgroup [ref=e138]:
+              - row "No data No data" [ref=e139]:
+                - cell "No data No data" [ref=e140]:
+                  - generic [ref=e141]:
+                    - img "No data" [ref=e143]
+                    - generic [ref=e149]: No data
+          - list [ref=e151]:
+            - listitem [ref=e152]: 共 0 个任务
+            - listitem "Previous Page" [ref=e153]:
+              - button "left" [disabled] [ref=e154]:
+                - img "left" [ref=e155]:
+                  - img [ref=e156]
+            - listitem "1" [ref=e158] [cursor=pointer]:
+              - generic [ref=e159]: "1"
+            - listitem "Next Page" [ref=e160]:
+              - button "right" [disabled] [ref=e161]:
+                - img "right" [ref=e162]:
+                  - img [ref=e163]
+            - listitem [ref=e165]:
+              - generic [ref=e166]:
+                - generic "10 / page" [ref=e167]:
+                  - text: 10 / page
+                  - combobox "Page Size" [ref=e168]
+                - img "down" [ref=e170]:
+                  - img [ref=e171]
+    - contentinfo [ref=e173]: OpenClaw AI Agent项目管理系统 ©2026 - 前端高级开发工程师 Wendy
+```

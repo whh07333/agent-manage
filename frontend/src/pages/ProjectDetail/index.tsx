@@ -339,7 +339,7 @@ export const ProjectDetail: React.FC = () => {
                       <p style={{ margin: '8px 0' }}>{task.description}</p>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ fontSize: '14px', color: '#666' }}>
-                          负责人: {task.assignee}
+                          负责人: {task.assigneeId}
                         </div>
                         <div style={{ fontSize: '14px', color: '#666' }}>
                           截止日期: {task.endDate}

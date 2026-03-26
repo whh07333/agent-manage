@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, Row, Col, Table, Button, Space, DatePicker } from 'antd';
 import { DownloadOutlined, FilterOutlined } from '@ant-design/icons';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { statisticsApi } from '../../services/api';
 
 import type { FullStatistics } from '../../types';
 
@@ -15,38 +16,8 @@ export const Analytics: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Note: FullStatistics has camelCase properties for the expanded analytics page
-        // This data is not provided by the simple realtime/overview endpoint
-        // For now, we'll show the skeleton with placeholder data
-        setStats({
-          activeProjects: 10,
-          pendingReviewTasks: 8,
-          blockedTasks: 3,
-          averageDeliveryTime: 5.2,
-          projectTrend: [
-            { date: '03-01', value: 5 },
-            { date: '03-02', value: 8 },
-            { date: '03-03', value: 12 },
-            { date: '03-04', value: 15 },
-            { date: '03-05', value: 18 },
-            { date: '03-06', value: 22 },
-            { date: '03-07', value: 25 },
-          ],
-          agentWorkload: [
-            { name: '开发Agent', type: 'development', tasks: 15 },
-            { name: '测试Agent', type: 'testing', tasks: 8 },
-            { name: '产品Agent', type: 'product', tasks: 6 },
-            { name: '管理Agent', type: 'management', tasks: 3 },
-          ],
-          taskStatusDistribution: [
-            { status: 'unassigned', count: 8 },
-            { status: 'inProgress', count: 12 },
-            { status: 'blocked', count: 3 },
-            { status: 'pendingReview', count: 5 },
-            { status: 'completed', count: 20 },
-          ],
-          projectEfficiency: [],
-        });
+        const response = await statisticsApi.getRealTimeStatistics();
+        setStats(response.data);
       } catch (error) {
         console.error('获取统计数据失败:', error);
       } finally {

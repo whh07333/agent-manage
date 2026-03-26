@@ -254,5 +254,6 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
   }
 
   // Escape all HTML special characters in string inputs
-  const escapedData = return { valid: true, escapedData: true };
+  const escapedData = escapeAllStrings(data);
+  return { valid: true, escapedData };
 }

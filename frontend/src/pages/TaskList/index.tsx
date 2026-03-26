@@ -260,7 +260,7 @@ export const TaskList: React.FC = () => {
     const matchesSearch = !searchText ||
       task.name.toLowerCase().includes(searchText.toLowerCase()) ||
       task.description.toLowerCase().includes(searchText.toLowerCase()) ||
-      task.assignee.toLowerCase().includes(searchText.toLowerCase());
+      task.assigneeId.toLowerCase().includes(searchText.toLowerCase());
 
     // 状态过滤
     const matchesStatus = !statusFilter || task.status === statusFilter;

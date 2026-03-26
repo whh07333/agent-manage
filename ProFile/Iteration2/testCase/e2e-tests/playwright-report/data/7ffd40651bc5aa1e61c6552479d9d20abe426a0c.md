@@ -1,0 +1,145 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: OpenClaw 管理系统
+        - menu [ref=e7]:
+          - menuitem "dashboard 首页" [ref=e8] [cursor=pointer]:
+            - img "dashboard" [ref=e9]:
+              - img [ref=e10]
+            - generic [ref=e12]: 首页
+          - menuitem "project 项目管理" [ref=e13] [cursor=pointer]:
+            - img "project" [ref=e14]:
+              - img [ref=e15]
+            - generic [ref=e17]: 项目管理
+          - menuitem "check-square 任务管理" [ref=e18] [cursor=pointer]:
+            - img "check-square" [ref=e19]:
+              - img [ref=e20]
+            - generic [ref=e23]: 任务管理
+          - menuitem "bar-chart 统计看板" [ref=e24] [cursor=pointer]:
+            - img "bar-chart" [ref=e25]:
+              - img [ref=e26]
+            - generic [ref=e28]: 统计看板
+          - menuitem "file-text 审计日志" [ref=e29] [cursor=pointer]:
+            - img "file-text" [ref=e30]:
+              - img [ref=e31]
+            - generic [ref=e33]: 审计日志
+          - menuitem "setting 系统设置" [ref=e34] [cursor=pointer]:
+            - img "setting" [ref=e35]:
+              - img [ref=e36]
+            - generic [ref=e38]: 系统设置
+      - img "left" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+    - generic [ref=e43]:
+      - banner [ref=e44]:
+        - generic [ref=e45]:
+          - heading "项目管理" [level=4] [ref=e46]
+          - generic [ref=e49] [cursor=pointer]:
+            - img "user" [ref=e52]:
+              - img [ref=e53]
+            - generic [ref=e55]: 管理员
+      - main [ref=e56]:
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - heading "项目管理" [level=2] [ref=e60]
+            - generic [ref=e61]:
+              - generic [ref=e63]:
+                - generic [ref=e64]:
+                  - searchbox "搜索项目" [ref=e65]: E2E测试-1774530498057
+                  - button "close-circle" [ref=e67] [cursor=pointer]:
+                    - img "close-circle" [ref=e68]:
+                      - img [ref=e69]
+                - button "search" [ref=e71] [cursor=pointer]:
+                  - img "search" [ref=e73]:
+                    - img [ref=e74]
+              - button "filter 筛选" [ref=e77] [cursor=pointer]:
+                - img "filter" [ref=e79]:
+                  - img [ref=e80]
+                - generic [ref=e82]: 筛选
+              - button "plus 创建项目" [ref=e84] [cursor=pointer]:
+                - img "plus" [ref=e86]:
+                  - img [ref=e87]
+                - generic [ref=e90]: 创建项目
+          - generic [ref=e95]:
+            - img "No data" [ref=e97]
+            - generic [ref=e103]: No data
+          - list [ref=e105]:
+            - listitem [ref=e106]: 共 0 个项目
+            - listitem "Previous Page" [ref=e107]:
+              - button "left" [disabled] [ref=e108]:
+                - img "left" [ref=e109]:
+                  - img [ref=e110]
+            - listitem "1" [ref=e112] [cursor=pointer]:
+              - generic [ref=e113]: "1"
+            - listitem "Next Page" [ref=e114]:
+              - button "right" [disabled] [ref=e115]:
+                - img "right" [ref=e116]:
+                  - img [ref=e117]
+            - listitem [ref=e119]:
+              - generic [ref=e120]:
+                - generic "12 / page" [ref=e121]:
+                  - text: 12 / page
+                  - combobox "Page Size" [ref=e122]
+                - img "down" [ref=e124]:
+                  - img [ref=e125]
+      - contentinfo [ref=e127]: OpenClaw AI Agent项目管理系统 ©2026 - 前端高级开发工程师 Wendy
+  - generic [ref=e128]:
+    - dialog "创建新项目":
+      - generic [ref=e129]:
+        - button "Close" [ref=e130] [cursor=pointer]:
+          - generic "Close" [ref=e131]:
+            - img "close" [ref=e132]:
+              - img [ref=e133]
+        - generic [ref=e136]: 创建新项目
+        - generic [ref=e138]:
+          - generic [ref=e140]:
+            - generic "项目名称" [ref=e142]: "* 项目名称"
+            - textbox "* 项目名称" [ref=e146]:
+              - /placeholder: 请输入项目名称
+          - generic [ref=e148]:
+            - generic "项目描述" [ref=e150]: "* 项目描述"
+            - textbox "* 项目描述" [active] [ref=e154]:
+              - /placeholder: 请输入项目描述
+              - text: E2E测试项目
+          - generic [ref=e156]:
+            - generic "项目负责人" [ref=e158]: "* 项目负责人"
+            - textbox "* 项目负责人" [ref=e162]:
+              - /placeholder: 请输入项目负责人
+              - text: 00000000-0000-0000-0000-000000000001
+          - generic [ref=e163]:
+            - generic [ref=e165]:
+              - generic "开始日期" [ref=e167]: "* 开始日期"
+              - generic [ref=e172]:
+                - textbox "* 开始日期" [ref=e173]:
+                  - /placeholder: 选择开始日期
+                - generic:
+                  - img "calendar":
+                    - img
+            - generic [ref=e175]:
+              - generic "结束日期" [ref=e177]: "* 结束日期"
+              - generic [ref=e182]:
+                - textbox "* 结束日期" [ref=e183]:
+                  - /placeholder: 选择结束日期
+                - generic:
+                  - img "calendar":
+                    - img
+          - generic [ref=e185]:
+            - generic "优先级" [ref=e187]: "* 优先级"
+            - generic [ref=e191]:
+              - button "P0 - 最高" [ref=e192] [cursor=pointer]:
+                - generic [ref=e193]: P0 - 最高
+              - button "P1 - 高" [ref=e194] [cursor=pointer]:
+                - generic [ref=e195]: P1 - 高
+              - button "P2 - 中" [ref=e196] [cursor=pointer]:
+                - generic [ref=e197]: P2 - 中
+              - button "P3 - 低" [ref=e198] [cursor=pointer]:
+                - generic [ref=e199]: P3 - 低
+          - generic [ref=e205]:
+            - button "取 消" [ref=e207] [cursor=pointer]:
+              - generic [ref=e208]: 取 消
+            - button "创建项目" [ref=e210] [cursor=pointer]:
+              - generic [ref=e211]: 创建项目
+```

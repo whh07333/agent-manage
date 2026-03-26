@@ -286,7 +286,7 @@ export const TaskDetail: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>负责人</div>
-                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{task.assignee}</div>
+                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{task.assigneeId}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>优先级</div>

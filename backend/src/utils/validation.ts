@@ -43,8 +43,8 @@ export function escapeAllStrings(obj: any): any {
 export function validateCreateProject(data: any): { valid: boolean; message?: string; escapedData?: any } {
   // 验证名称（同时支持驼峰和下划线命名）
   const name = data.name || data.name;
-  if (!name || typeof name !== 'string' || name.length < 2 || name.length > 255) {
-    return { valid: false, message: 'Project name must be between 2 and 255 characters' };
+  if (!name || typeof name !== 'string' || name.length < 2 || name.length > 100) {
+    return { valid: false, message: 'Project name must be between 2 and 100 characters' };
   }
 
   // 验证描述（同时支持驼峰和下划线命名）
@@ -133,8 +133,8 @@ export function validateUpdateProject(data: any): { valid: boolean; message?: st
 export function validateProjectData(data: any): { valid: boolean; message?: string; escapedData?: any } {
   // 验证名称（同时支持驼峰和下划线命名）
   const name = data.name || data.name;
-  if (name !== undefined && (!name || typeof name !== 'string' || name.length < 2 || name.length > 255)) {
-    return { valid: false, message: 'Project name must be between 2 and 255 characters' };
+  if (name !== undefined && (!name || typeof name !== 'string' || name.length < 2 || name.length > 100)) {
+    return { valid: false, message: 'Project name must be between 2 and 100 characters' };
   }
 
   // 验证描述（同时支持驼峰和下划线命名）
@@ -166,7 +166,7 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
   // 验证截止日期（同时支持驼峰和下划线命名）
   const dueDateStr = data.dueDate || data.due_date;
   if (dueDateStr) {
-    const dueDate = new Date(dueDateStr);
+    const dueDate = new Date(dueDateStrStr);
     if (isNaN(dueDate.getTime())) {
       return { valid: false, message: 'Invalid due date format' };
     }

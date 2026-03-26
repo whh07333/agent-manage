@@ -1,265 +1,292 @@
+// 迭代2类型定义 - 对齐后端类型定义文档
+// 文档位置: ProFile/tecSolu/迭代2类型定义文档.md
 
-// 项目类型定义
+// ========== 枚举类型定义 ==========
+
+// 任务优先级
+export type TaskPriority = 'low' | 'medium' | 'high';
+
+// 任务状态
+export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
+
+// 项目优先级
+export type ProjectPriority = 'low' | 'medium' | 'high';
+
+// 项目状态
+export type ProjectStatus = 'active' | 'inactive' | 'archived';
+
+// API密钥状态
+export type ApiKeyStatus = 'active' | 'revoked';
+
+// ========== 核心类型定义 ==========
+
+// Project（项目）
 export interface Project {
   id: string;
   name: string;
-  description: string;
-  status: "active" | "completed" | "archived" | "overdue";
-  priority: "P0" | "P1" | "P2" | "P3";
+  description?: string | null;
   managerId: string;
-  manager?: string;
-  startDate: string;
-  endDate: string;
-  progress: number;
-  taskCount: number;
-  tasks: {
-    total: number;
-    unassigned: number;
-    inProgress: number;
-    completed: number;
-    blocked: number;
-  };
-  createdAt: string;
-  updatedAt: string;
+  priority: ProjectPriority;
+  status: ProjectStatus;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  dueDate?: Date | null;
+  isArchived: boolean;
+  archiveNote?: string | null;
+  archivedAt?: Date | null;
+  archivedBy?: string | null;
+  deletedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// 任务类型定义
+export interface CreateProjectRequest {
+  name: string;
+  description?: string;
+  managerId: string;
+  priority?: ProjectPriority;
+  status?: ProjectStatus;
+  dueDate?: Date | string;
+  isArchived?: boolean;
+  agentIds?: string[];
+}
+
+export interface UpdateProjectRequest {
+  name?: string;
+  description?: string;
+  managerId?: string;
+  priority?: ProjectPriority;
+  status?: ProjectStatus;
+  dueDate?: Date | string;
+  isArchived?: boolean;
+  agentIds?: string[];
+}
+
+// Task（任务）
 export interface Task {
   id: string;
-  name: string;
-  description: string;
-  status: "unassigned" | "inProgress" | "blocked" | "pendingReview" | "reviewed" | "cancelled";
-  priority: "P0" | "P1" | "P2" | "P3";
-  assignee: string;
   projectId: string;
-  startDate: string;
-  endDate: string;
-  progress: number;
-  dependencies: string[];
-  deliverables: Deliverable[];
-  comments: Comment[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 交付物类型定义
-export interface Deliverable {
-  id: string;
   name: string;
-  type: "document" | "code" | "image" | "report" | "other";
-  url: string;
-  version: string;
-  uploadedBy: string;
-  uploadedAt: string;
-  comments: string;
+  description?: string | null;
+  assigneeId?: string;
+  parentId?: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  statusRemark?: string | null;
+  dueDate?: Date | null;
+  deliverables?: any[] | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// 评论类型定义
-export interface Comment {
+export interface CreateTaskRequest {
+  projectId: string;
+  name: string;
+  description?: string;
+  assigneeId?: string;
+  parentId?: string | null;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  dueDate?: Date;
+}
+
+export interface UpdateTaskRequest {
+  name?: string;
+  description?: string;
+  assigneeId?: string;
+  parentId?: string | null;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  dueDate?: Date;
+}
+
+export interface AcceptTaskRequest {
+  assigneeId: string;
+}
+
+export interface AcceptanceTaskRequest {
+  result: 'approved' | 'rejected';
+  comment?: string;
+}
+
+export interface BlockTaskRequest {
+  blockReason: string;
+  relatedTasks?: string[];
+}
+
+export interface UnblockTaskRequest {
+  comment?: string;
+}
+
+export interface TaskStatistics {
+  total: number;
+  pending: number;
+  inProgress: number;
+  completed: number;
+  blocked: number;
+  cancelled: number;
+}
+
+// BlockRecord（阻塞记录）
+export interface BlockRecord {
   id: string;
-  content: string;
-  author: string;
-  authorType: "agent" | "human";
-  createdAt: string;
-  replies: Comment[];
+  taskId: string;
+  blockReason: string;
+  relatedTasks: string[];
+  blockedBy: string;
+  blockedAt: Date;
+  resolvedAt?: Date | null;
+  resolvedBy?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// 死信事件类型定义
+export interface CreateBlockRecordRequest {
+  taskId: string;
+  blockReason: string;
+  relatedTasks?: string[];
+}
+
+export interface ResolveBlockRecordRequest {
+  comment?: string;
+}
+
+// Subscription（事件订阅）
+export interface Subscription {
+  id: string;
+  agentId: string;
+  agentType: string;
+  targetId?: string | null;
+  eventType: string;
+  callbackUrl: string;
+  secret?: string | null;
+  isActive: boolean;
+  maxRetries: number;
+  retryCount: number;
+  lastFailedAt?: Date | null;
+  retryScheduledAt?: Date | null;
+  expireAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateSubscriptionRequest {
+  agentId: string;
+  agentType: string;
+  targetId?: string | null;
+  eventType: string;
+  callbackUrl: string;
+  secret?: string;
+  maxRetries?: number;
+}
+
+export interface UpdateSubscriptionRequest {
+  callbackUrl?: string;
+  secret?: string;
+  isActive?: boolean;
+  maxRetries?: number;
+}
+
+export interface RetrySubscriptionRequest {
+  subscriptionId: string;
+}
+
+// DeadLetterEvent（死信事件）
 export interface DeadLetterEvent {
   id: string;
   subscriptionId: string;
   eventType: string;
-  eventPayload: any;
-  lastError: string;
+  eventPayload: Record<string, any>;
   retryCount: number;
-  createdAt: string;
-  lastAttemptAt: string;
-  expireAt: string;
+  lastError?: string | null;
+  lastFailedAt?: Date | null;
+  retryScheduledAt?: Date | null;
+  expireAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// 死信列表响应类型
-export interface DeadLetterListResponse {
-  items: DeadLetterEvent[];
-  total: number;
-  page: number;
-  pageSize: number;
+export interface RetryDeadLetterRequest {
+  eventId: string;
 }
 
-// API密钥类型定义
+export interface BatchRetryDeadLetterRequest {
+  eventIds: string[];
+}
+
+// ApiKey（API密钥）
 export interface ApiKey {
   id: string;
   agentId: string;
+  keyPrefix: string;
+  keyHash: string;
   name: string;
-  maskedKey: string;
-  status: "active" | "expired" | "revoked";
-  createdAt: string;
-  expiresAt: string | null;
-  revokedAt: string | null;
-  lastUsedAt: string | null;
+  status: ApiKeyStatus;
+  lastUsedAt?: Date | null;
+  expiresAt?: Date | null;
+  createdBy: string;
   isActive: boolean;
+  revokedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// 创建API密钥响应
-export interface ApiKeyCreateResponse {
-  id: string;
-  apiKey: string;
-  maskedKey: string;
+export interface CreateApiKeyRequest {
   agentId: string;
-  expiresAt: string | null;
-  createdAt: string;
-}
-
-// 旋转API密钥响应
-export interface ApiKeyRotateResponse {
-  id: string;
-  apiKey: string;
-  maskedKey: string;
-  expiresAt: string | null;
-  createdAt: string;
-}
-
-// 项目统计类型定义
-export interface ProjectStatistics {
-  projectId: string;
   name: string;
-  totalTasks: number;
-  completedTasks: number;
-  completionRate: number;
-  inProgressTasks: number;
-  blockedTasks: number;
-  overdueTasks: number;
-  blockingIssues: {
-    taskId: string;
-    blockReason: string;
-    relatedTasks: string[];
-    blockedDays: number;
-  }[];
-  memberWorkload: {
-    agentId: string;
-    totalTasks: number;
-    completedTasks: number;
-    overdueTasks: number;
-  }[];
-  taskTrend: {
-    date: string;
-    tasksCreated: number;
-    tasksCompleted: number;
-  }[];
+  expiresAt?: Date;
 }
 
-// Agent统计
-export interface AgentStat {
-  agentId: string;
-  agentName: string;
-  agentType: string;
-  totalTasks: number;
-  completedTasks: number;
-  completionRate: number;
-  avgCompletionTime: number;
-  overdueTasks: number;
+export interface UpdateApiKeyRequest {
+  name?: string;
+  status?: ApiKeyStatus;
 }
 
-// 项目统计
-export interface ProjectStat {
-  projectId: string;
-  projectName: string;
-  status: string;
-  priority: string;
-  totalTasks: number;
-  completedTasks: number;
-  completionRate: number;
-  inProgressTasks: number;
-  blockedTasks: number;
-  overdueTasks: number;
-  startDate: string;
-  endDate: string;
+export interface RevokeApiKeyRequest {
+  keyId: string;
+  reason?: string;
 }
 
-// 跨项目统计响应
-export interface CrossProjectStats {
-  summary: {
-    totalProjects: number;
-    totalTasks: number;
-    completedTasks: number;
-    completionRate: number;
-    inProgressTasks: number;
-    blockedTasks: number;
-    overdueTasks: number;
-  };
-  agentStats: AgentStat[];
-  projectStats: ProjectStat[];
-}
-
-// 审计日志类型定义
+// AuditLog（审计日志）
 export interface AuditLog {
   id: string;
-  action: "create" | "update" | "delete" | "query" | "assign" | "review";
-  resourceType: "project" | "task" | "user" | "system";
+  projectId?: string | null;
+  userId?: string | null;
+  action: string;
+  resourceType: string;
   resourceId: string;
-  actor: string;
-  actorType: "agent" | "human";
-  ip: string;
-  timestamp: string;
-  status: "success" | "failed" | "warning";
-  details: {
-    request?: any;
-    response?: any;
-    error?: string;
-  };
+  content?: Record<string, any> | null;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  createdAt: Date;
 }
 
-// 实时概览统计数据类型 - 后端返回 snake_case
-export interface Statistics {
-  total_projects: number;
-  total_tasks: number;
-  completed_tasks: number;
-  blocked_tasks: number;
-  pending_dead_letters: number;
+export interface CreateAuditLogRequest {
+  projectId?: string;
+  userId?: string;
+  action: string;
+  resourceType: string;
+  resourceId: string;
+  content?: Record<string, any>;
+  ipAddress?: string;
+  userAgent?: string;
 }
 
-// 完整统计数据类型 - camelCase 用于 Analytics
-export interface FullStatistics {
-  activeProjects: number;
-  pendingReviewTasks: number;
-  blockedTasks: number;
-  averageDeliveryTime: number;
-  projectTrend: {
-    date: string;
-    value: number;
-  }[];
-  agentWorkload: {
-    name: string;
-    type: string;
-    tasks: number;
-  }[];
-  taskStatusDistribution: {
-    status: string;
-    count: number;
-  }[];
-  projectEfficiency: {
-    projectId: string;
-    name: string;
-    efficiency: number;
-  }[];
+export interface QueryAuditLogsOptions {
+  projectId?: string;
+  userId?: string;
+  resourceType?: string;
+  resourceId?: string;
+  startDate?: Date;
+  endDate?: Date;
+  page?: number;
+  pageSize?: number;
 }
 
-// 用户类型定义
-export interface User {
-  id: string;
-  name: string;
-  type: "agent" | "human";
-  role: "admin" | "manager" | "developer" | "tester" | "viewer";
-  email: string;
-  avatar: string;
-  lastLogin: string;
-}
+// ========== API响应类型 ==========
 
-// API响应类型定义
 export interface ApiResponse<T = any> {
   code: number;
   msg: string;
   data: T;
 }
-
-// DeadLetterListResponse already has items, code expects list - need to update code to items
-

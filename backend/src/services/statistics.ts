@@ -91,13 +91,13 @@ export const getProjectOverview = async (projectId: string) => {
   // Get member workload
   const memberWorkload = await sequelize.query(`
     SELECT 
-      assignee_agent_id as agent_id,
+      assignee_id as agent_id,
       COUNT(*) as total_tasks,
       COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_tasks,
       COUNT(CASE WHEN status != 'completed' AND due_date < NOW() THEN 1 END) as overdue_tasks
     FROM tasks
     WHERE project_id = $1 AND deleted_at IS NULL
-    GROUP BY assignee_agent_id
+    GROUP BY assignee_id
   `, { bind: [projectId], type: QueryTypes.SELECT });
 
   // Get blocking issues
@@ -137,11 +137,11 @@ export const getAgentWorkload = async (agentId: string) => {
   const cached = getCached<any>(`agent-workload-${agentId}`);
   if (cached) return cached;
 
-  const totalTasks = await Task.count({ where: { assignee_agent_id: agentId, deletedAt: null } });
-  const completedTasks = await Task.count({ where: { assignee_agent_id: agentId, status: 'completed', deletedAt: null } });
+  const totalTasks = await Task.count({ where: { assigneeId: agentId, deletedAt: null } });
+  const completedTasks = await Task.count({ where: { assigneeId: agentId, status: 'completed', deletedAt: null } });
   const overdueTasks = await Task.count({ 
     where: { 
-      assignee_agent_id: agentId, 
+      assigneeId: agentId, 
       status: { [Op.not]: 'completed' },
       due_date: { [Op.lt]: new Date() },
       deletedAt: null
@@ -154,7 +154,7 @@ export const getAgentWorkload = async (agentId: string) => {
   
   const weeklyTasks = await Task.findAll({
     where: {
-      assignee_agent_id: agentId,
+      assigneeId: agentId,
       updatedAt: { [Op.gte]: weekAgo },
       deletedAt: null
     },
@@ -187,7 +187,7 @@ export const getAgentWorkload = async (agentId: string) => {
   let avgCompletionDays = 0;
   const completedTasksWithDates = await Task.findAll({
     where: {
-      assignee_agent_id: agentId,
+      assigneeId: agentId,
       status: 'completed',
       deletedAt: null
     },
@@ -290,7 +290,7 @@ export const getCrossProjectStats = async (params: {
     };
   }
   if (agentId) {
-    where.assignee_agent_id = agentId;
+    where.assigneeId = agentId;
   }
   if (projectId) {
     where.projectId = projectId;
@@ -303,7 +303,7 @@ export const getCrossProjectStats = async (params: {
   // Calculate average completion time
   const allTasks = await Task.findAll({ 
     where, 
-    attributes: ['projectId', 'createdAt', 'updatedAt', 'assignee_agent_id'] 
+    attributes: ['projectId', 'createdAt', 'updatedAt', 'assigneeId'] 
   });
   
   let avgCompletionDays = 0;
@@ -321,7 +321,7 @@ export const getCrossProjectStats = async (params: {
   // Agent stats - build SQL dynamically
   let agentSql = `
     SELECT 
-      assignee_agent_id as agent_id,
+      assignee_id as agent_id,
       COUNT(*) as total_tasks,
       COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_tasks,
       ROUND(
@@ -345,7 +345,7 @@ export const getCrossProjectStats = async (params: {
     paramIndex += 2;
   }
   if (agentId) {
-    agentSql += ` AND assignee_agent_id = $${paramIndex}`;
+    agentSql += ` AND assignee_id = $${paramIndex}`;
     bindings.push(agentId);
     paramIndex++;
   }
@@ -355,7 +355,7 @@ export const getCrossProjectStats = async (params: {
     paramIndex++;
   }
 
-  agentSql += ` GROUP BY assignee_agent_id`;
+  agentSql += ` GROUP BY assignee_id`;
 
   const agentStats = await sequelize.query(agentSql, { 
     bind: bindings, 

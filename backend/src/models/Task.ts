@@ -8,7 +8,6 @@ export class Task extends Model {
   public name!: string;
   public description!: string | null;
   public assigneeId!: string | null;
-  public assignee_agent_id!: string | null;
   public parentId!: string | null;
   public priority!: string;
   public status!: string;
@@ -68,10 +67,6 @@ Task.init(
         model: "users",
         key: "id",
       },
-    },
-    assignee_agent_id: {
-      type: DataTypes.UUID,
-      allowNull: true,
     },
     parentId: {
       type: DataTypes.UUID,

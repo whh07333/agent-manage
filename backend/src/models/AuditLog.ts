@@ -22,7 +22,7 @@ AuditLog.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    project_id: {
+    projectId: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
@@ -30,7 +30,7 @@ AuditLog.init(
         key: 'id',
       },
     },
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
@@ -46,24 +46,28 @@ AuditLog.init(
         len: [1, 100]
       },
     },
-    resource_type: {
+    resourceType: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [1, 100]
+      },
     },
-    resource_id: {
+    resourceId: {
       type: DataTypes.UUID,
-      allowNull: true,
+      allowNull: false,
     },
     content: {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: {},
     },
-    ip_address: {
+    ipAddress: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    user_agent: {
+    userAgent: {
       type: DataTypes.STRING,
       allowNull: true,
     },

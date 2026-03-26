@@ -351,7 +351,7 @@ export const acceptanceTask = async (req: Request, res: Response) => {
 export const blockTask = async (req: Request, res: Response) => {
   const requestId = req.headers['x-request-id'] as string || 'default';
   const { id } = req.params;
-  const { reason, related_tasks } = req.body;
+  const { reason, relatedTasks } = req.body;
   const blockerId = (req as any).user.id;
   try {
     // Escape reason if provided
@@ -361,7 +361,7 @@ export const blockTask = async (req: Request, res: Response) => {
     }
     
     logger.info('Blocking task', { requestId, taskId: id, reason: escapedReason, blockerId });
-    const task = await taskService.blockTask(id, escapedReason, related_tasks || [], blockerId);
+    const task = await taskService.blockTask(id, escapedReason, relatedTasks || [], blockerId);
     if (!task) {
       logger.warn('Task not found for blocking', { requestId, taskId: id });
       return res.status(404).json({

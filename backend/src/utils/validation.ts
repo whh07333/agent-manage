@@ -46,6 +46,13 @@ export function validateCreateProject(data: any): { valid: boolean; message?: st
     return { valid: false, message: 'Project name must be between 2 and 255 characters' };
   }
 
+  // 验证描述（新增）
+  if (data.description !== undefined && data.description !== null) {
+    if (typeof data.description !== 'string' || data.description.length > 1000) {
+      return { valid: false, message: 'Project description must not exceed 1000 characters' };
+    }
+  }
+
   // 验证managerId - 创建时必填
   if (!data.managerId || typeof data.managerId !== 'string') {
     return { valid: false, message: 'managerId is required and must be a string' };
@@ -69,7 +76,7 @@ export function validateCreateProject(data: any): { valid: boolean; message?: st
     }
   }
 
-  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于结束
+  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于或等于结束
   if (data.startDate && data.endDate) {
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
@@ -80,7 +87,20 @@ export function validateCreateProject(data: any): { valid: boolean; message?: st
       return { valid: false, message: 'Invalid end date format' };
     }
     if (startDate.getTime() > endDate.getTime()) {
-      return { valid: false, message: 'Start date must be before end date' };
+      return { valid: false, message: 'Start date must be before or equal to end date' };
+    }
+  }
+
+  // 验证config字段JSON格式（新增）
+  if (data.config !== undefined && data.config !== null) {
+    if (typeof data.config === 'string') {
+      try {
+        JSON.parse(data.config);
+      } catch (e) {
+        return { valid: false, message: 'Config field must be valid JSON format' };
+      }
+    } else if (typeof data.config !== 'object') {
+      return { valid: false, message: 'Config field must be an object or valid JSON string' };
     }
   }
 
@@ -107,6 +127,13 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
     return { valid: false, message: 'Project name must be between 2 and 255 characters' };
   }
 
+  // 验证描述（新增）
+  if (data.description !== undefined && data.description !== null) {
+    if (typeof data.description !== 'string' || data.description.length > 1000) {
+      return { valid: false, message: 'Project description must not exceed 1000 characters' };
+    }
+  }
+
   // managerId - only validate if it's being updated
   if (data.managerId !== undefined && (typeof data.managerId !== 'string' || data.managerId.length === 0)) {
     return { valid: false, message: 'managerId must be a non-empty string' };
@@ -130,7 +157,7 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
     }
   }
 
-  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于结束
+  // 验证开始日期和结束日期 - 如果同时提供，开始必须早于或等于结束
   if (data.startDate && data.endDate) {
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
@@ -141,7 +168,20 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
       return { valid: false, message: 'Invalid end date format' };
     }
     if (startDate.getTime() > endDate.getTime()) {
-      return { valid: false, message: 'Start date must be before end date' };
+      return { valid: false, message: 'Start date must be before or equal to end date' };
+    }
+  }
+
+  // 验证config字段JSON格式（新增）
+  if (data.config !== undefined && data.config !== null) {
+    if (typeof data.config === 'string') {
+      try {
+        JSON.parse(data.config);
+      } catch (e) {
+        return { valid: false, message: 'Config field must be valid JSON format' };
+      }
+    } else if (typeof data.config !== 'object') {
+      return { valid: false, message: 'Config field must be an object or valid JSON string' };
     }
   }
 
@@ -177,7 +217,7 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
     }
   }
 
-  // 验证开始和结束日期 - 如果同时提供了开始和结束日期，开始必须早于结束
+  // 验证开始和结束日期 - 如果同时提供了开始和结束日期，开始必须早于或等于结束
   if (data.startDate && data.endDate) {
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
@@ -188,7 +228,7 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
       return { valid: false, message: 'Invalid end date format' };
     }
     if (startDate.getTime() > endDate.getTime()) {
-      return { valid: false, message: 'Start date must be before end date' };
+      return { valid: false, message: 'Start date must be before or equal to end date' };
     }
   }
 

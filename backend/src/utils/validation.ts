@@ -42,7 +42,7 @@ export function escapeAllStrings(obj: any): any {
  */
 export function validateCreateProject(data: any): { valid: boolean; message?: string; escapedData?: any } {
   // 验证名称（同时支持驼峰和下划线命名）
-  const name = data.name || data.name || undefined;
+  const name = data.name || data.name;
   if (!name || typeof name !== 'string' || name.length < 2 || name.length > 255) {
     return { valid: false, message: 'Project name must be between 2 and 255 characters' };
   }

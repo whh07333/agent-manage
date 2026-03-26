@@ -14,7 +14,6 @@ export class Task extends Model {
   public statusRemark!: string | null;
   public dueDate!: Date | null;
   public deliverables!: any[] | null;
-  public deletedAt!: Date | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -100,10 +99,6 @@ Task.init(
       allowNull: true,
     },
     dueDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
     },

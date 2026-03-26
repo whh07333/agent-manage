@@ -233,14 +233,24 @@ export const deleteProject = async (req: Request, res: Response) => {
       });
     }
 
-    // Escape archiveNote if provided
-    let archiveNote = (req.body as any).archiveNote || null;
-    if (archiveNote && typeof archiveNote === 'string') {
-      const { escapeHtml } = await import('../utils/validation');
-      archiveNote = escapeHtml(archiveNote);
+
+    // Extract and escape archive notes - support both camelCase and snake_case
+    const archiveNote = (req.body as any).archiveNote || (req.body as any).archive_note || null;
+    const archivedReason = (req.body as any).archivedReason || (req.body as any).archived_reason || null;
+
+    // Combine archive note and reason into one field
+    let combinedNote = archiveNote || "";
+    if (archivedReason) {
+      combinedNote = combinedNote ? `${combinedNote} - ${archivedReason}` : archivedReason;
     }
 
-    const success = await projectService.archiveProject(id, userId, archiveNote);
+    // Escape combined note if provided
+    if (combinedNote && typeof combinedNote === 'string') {
+      const { escapeHtml } = await import('../utils/validation');
+      combinedNote = escapeHtml(combinedNote);
+    }
+
+    const success = await projectService.archiveProject(id, userId, combinedNote);
     logger.info('Project archived successfully', { requestId, projectId: id });
     res.json({
       code: 0,

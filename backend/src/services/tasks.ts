@@ -227,6 +227,7 @@ export class TaskService {
   async blockTask(
     taskId: string,
     blockReason: string,
+    impact: string,
     relatedTasks: string[],
     blockerId: string
   ): Promise<Task | null> {
@@ -244,6 +245,7 @@ export class TaskService {
       await BlockRecord.create({
         taskId,
         blockReason,
+        impact,
         relatedTasks,
         blockedBy: blockerId,
         blockedAt: new Date(),
@@ -254,7 +256,8 @@ export class TaskService {
       const task = await Task.findByPk(taskId);
       logger.info('Task blocked successfully', { 
         taskId, 
-        blockReason 
+        blockReason, 
+        impact 
       });
       
       return task;

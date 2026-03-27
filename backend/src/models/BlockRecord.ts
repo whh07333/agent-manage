@@ -5,6 +5,7 @@ export class BlockRecord extends Model {
   public id!: string;
   public taskId!: string;
   public blockReason!: string;
+  public impact!: string;
   public relatedTasks!: string[];
   public blockedBy!: string;
   public blockedAt!: Date;
@@ -26,6 +27,10 @@ BlockRecord.init(
       allowNull: false,
     },
     blockReason: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    impact: {
       type: DataTypes.TEXT,
       allowNull: false,
     },

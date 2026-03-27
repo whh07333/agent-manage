@@ -313,6 +313,42 @@ export const acceptanceTask = async (req: Request, res: Response) => {
   const { result, comment } = req.body;
   const acceptorId = (req as any).user.id;
   
+  // DEF-IT2-3-011: 验证result参数必填
+  if (!result || typeof result !== 'string') {
+    logger.warn('Task acceptance validation failed: result is required', { requestId });
+    return res.status(400).json({
+      code: 400,
+      msg: 'result is required',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  // DEF-IT2-3-012: 验证result只能是approved或rejected
+  if (!['approved', 'rejected'].includes(result)) {
+    logger.warn('Task acceptance validation failed: invalid result value', { requestId, result });
+    return res.status(400).json({
+      code: 400,
+      msg: 'result must be either approved or rejected',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  // DEF-IT2-3-010: 验收不通过时意见必填
+  if (result === 'rejected' && (!comment || typeof comment !== 'string' || comment.trim() === '')) {
+    logger.warn('Task acceptance validation failed: comment is required when rejected', { requestId });
+    return res.status(400).json({
+      code: 400,
+      msg: 'Comment is required when result is rejected',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+  
   // Escape comment if provided
   let escapedComment = comment || '';
   if (escapedComment && typeof escapedComment === 'string') {
@@ -326,7 +362,7 @@ export const acceptanceTask = async (req: Request, res: Response) => {
     acceptorId 
   });
   
-  const task = await taskService.acceptanceTask(id, result, escapedComment, acceptorId);
+  const task = await taskService.acceptanceTask(id, result as 'approved' | 'rejected', escapedComment, acceptorId);
   
   if (!task) {
     logger.warn('Task not found for acceptance', { requestId, taskId: id });
@@ -351,17 +387,70 @@ export const acceptanceTask = async (req: Request, res: Response) => {
 export const blockTask = async (req: Request, res: Response) => {
   const requestId = req.headers['x-request-id'] as string || 'default';
   const { id } = req.params;
-  const { reason, relatedTasks } = req.body;
+  const { reason, impact, relatedTasks } = req.body;
   const blockerId = (req as any).user.id;
   try {
-    // Escape reason if provided
+    // Get task first to check status - DEF-IT2-3-015
+    const existingTask = await taskService.getTaskById(id);
+    if (!existingTask) {
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // DEF-IT2-3-015: 已完成任务不能阻塞
+    if (existingTask.status === 'completed') {
+      logger.warn('Cannot block completed task', { requestId, taskId: id });
+      return res.status(400).json({
+        code: 400,
+        msg: 'Cannot block completed task',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // DEF-IT2-3-013: 阻塞原因必填
+    if (!reason || typeof reason !== 'string' || reason.trim() === '') {
+      logger.warn('Block task validation failed: reason is required', { requestId });
+      return res.status(400).json({
+        code: 400,
+        msg: 'Reason is required',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // DEF-IT2-3-014: 影响范围必填
+    if (!impact || typeof impact !== 'string' || impact.trim() === '') {
+      logger.warn('Block task validation failed: impact is required', { requestId });
+      return res.status(400).json({
+        code: 400,
+        msg: 'Impact is required',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Escape reason and impact if provided
     let escapedReason = reason || '';
     if (escapedReason && typeof escapedReason === 'string') {
       escapedReason = escapeHtml(escapedReason);
     }
     
-    logger.info('Blocking task', { requestId, taskId: id, reason: escapedReason, blockerId });
-    const task = await taskService.blockTask(id, escapedReason, relatedTasks || [], blockerId);
+    let escapedImpact = impact || '';
+    if (escapedImpact && typeof escapedImpact === 'string') {
+      escapedImpact = escapeHtml(escapedImpact);
+    }
+    
+    logger.info('Blocking task', { requestId, taskId: id, reason: escapedReason, impact: escapedImpact, blockerId });
+    const task = await taskService.blockTask(id, escapedReason, escapedImpact, relatedTasks || [], blockerId);
     if (!task) {
       logger.warn('Task not found for blocking', { requestId, taskId: id });
       return res.status(404).json({

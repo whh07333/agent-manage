@@ -229,7 +229,7 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
 
   // 验证project_id - DEF-IT2-3-009
   const projectId = data.projectId || data.project_id;
-  if (projectId !== undefined && (!projectId || typeof projectId !== 'string')) {
+  if (!projectId || typeof projectId !== 'string') {
     return { valid: false, message: 'project_id is required and must be a string' };
   }
 

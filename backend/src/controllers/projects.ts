@@ -251,6 +251,18 @@ export const deleteProject = async (req: Request, res: Response) => {
     }
 
     const success = await projectService.archiveProject(id, userId, combinedNote);
+        // Create audit log for archive operation
+    const { AuditLogService } = await import('../services/auditLogs');
+    const auditLogService = new AuditLogService();
+    await auditLogService.createAuditLog({
+      project_id: id,
+      user_id: userId,
+      action: 'archive_project',
+      resource_type: 'project',
+      resource_id: id,
+      parameters: { archiveNote: combinedNote }
+    });
+
     logger.info('Project archived successfully', { requestId, projectId: id });
     res.json({
       code: 0,

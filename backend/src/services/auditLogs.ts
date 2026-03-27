@@ -4,12 +4,12 @@ import { Op } from 'sequelize';
 export class AuditLogService {
   async createAuditLog(data: any): Promise<AuditLog> {
     return AuditLog.create({
-      actor_id: data.actor_id,
-      actor_type: data.actor_type,
+      projectId: data.project_id || data.target_id || 'unknown',
+      userId: data.user_id || data.actor_id || 'unknown',
       action: data.action,
-      target_type: data.target_type,
-      target_id: data.target_id,
-      parameters: data.parameters,
+      resourceType: data.resource_type || data.target_type || 'unknown',
+      resourceId: data.resource_id || data.target_id || 'unknown',
+      content: data.parameters,
       result: data.result || 'success',
       error_message: data.error_message
     });

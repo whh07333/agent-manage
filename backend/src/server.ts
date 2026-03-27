@@ -99,7 +99,7 @@ app.get("/api/statistics/real-time", authMiddleware, async (req: any, res: any) 
         (SELECT COUNT(*) FROM projects WHERE deleted_at IS NULL) as total_projects,
         (SELECT COUNT(*) FROM tasks WHERE deleted_at IS NULL) as total_tasks,
         (SELECT COUNT(*) FROM subscriptions WHERE is_active = true) as active_subscriptions,
-        (SELECT COUNT(*) FROM dead_letter_events WHERE retried = false) as pending_dead_letters
+        (SELECT COUNT(*) FROM dead_letter_events WHERE retry_count = 0) as pending_dead_letters
     `);
     
     const stats = result.rows[0];

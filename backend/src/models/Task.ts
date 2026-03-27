@@ -16,6 +16,7 @@ export class Task extends Model {
   public deliverables!: any[] | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+  public deletedAt!: Date | null;
 
   // 关联关系
   static associate(models: any) {
@@ -106,6 +107,11 @@ Task.init(
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: [],
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
     },
   },
   {

@@ -233,6 +233,9 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
     return { valid: false, message: 'project_id is required and must be a string' };
   }
 
+  // 确保data中projectId字段存在（支持驼峰和下划线命名）
+  data.projectId = projectId;
+
   // 验证截止日期（同时支持驼峰和下划线命名）
   const dueDateStr = data.dueDate || data.due_date;
   if (dueDateStr) {

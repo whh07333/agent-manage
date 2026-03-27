@@ -35,17 +35,15 @@ export const getProjectOverview = async (projectId: string) => {
     throw new Error('Project not found');
   }
 
-  const totalTasks = await Task.count({ where: { projectId, deletedAt: null } });
-  const completedTasks = await Task.count({ where: { projectId, status: 'completed', deletedAt: null } });
-  const inProgressTasks = await Task.count({ where: { projectId, status: 'in_progress', deletedAt: null } });
-  const blockedTasks = await Task.count({ where: { projectId, status: 'blocked', deletedAt: null } });
+  const totalTasks = await Task.count({ where: { projectId } });
+  const completedTasks = await Task.count({ where: { projectId, status: 'completed' } });
+  const inProgressTasks = await Task.count({ where: { projectId, status: 'in_progress' } });
+  const blockedTasks = await Task.count({ where: { projectId, status: 'blocked' } });
   const overdueTasks = await Task.count({ 
     where: { 
       projectId, 
       status: { [Op.not]: 'completed' },
-      due_date: { [Op.lt]: new Date() },
-      deletedAt: null
-    } 
+      due_date: { [Op.lt]: new Date() }} 
   });
 
   // Get task trend by date (last 14 days)
@@ -55,8 +53,7 @@ export const getProjectOverview = async (projectId: string) => {
   const tasks = await Task.findAll({
     where: {
       projectId,
-      createdAt: { [Op.gte]: twoWeeksAgo },
-      deletedAt: null
+      createdAt: { [Op.gte]: twoWeeksAgo }
     },
     attributes: ['createdAt', 'status']
   });
@@ -96,7 +93,7 @@ export const getProjectOverview = async (projectId: string) => {
       COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_tasks,
       COUNT(CASE WHEN status != 'completed' AND due_date < NOW() THEN 1 END) as overdue_tasks
     FROM tasks
-    WHERE project_id = $1 AND deleted_at IS NULL
+    WHERE project_id = $1
     GROUP BY assignee_id
   `, { bind: [projectId], type: QueryTypes.SELECT });
 
@@ -137,15 +134,13 @@ export const getAgentWorkload = async (agentId: string) => {
   const cached = getCached<any>(`agent-workload-${agentId}`);
   if (cached) return cached;
 
-  const totalTasks = await Task.count({ where: { assigneeId: agentId, deletedAt: null } });
-  const completedTasks = await Task.count({ where: { assigneeId: agentId, status: 'completed', deletedAt: null } });
+  const totalTasks = await Task.count({ where: { assigneeId: agentId } });
+  const completedTasks = await Task.count({ where: { assigneeId: agentId, status: 'completed' } });
   const overdueTasks = await Task.count({ 
     where: { 
       assigneeId: agentId, 
       status: { [Op.not]: 'completed' },
-      due_date: { [Op.lt]: new Date() },
-      deletedAt: null
-    } 
+      due_date: { [Op.lt]: new Date() }} 
   });
 
   // Weekly activity
@@ -155,9 +150,7 @@ export const getAgentWorkload = async (agentId: string) => {
   const weeklyTasks = await Task.findAll({
     where: {
       assigneeId: agentId,
-      updatedAt: { [Op.gte]: weekAgo },
-      deletedAt: null
-    },
+      updatedAt: { [Op.gte]: weekAgo }},
     attributes: ['updatedAt', 'status']
   });
 
@@ -188,8 +181,7 @@ export const getAgentWorkload = async (agentId: string) => {
   const completedTasksWithDates = await Task.findAll({
     where: {
       assigneeId: agentId,
-      status: 'completed',
-      deletedAt: null
+      status: 'completed'
     },
     attributes: ['createdAt', 'updatedAt']
   });
@@ -222,16 +214,16 @@ export const getTeamEfficiency = async () => {
   const cached = getCached<any>('team-efficiency');
   if (cached) return cached;
 
-  const totalProjects = await Project.count({ where: { deletedAt: null } });
-  const totalTasks = await Task.count({ where: { deletedAt: null } });
-  const completedTasks = await Task.count({ where: { status: 'completed', deletedAt: null } });
-  const blockedTasks = await Task.count({ where: { status: 'blocked', deletedAt: null } });
+  const totalProjects = await Project.count({ where: {} });
+  const totalTasks = await Task.count({ });
+  const completedTasks = await Task.count({ where: { status: 'completed' } });
+  const blockedTasks = await Task.count({ where: { status: 'blocked' } });
 
   const completionRate = totalTasks > 0 ? completedTasks / totalTasks : 0;
   
   // Calculate average completion days across all completed tasks
   const completedTasksWithDates = await Task.findAll({
-    where: { status: 'completed', deletedAt: null },
+    where: { status: 'completed'},
     attributes: ['createdAt', 'updatedAt']
   });
 
@@ -247,9 +239,7 @@ export const getTeamEfficiency = async () => {
     (await Task.count({ 
       where: { 
         status: { [Op.not]: 'completed' },
-        due_date: { [Op.lt]: new Date() },
-        deletedAt: null
-      } 
+        due_date: { [Op.lt]: new Date() }} 
     })) / totalTasks : 0;
 
   const blockingRate = totalTasks > 0 ? blockedTasks / totalTasks : 0;
@@ -283,7 +273,7 @@ export const getCrossProjectStats = async (params: {
   const cached = getCached<any>(cacheKey);
   if (cached) return cached;
 
-  const where: any = { deletedAt: null };
+  const where: any = {};
   if (dateFrom && dateTo) {
     where.createdAt = {
       [Op.between]: [new Date(dateFrom), new Date(dateTo)]
@@ -333,7 +323,6 @@ export const getCrossProjectStats = async (params: {
         2
       ) as average_completion_days
     FROM tasks
-    WHERE deleted_at IS NULL
   `;
 
   const bindings: any[] = [];
@@ -379,7 +368,7 @@ export const getCrossProjectStats = async (params: {
       ) as average_completion_days
     FROM projects p
     LEFT JOIN tasks t ON p.id = t.project_id
-    WHERE p.deleted_at IS NULL
+    
   `;
 
   const projectBindings: any[] = [];
@@ -426,10 +415,10 @@ export const getRealTimeOverview = async () => {
   // Get basic connection stats from database
   const result = await sequelize.query(`
     SELECT 
-      (SELECT COUNT(*) FROM projects WHERE deleted_at IS NULL) as total_projects,
-      (SELECT COUNT(*) FROM tasks WHERE deleted_at IS NULL) as total_tasks,
-      (SELECT COUNT(*) FROM tasks WHERE status = 'completed' AND deleted_at IS NULL) as completed_tasks,
-      (SELECT COUNT(*) FROM tasks WHERE status = 'blocked' AND deleted_at IS NULL) as blocked_tasks,
+      (SELECT COUNT(*) FROM projects) as total_projects,
+      (SELECT COUNT(*) FROM tasks) as total_tasks,
+      (SELECT COUNT(*) FROM tasks WHERE status = 'completed') as completed_tasks,
+      (SELECT COUNT(*) FROM tasks WHERE status = 'blocked') as blocked_tasks,
       (SELECT COUNT(*) FROM dead_letter_events WHERE retry_count = 0) as pending_dead_letters
   `, { type: QueryTypes.SELECT });
 

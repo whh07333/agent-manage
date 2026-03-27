@@ -13,6 +13,7 @@ export class AuditLog extends Model {
   public ipAddress!: string | null;
   public userAgent!: string | null;
   public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 AuditLog.init(

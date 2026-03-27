@@ -142,8 +142,8 @@ export const updateProject = async (req: Request, res: Response) => {
     // Allow update even if archived - only admins or the manager can update anyway due to permission check
     if (existing.dataValues.status === 'archived') {
       logger.warn('Cannot modify archived project', { requestId, projectId: id });
-      return res.status(400).json({
-        code: 400,
+      return res.status(403).json({
+        code: 403,
         msg: 'Cannot modify archived project, please unarchive first',
         data: null,
         trace_id: requestId,

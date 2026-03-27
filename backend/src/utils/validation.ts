@@ -227,6 +227,12 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
     return { valid: false, message: 'Status must be one of: pending, in_progress, completed, blocked, cancelled' };
   }
 
+  // 验证project_id - DEF-IT2-3-009
+  const projectId = data.projectId || data.project_id;
+  if (projectId !== undefined && (!projectId || typeof projectId !== 'string')) {
+    return { valid: false, message: 'project_id is required and must be a string' };
+  }
+
   // 验证截止日期（同时支持驼峰和下划线命名）
   const dueDateStr = data.dueDate || data.due_date;
   if (dueDateStr) {

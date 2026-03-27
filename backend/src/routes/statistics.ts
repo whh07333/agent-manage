@@ -13,6 +13,7 @@ import { authMiddleware, adminMiddleware } from '../middleware/auth';
 const router = express.Router();
 
 router.get('/project/:projectId', authMiddleware, adminMiddleware, getProjectOverview);
+router.get('/projects/:projectId/overview', authMiddleware, adminMiddleware, getProjectOverview);
 router.get('/agent/:agentId', authMiddleware, adminMiddleware, getAgentWorkload);
 router.get('/team', authMiddleware, adminMiddleware, getTeamEfficiency);
 router.get('/cross-project', authMiddleware, adminMiddleware, getCrossProjectStatistics);

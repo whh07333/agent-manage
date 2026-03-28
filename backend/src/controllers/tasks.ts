@@ -402,44 +402,6 @@ export const blockTask = async (req: Request, res: Response) => {
   const { reason, impact, relatedTasks } = req.body;
   const blockerId = (req as any).user.id;
   try {
-    // Get task first to check status - DEF-IT2-3-015
-    const existingTask = await taskService.getTaskById(id);
-    if (!existingTask) {
-      return res.status(404).json({
-        code: 404,
-        msg: 'Task not found',
-        data: null,
-        trace_id: requestId,
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // DEF-IT2-3-015: 已完成任务不能阻塞
-    if (existingTask.status === 'completed') {
-      logger.warn('Cannot block completed task', { requestId, taskId: id });
-      return res.status(400).json({
-        code: 400,
-        msg: 'Cannot block completed task',
-        data: null,
-        trace_id: requestId,
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // DEF-IT2-3-032: 权限验证 - 只有任务负责人或管理员可以阻塞任务
-    const userId = (req as any).user.id;
-    const userRole = (req as any).user.role;
-    if (existingTask.assigneeId !== userId && userRole !== 'admin') {
-      logger.warn('Permission denied: cannot block task', { requestId, taskId: id, userId });
-      return res.status(403).json({
-        code: 403,
-        msg: 'Permission denied. Only task assignee or admin can block task',
-        data: null,
-        trace_id: requestId,
-        timestamp: new Date().toISOString()
-      });
-    }
-    
     // DEF-IT2-3-013: 阻塞原因必填
     if (!reason || typeof reason !== 'string' || reason.trim() === '') {
       logger.warn('Block task validation failed: reason is required', { requestId });
@@ -451,13 +413,51 @@ export const blockTask = async (req: Request, res: Response) => {
         timestamp: new Date().toISOString()
       });
     }
-    
+
     // DEF-IT2-3-014: 影响范围必填
     if (!impact || typeof impact !== 'string' || impact.trim() === '') {
       logger.warn('Block task validation failed: impact is required', { requestId });
       return res.status(400).json({
         code: 400,
         msg: 'Impact is required',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Get task first to check status - DEF-IT2-3-015
+    const existingTask = await taskService.getTaskById(id);
+    if (!existingTask) {
+      return res.status(404).json({
+        code: 404,
+        msg: 'Task not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // DEF-IT2-3-015: 已完成任务不能阻塞
+    if (existingTask.status === 'completed') {
+      logger.warn('Cannot block completed task', { requestId, taskId: id });
+      return res.status(400).json({
+        code: 400,
+        msg: 'Cannot block completed task',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // DEF-IT2-3-032: 权限验证 - 只有任务负责人或管理员可以阻塞任务
+    const userId = (req as any).user.id;
+    const userRole = (req as any).user.role;
+    if (existingTask.assigneeId !== userId && userRole !== 'admin') {
+      logger.warn('Permission denied: cannot block task', { requestId, taskId: id, userId });
+      return res.status(403).json({
+        code: 403,
+        msg: 'Permission denied. Only task assignee or admin can block task',
         data: null,
         trace_id: requestId,
         timestamp: new Date().toISOString()

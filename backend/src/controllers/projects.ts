@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { ProjectService } from '../services/projects';
 import { UpdateProjectRequest } from '../types/project';
 import { logger } from '../utils/logger';
-import { Project } from '../models/Project';
 import { validateCreateProject, validateUpdateProject, validateArchiveNote } from '../utils/validation';
 
 const projectService = new ProjectService();
@@ -43,9 +42,7 @@ export const getProjectById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     logger.info('Getting project by id', { requestId, projectId: id });
-    const project = await Project.findByPk(id, {
-      paranoid: false  // 包含软删除的记录
-    });
+    const project = await projectService.getProjectById(id);
     if (!project) {
       logger.warn('Project not found', { requestId, projectId: id });
       return res.status(404).json({
@@ -214,9 +211,7 @@ export const deleteProject = async (req: Request, res: Response) => {
     logger.info('Archiving project', { requestId, projectId: id });
 
     // Permission check: current user is manager OR admin
-    const project = await Project.findByPk(id, {
-      paranoid: false  // 包含软删除的记录
-    });
+    const project = await projectService.getProjectById(id);
     if (!project) {
       logger.warn('Project not found for deletion', { requestId, projectId: id });
       return res.status(404).json({
@@ -245,21 +240,17 @@ export const deleteProject = async (req: Request, res: Response) => {
     const archiveNote = (req.body as any).archiveNote || (req.body as any).archive_note || null;
     const archivedReason = (req.body as any).archivedReason || (req.body as any).archived_reason || null;
 
-    // 验证归档说明（如果项目未归档，则必须提供）
-    const projectStatus = (project as any).status;
-    const projectIsArchived = (project as any).isArchived;
-    if (!projectIsArchived && projectStatus !== 'archived') {
-      const validation = validateArchiveNote(archiveNote, archivedReason);
-      if (!validation.valid) {
-        logger.warn('Archive note validation failed', { requestId, projectId: id, error: validation.message });
-        return res.status(400).json({
-          code: 400,
-          msg: validation.message,
-          data: null,
-          trace_id: requestId,
-          timestamp: new Date().toISOString(),
-        });
-      }
+    // 验证归档说明（必填字段）
+    const validation = validateArchiveNote(archiveNote, archivedReason);
+    if (!validation.valid) {
+      logger.warn('Archive note validation failed', { requestId, projectId: id, error: validation.message });
+      return res.status(400).json({
+        code: 400,
+        msg: validation.message,
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString(),
+      });
     }
 
     // Combine archive note and reason into one field
@@ -275,15 +266,17 @@ export const deleteProject = async (req: Request, res: Response) => {
       combinedNote = escapeHtml(combinedNote);
     }
 
-    // 直接更新项目状态为已归档
-    await project.update({
-      status: 'archived',
-      isArchived: true,
-      archiveNote: combinedNote,
-      archivedAt: new Date(),
-      archivedBy: userId
-    });
-    logger.info('Project archived successfully', { requestId, projectId: id });
+    const success = await projectService.archiveProject(id, userId, combinedNote);
+    if (!success) {
+      logger.warn('Project not found for archiving', { requestId, projectId: id });
+      return res.status(404).json({
+        code: 404,
+        msg: 'Project not found',
+        data: null,
+        trace_id: requestId,
+        timestamp: new Date().toISOString(),
+      });
+    }
 
     // Create audit log for archive operation
     const { AuditLogService } = await import('../services/auditLogs');
@@ -335,9 +328,7 @@ export const unarchiveProject = async (req: Request, res: Response) => {
     logger.info('Unarchiving project', { requestId, projectId: id });
 
     // Permission check: current user is project manager OR admin
-    const project = await Project.findByPk(id, {
-      paranoid: false  // 包含软删除的记录
-    });
+    const project = await projectService.getProjectById(id);
     if (!project) {
       logger.warn('Project not found for unarchive', { requestId, projectId: id });
       return res.status(404).json({

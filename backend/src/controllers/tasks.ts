@@ -149,8 +149,8 @@ export const createTask = async (req: Request, res: Response) => {
   try {
     logger.info('Creating new task', { requestId, body: req.body });
 
-    // 验证请求数据并转义HTML防止XSS（更新操作）
-    const validation = validateTaskData(req.body, true);
+    // 验证请求数据并转义HTML防止XSS（创建操作）
+    const validation = validateTaskData(req.body);
     if (!validation.valid) {
       logger.warn('Task creation validation failed', { requestId, message: validation.message });
       return res.status(400).json({
@@ -189,8 +189,8 @@ export const updateTask = async (req: Request, res: Response) => {
   try {
     logger.info('Updating task', { requestId, taskId: id, body: req.body });
 
-    // 验证请求数据并转义HTML防止XSS（更新操作）
-    const validation = validateTaskData(req.body, true);
+    // 验证请求数据并转义HTML防止XSS（创建操作）
+    const validation = validateTaskData(req.body);
     if (!validation.valid) {
       logger.warn('Task update validation failed', { requestId, message: validation.message });
       return res.status(400).json({

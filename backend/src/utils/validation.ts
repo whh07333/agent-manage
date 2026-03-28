@@ -211,7 +211,7 @@ export function validateProjectData(data: any): { valid: boolean; message?: stri
 /**
  * Validate task creation/update data
  */
-export function validateTaskData(data: any): { valid: boolean; message?: string; escapedData?: any } {
+export function validateTaskData(data: any, isUpdate: boolean = false): { valid: boolean; message?: string; escapedData?: any } {
   // 验证名称
   if (data.name !== undefined && (!data.name || typeof data.name !== 'string' || data.name.length < 2 || data.name.length > 255)) {
     return { valid: false, message: 'Task name must be between 2 and 255 characters' };
@@ -227,14 +227,20 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
     return { valid: false, message: 'Status must be one of: pending, in_progress, completed, blocked, cancelled' };
   }
 
-  // 验证project_id - DEF-IT2-3-009
+  // 验证project_id - DEF-IT2-3-009（仅在创建时必填）
   const projectId = data.projectId || data.project_id;
-  if (!projectId || typeof projectId !== 'string') {
+  if (!isUpdate && (!projectId || typeof projectId !== 'string')) {
     return { valid: false, message: 'project_id is required and must be a string' };
+  }
+  // 更新时如果提供了projectId，验证格式
+  if (isUpdate && projectId !== undefined && typeof projectId !== 'string') {
+    return { valid: false, message: 'project_id must be a string if provided' };
   }
 
   // 确保data中projectId字段存在（支持驼峰和下划线命名）
-  data.projectId = projectId;
+  if (projectId) {
+    data.projectId = projectId;
+  }
 
   // 验证截止日期（同时支持驼峰和下划线命名）
   const dueDateStr = data.dueDate || data.due_date;
@@ -265,4 +271,25 @@ export function validateTaskData(data: any): { valid: boolean; message?: string;
   // Escape all HTML special characters in string inputs
   const escapedData = escapeAllStrings(data);
   return { valid: true, escapedData };
+}
+
+/**
+ * Validate archive note when archiving a project
+ * Requires at least one of archiveNote or archivedReason to be provided
+ */
+export function validateArchiveNote(archiveNote?: string | null, archivedReason?: string | null): { valid: boolean; message?: string } {
+  // Both fields are optional, but at least one must be provided
+  const hasArchiveNote = archiveNote && archiveNote.trim().length > 0;
+  const hasArchivedReason = archivedReason && archivedReason.trim().length > 0;
+  
+  if (!hasArchiveNote && !hasArchivedReason) {
+    return { valid: false, message: '归档说明必填。请提供 archiveNote 或 archivedReason 字段' };
+  }
+  
+  // Validate note length if provided
+  if (hasArchiveNote && archiveNote!.trim().length > 500) {
+    return { valid: false, message: '归档说明不能超过500字符' };
+  }
+  
+  return { valid: true };
 }

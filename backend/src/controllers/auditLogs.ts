@@ -5,7 +5,14 @@ const auditLogService = new AuditLogService();
 
 export const getAllAuditLogs = async (req: Request, res: Response) => {
   try {
-    const auditLogs = await auditLogService.getAllAuditLogs();
+    let limit: number | undefined;
+    if (req.query.limit) {
+      const parsed = parseInt(req.query.limit as string);
+      if (!isNaN(parsed) && parsed > 0) {
+        limit = parsed;
+      }
+    }
+    const auditLogs = await auditLogService.getAllAuditLogs(limit);
     res.json({
       code: 0,
       msg: 'Success',

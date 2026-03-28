@@ -57,10 +57,14 @@ export class AuditLogService {
     });
   }
 
-  async getAllAuditLogs(): Promise<AuditLog[]> {
-    return AuditLog.findAll({
+  async getAllAuditLogs(limit?: number): Promise<AuditLog[]> {
+    const options: any = {
       order: [['created_at', 'DESC']]
-    });
+    };
+    if (limit && limit > 0) {
+      options.limit = limit;
+    }
+    return AuditLog.findAll(options);
   }
 
   async getAuditLogById(id: string): Promise<AuditLog | null> {

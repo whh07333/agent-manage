@@ -125,6 +125,7 @@ export class TaskService {
     status?: string;
     statusRemark?: string;
     dueDate?: Date;
+    projectId?: string;
   }): Promise<Task | null> {
     try {
       const [affectedCount] = await Task.update(data, { where: { id } });

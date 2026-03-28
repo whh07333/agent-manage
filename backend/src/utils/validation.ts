@@ -227,14 +227,10 @@ export function validateTaskData(data: any, isUpdate: boolean = false): { valid:
     return { valid: false, message: 'Status must be one of: pending, in_progress, completed, blocked, cancelled' };
   }
 
-  // 验证project_id - DEF-IT2-3-009（仅在创建时必填）
+  // 验证project_id - DEF-IT2-3-009（创建和更新时必填）
   const projectId = data.projectId || data.project_id;
-  if (!isUpdate && (!projectId || typeof projectId !== 'string')) {
+  if (!projectId || typeof projectId !== 'string') {
     return { valid: false, message: 'project_id is required and must be a string' };
-  }
-  // 更新时如果提供了projectId，验证格式
-  if (isUpdate && projectId !== undefined && typeof projectId !== 'string') {
-    return { valid: false, message: 'project_id must be a string if provided' };
   }
 
   // 确保data中projectId字段存在（支持驼峰和下划线命名）

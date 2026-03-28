@@ -189,8 +189,8 @@ export const updateTask = async (req: Request, res: Response) => {
   try {
     logger.info('Updating task', { requestId, taskId: id, body: req.body });
 
-    // 验证请求数据并转义HTML防止XSS（创建操作）
-    const validation = validateTaskData(req.body);
+    // 验证请求数据并转义HTML防止XSS（更新操作）
+    const validation = validateTaskData(req.body, true);
     if (!validation.valid) {
       logger.warn('Task update validation failed', { requestId, message: validation.message });
       return res.status(400).json({
@@ -399,15 +399,15 @@ export const acceptanceTask = async (req: Request, res: Response) => {
 export const blockTask = async (req: Request, res: Response) => {
   const requestId = req.headers['x-request-id'] as string || 'default';
   const { id } = req.params;
-  const { reason, impact, relatedTasks } = req.body;
+  const { block_reason, impact_scope, relatedTasks } = req.body;
   const blockerId = (req as any).user.id;
   try {
     // DEF-IT2-3-013: 阻塞原因必填
-    if (!reason || typeof reason !== 'string' || reason.trim() === '') {
-      logger.warn('Block task validation failed: reason is required', { requestId });
+    if (!block_reason || typeof block_reason !== 'string' || block_reason.trim() === '') {
+      logger.warn('Block task validation failed: block_reason is required', { requestId });
       return res.status(400).json({
         code: 400,
-        msg: 'Reason is required',
+        msg: 'block_reason is required',
         data: null,
         trace_id: requestId,
         timestamp: new Date().toISOString()
@@ -415,11 +415,11 @@ export const blockTask = async (req: Request, res: Response) => {
     }
 
     // DEF-IT2-3-014: 影响范围必填
-    if (!impact || typeof impact !== 'string' || impact.trim() === '') {
-      logger.warn('Block task validation failed: impact is required', { requestId });
+    if (!impact_scope || typeof impact_scope !== 'string' || impact_scope.trim() === '') {
+      logger.warn('Block task validation failed: impact_scope is required', { requestId });
       return res.status(400).json({
         code: 400,
-        msg: 'Impact is required',
+        msg: 'impact_scope is required',
         data: null,
         trace_id: requestId,
         timestamp: new Date().toISOString()
@@ -464,18 +464,18 @@ export const blockTask = async (req: Request, res: Response) => {
       });
     }
     
-    // Escape reason and impact if provided
-    let escapedReason = reason || '';
+    // Escape block_reason and impact_scope if provided
+    let escapedReason = block_reason || '';
     if (escapedReason && typeof escapedReason === 'string') {
       escapedReason = escapeHtml(escapedReason);
     }
-    
-    let escapedImpact = impact || '';
+
+    let escapedImpact = impact_scope || '';
     if (escapedImpact && typeof escapedImpact === 'string') {
       escapedImpact = escapeHtml(escapedImpact);
     }
-    
-    logger.info('Blocking task', { requestId, taskId: id, reason: escapedReason, impact: escapedImpact, blockerId });
+
+    logger.info('Blocking task', { requestId, taskId: id, block_reason: escapedReason, impact_scope: escapedImpact, blockerId });
     const task = await taskService.blockTask(id, escapedReason, escapedImpact, relatedTasks || [], blockerId);
     if (!task) {
       logger.warn('Task not found for blocking', { requestId, taskId: id });

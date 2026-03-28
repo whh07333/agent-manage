@@ -289,3 +289,31 @@ export function validateArchiveNote(archiveNote?: string | null, archivedReason?
   
   return { valid: true };
 }
+
+/**
+ * Validate block task data (block_reason and impact_scope)
+ * Minimum length: 10 characters, maximum length: 500 characters
+ */
+export function validateBlockTaskData(block_reason: string, impact_scope: string): { valid: boolean; message?: string } {
+  if (!block_reason || typeof block_reason !== 'string' || block_reason.trim() === '') {
+    return { valid: false, message: 'block_reason is required' };
+  }
+  if (block_reason.trim().length < 10) {
+    return { valid: false, message: 'block_reason must be at least 10 characters' };
+  }
+  if (block_reason.trim().length > 500) {
+    return { valid: false, message: 'block_reason must not exceed 500 characters' };
+  }
+
+  if (!impact_scope || typeof impact_scope !== 'string' || impact_scope.trim() === '') {
+    return { valid: false, message: 'impact_scope is required' };
+  }
+  if (impact_scope.trim().length < 10) {
+    return { valid: false, message: 'impact_scope must be at least 10 characters' };
+  }
+  if (impact_scope.trim().length > 500) {
+    return { valid: false, message: 'impact_scope must not exceed 500 characters' };
+  }
+
+  return { valid: true };
+}

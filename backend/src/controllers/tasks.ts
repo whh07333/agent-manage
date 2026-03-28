@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../services/tasks';
-import { validateTaskData, escapeHtml } from '../utils/validation';
+import { validateTaskData, escapeHtml, validateBlockTaskData } from '../utils/validation';
 import { logger } from '../utils/logger';
 
 const taskService = new TaskService();
@@ -403,23 +403,14 @@ export const blockTask = async (req: Request, res: Response) => {
   const blockerId = (req as any).user.id;
   try {
     // DEF-IT2-3-013: 阻塞原因必填
-    if (!block_reason || typeof block_reason !== 'string' || block_reason.trim() === '') {
-      logger.warn('Block task validation failed: block_reason is required', { requestId });
-      return res.status(400).json({
-        code: 400,
-        msg: 'block_reason is required',
-        data: null,
-        trace_id: requestId,
-        timestamp: new Date().toISOString()
-      });
-    }
-
     // DEF-IT2-3-014: 影响范围必填
-    if (!impact_scope || typeof impact_scope !== 'string' || impact_scope.trim() === '') {
-      logger.warn('Block task validation failed: impact_scope is required', { requestId });
+    // DEF-IT2-3-031: 阻塞原因和影响范围长度校验（最少10个字符）
+    const validation = validateBlockTaskData(block_reason, impact_scope);
+    if (!validation.valid) {
+      logger.warn('Block task validation failed', { requestId, message: validation.message });
       return res.status(400).json({
         code: 400,
-        msg: 'impact_scope is required',
+        msg: validation.message,
         data: null,
         trace_id: requestId,
         timestamp: new Date().toISOString()

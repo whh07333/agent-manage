@@ -313,6 +313,8 @@ export const acceptanceTask = async (req: Request, res: Response) => {
   const { result, comment } = req.body;
   const acceptorId = (req as any).user.id;
   
+  try {
+  
   // DEF-IT2-3-011: 验证result参数必填
   if (!result || typeof result !== 'string') {
     logger.warn('Task acceptance validation failed: result is required', { requestId });
@@ -382,6 +384,16 @@ export const acceptanceTask = async (req: Request, res: Response) => {
     trace_id: requestId,
     timestamp: new Date().toISOString()
   });
+  } catch (error) {
+    logger.error('Failed to process task acceptance', error as Error, { requestId, taskId: id });
+    res.status(500).json({
+      code: 500,
+      msg: error instanceof Error ? error.message : 'Internal server error',
+      data: null,
+      trace_id: requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
 };
 
 export const blockTask = async (req: Request, res: Response) => {
